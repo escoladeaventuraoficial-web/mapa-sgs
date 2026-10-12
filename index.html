@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Mapa mental interativo da ABNT NBR ISO 21101: como implementar o SGS no turismo de aventura.">
+<style>:root{color-scheme:light}html,body{height:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Mapa Mental do SGS</title>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: cabeçalho enxuto + legenda, depois o mapa arrastável (esquerda) e o painel de detalhes (direita; folha inferior no celular).
+   A cor do nó segue a profundidade, como no mapa de referência: lavanda, azul, verde-água, verde. */
+:root{
+  --font-ui:'Albert Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --bg:#f2f4fa; --surface:#ffffff; --canvas:#f7f8fd; --ink:#1b2135; --muted:#59617a; --hair:#d5dbea; --dot:#d8ddec;
+  --accent:#3552d6; --accent-soft:#e2e8ff; --on-accent:#ffffff;
+  --root-bg:#c8cbfa; --root-ink:#1d2160;
+  --l1-bg:#b9d4f5; --l1-ink:#10294c; --e1:#8aa2f0;
+  --l2-bg:#a2dbd0; --l2-ink:#0b3a35; --e2:#5ab09f;
+  --l3-bg:#a9ebc6; --l3-ink:#0e3b25; --e3:#5ab09f;
+  --doc-bg:#ffdc94; --doc-ink:#4a2f00; --doc-solid:#8a5200;
+  --reg-bg:#ffc8d2; --reg-ink:#561224; --reg-solid:#a3243f;
+  --ex-bg:#e4d4fa; --ex-ink:#2e1a52; --ex-solid:#6a3fb5;
+  --tag-ink:#ffffff;
+  --ok:#1d8a57; --ok-soft:#d6f1e2;
+  --risk-low:#cdeed9; --risk-mid:#ffe7a6; --risk-high:#ffb9ab;
+  --shadow:0 6px 24px rgba(27,33,53,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10131c; --surface:#181c28; --canvas:#141824; --ink:#e7eaf5; --muted:#9aa3bd; --hair:#2b3247; --dot:#232a3d;
+    --accent:#9bb0ff; --accent-soft:#252d52; --on-accent:#10131c;
+    --root-bg:#3b4195; --root-ink:#e8eaff;
+    --l1-bg:#244b80; --l1-ink:#dcebff; --e1:#5b78c8;
+    --l2-bg:#1e5a52; --l2-ink:#d3f5ee; --e2:#3f8c7d;
+    --l3-bg:#1f5a3d; --l3-ink:#d6f7e4; --e3:#3f8c7d;
+    --doc-bg:#6a4a05; --doc-ink:#ffeabd; --doc-solid:#ffc95c;
+    --reg-bg:#6b2536; --reg-ink:#ffdde4; --reg-solid:#ff9db0;
+    --ex-bg:#483376; --ex-ink:#eddfff; --ex-solid:#c4a4ff;
+    --tag-ink:#17120a;
+    --ok:#52d391; --ok-soft:#1c3b2c;
+    --risk-low:#1f4a34; --risk-mid:#5a4a12; --risk-high:#6e2b25;
+    --shadow:0 6px 24px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10131c; --surface:#181c28; --canvas:#141824; --ink:#e7eaf5; --muted:#9aa3bd; --hair:#2b3247; --dot:#232a3d;
+  --accent:#9bb0ff; --accent-soft:#252d52; --on-accent:#10131c;
+  --root-bg:#3b4195; --root-ink:#e8eaff;
+  --l1-bg:#244b80; --l1-ink:#dcebff; --e1:#5b78c8;
+  --l2-bg:#1e5a52; --l2-ink:#d3f5ee; --e2:#3f8c7d;
+  --l3-bg:#1f5a3d; --l3-ink:#d6f7e4; --e3:#3f8c7d;
+  --doc-bg:#6a4a05; --doc-ink:#ffeabd; --doc-solid:#ffc95c;
+  --reg-bg:#6b2536; --reg-ink:#ffdde4; --reg-solid:#ff9db0;
+  --ex-bg:#483376; --ex-ink:#eddfff; --ex-solid:#c4a4ff;
+  --tag-ink:#17120a;
+  --ok:#52d391; --ok-soft:#1c3b2c;
+  --risk-low:#1f4a34; --risk-mid:#5a4a12; --risk-high:#6e2b25;
+  --shadow:0 6px 24px rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+html{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--font-ui);padding-inline:16px;padding-block:12px;overflow:hidden;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit}
+h1,h2,h3,p,ul,ol{margin:0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+#app{height:100%;display:flex;flex-direction:column;gap:10px;min-height:0}
+
+/* cabeçalho */
+.top{display:grid;grid-template-columns:auto minmax(220px,420px) auto;align-items:center;justify-content:space-between;gap:12px 20px}
+.ttl{min-width:0}
+.ttl h1{font-size:19px;line-height:1.2;font-weight:700;letter-spacing:-.01em}
+.ttl p{color:var(--muted);font-size:12.5px;margin-top:2px}
+.srch{position:relative;min-width:0}
+.srch svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.srch input{width:100%;height:38px;border-radius:19px;border:1px solid var(--hair);background:var(--surface);color:var(--ink);padding:0 14px 0 36px;font:inherit}
+.srch input::placeholder{color:var(--muted)}
+.results{position:absolute;z-index:30;left:0;right:0;top:44px;background:var(--surface);border:1px solid var(--hair);border-radius:12px;box-shadow:var(--shadow);padding:6px;max-height:320px;overflow:auto}
+.results button{display:block;width:100%;text-align:left;background:none;border:0;border-radius:8px;padding:8px 10px;cursor:pointer}
+.results button:hover,.results button:focus-visible{background:var(--accent-soft)}
+.results b{display:block;font-weight:600}
+.results small{color:var(--muted);font-size:12px}
+.results .none{padding:10px;color:var(--muted)}
+.progress{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--hair);border-radius:19px;height:38px;padding:0 14px;cursor:pointer;white-space:nowrap}
+.progress .pl{color:var(--muted);font-size:12.5px}
+.progress b{font-family:var(--font-mono);font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
+.progress .bar{width:64px;height:6px;border-radius:3px;background:var(--hair);overflow:hidden}
+.progress .bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+
+/* legenda */
+.legend{display:flex;align-items:center;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.legend .lg{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;border:1px solid var(--hair);background:var(--surface);border-radius:16px;padding:4px 12px 4px 6px;cursor:pointer;font-size:12.5px}
+.legend .lg[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.legend .note{color:var(--muted);font-size:12.5px;white-space:nowrap;padding-left:6px}
+.legend .sw{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:12.5px;color:var(--muted)}
+.dot{width:12px;height:12px;border-radius:4px;display:inline-block}
+
+/* área de trabalho */
+.work{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 392px;gap:12px}
+#stage{position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--hair);background-color:var(--canvas);background-image:radial-gradient(var(--dot) 1px,transparent 1.2px);background-size:22px 22px;touch-action:none;cursor:grab;min-width:0}
+#stage.grabbing{cursor:grabbing}
+#world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+#edges{position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none}
+.edge{fill:none;stroke-width:1.7;stroke-linecap:round}
+.edge.e1{stroke:var(--e1)} .edge.e2{stroke:var(--e2)} .edge.e3{stroke:var(--e3)}
+.link{fill:none;stroke:var(--accent);stroke-width:2;stroke-dasharray:6 6;stroke-linecap:round}
+.linkdot{fill:var(--accent)}
+
+.nw{position:absolute;left:0;top:0;display:flex;align-items:center;gap:6px;--nbg:var(--l3-bg);--nink:var(--l3-ink);--solid:var(--doc-solid);--tgline:var(--e3)}
+.nw.d0{--nbg:var(--root-bg);--nink:var(--root-ink);--tgline:var(--e1)}
+.nw.d1{--nbg:var(--l1-bg);--nink:var(--l1-ink);--tgline:var(--e2)}
+.nw.d2{--nbg:var(--l2-bg);--nink:var(--l2-ink);--tgline:var(--e3)}
+.nw.d3{--nbg:var(--l3-bg);--nink:var(--l3-ink)}
+.nw.k-doc{--nbg:var(--doc-bg);--nink:var(--doc-ink);--solid:var(--doc-solid)}
+.nw.k-reg{--nbg:var(--reg-bg);--nink:var(--reg-ink);--solid:var(--reg-solid)}
+.nw.k-ex{--nbg:var(--ex-bg);--nink:var(--ex-ink);--solid:var(--ex-solid)}
+.node{display:flex;align-items:center;gap:8px;max-width:272px;text-align:left;border:0;border-radius:10px;padding:9px 14px;background:var(--nbg);color:var(--nink);font-weight:500;font-size:14px;line-height:1.3;cursor:pointer;box-shadow:0 1px 0 rgba(20,30,70,.06)}
+.nw.d0 .node{font-weight:600;font-size:15px;padding:12px 16px}
+.nw.d1 .node{font-size:15px;padding:10px 15px}
+.node:hover{filter:brightness(.97)}
+.node.sel{box-shadow:0 0 0 2.5px var(--accent),0 6px 16px rgba(20,30,70,.16)}
+.num{font-family:var(--font-mono);font-size:12px;font-weight:500;opacity:.78;flex:none}
+.tag{flex:none;font:600 9.5px/1 var(--font-mono);letter-spacing:.07em;padding:4px 5px;border-radius:4px;background:var(--solid);color:var(--tag-ink)}
+.tag.rec{background:transparent;color:var(--solid);box-shadow:inset 0 0 0 1.5px var(--solid)}
+.ck{display:none;flex:none;width:16px;height:16px;border-radius:50%;background:var(--ok);color:#fff;place-items:center}
+.nw.done .ck{display:inline-grid}
+.tg{flex:none;width:22px;height:22px;border-radius:50%;border:0;padding:0;display:grid;place-items:center;background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1.6px var(--tgline);cursor:pointer}
+.tg svg{transition:transform .2s}
+.tg[aria-expanded="true"] svg{transform:rotate(180deg)}
+.nw.dim .node,.nw.dim .tg{opacity:.25}
+
+.ctl{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:6px;z-index:5}
+.ctl button{width:38px;height:38px;border-radius:12px;border:1px solid var(--hair);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px rgba(27,33,53,.08)}
+.ctl button:hover{background:var(--accent-soft)}
+.ctl hr{border:0;height:1px;background:var(--hair);margin:2px 4px}
+.hint{position:absolute;left:14px;bottom:12px;z-index:5;background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:6px 10px;font-size:12.5px;color:var(--muted);max-width:calc(100% - 80px);transition:opacity .3s}
+.hint.off{opacity:0;pointer-events:none}
+
+/* painel */
+#panel{min-width:0;background:var(--surface);border:1px solid var(--hair);border-radius:16px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.tabs{display:flex;gap:4px;padding:8px 8px 0;border-bottom:1px solid var(--hair);align-items:flex-end}
+.tabs button{border:0;background:none;padding:9px 12px;border-radius:10px 10px 0 0;color:var(--muted);font-weight:600;cursor:pointer;border-bottom:2px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs .pclose{margin-left:auto;display:none;width:34px;height:34px;padding:0;place-items:center;border-radius:10px}
+.pane{flex:1;min-height:0;overflow:auto;padding:18px 18px 24px;overscroll-behavior:contain}
+.crumb{display:flex;flex-wrap:wrap;gap:2px 6px;font-size:12px;color:var(--muted);margin-bottom:8px}
+.crumb button{border:0;background:none;padding:0;color:var(--muted);cursor:pointer;text-decoration:underline;text-decoration-color:var(--hair);text-underline-offset:3px}
+.crumb button:hover{color:var(--ink)}
+.pane h2{font-size:21px;line-height:1.2;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.pane h2 .num{font-size:15px;margin-right:6px;opacity:.7}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:12px;background:var(--accent-soft);color:var(--ink)}
+.chip.must{background:var(--doc-bg);color:var(--doc-ink)}
+.chip.reg{background:var(--reg-bg);color:var(--reg-ink)}
+.chip.ex{background:var(--ex-bg);color:var(--ex-ink)}
+.lead{margin-top:12px;font-size:14.5px;line-height:1.55;max-width:62ch}
+.sec{margin-top:20px}
+.sec h3{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.sec ol,.sec ul{padding-left:20px;display:grid;gap:6px;max-width:62ch}
+.sec li::marker{color:var(--muted)}
+.box{border-radius:12px;padding:12px 14px;background:var(--accent-soft);max-width:62ch}
+.box.ex{background:var(--ex-bg);color:var(--ex-ink)}
+.box.tip{background:var(--doc-bg);color:var(--doc-ink)}
+.box b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;opacity:.85}
+.rows{display:grid;gap:6px}
+.row{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--hair);border-radius:12px;padding:8px 10px;background:var(--surface)}
+.row .nm{flex:1;min-width:0;border:0;background:none;text-align:left;padding:0;cursor:pointer;font-weight:600;line-height:1.35}
+.row .nm:hover{text-decoration:underline}
+.row .nm small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:1px}
+.cb{flex:none;width:20px;height:20px;margin-top:1px;accent-color:var(--ok);cursor:pointer}
+.links{display:flex;flex-direction:column;gap:6px}
+.lk{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--hair);background:var(--surface);border-radius:12px;padding:8px 10px;text-align:left;cursor:pointer}
+.lk:hover{background:var(--accent-soft)}
+.lk .num{margin-top:2px}
+.lk span.t{display:block;font-weight:600}
+.lk span.w{display:block;color:var(--muted);font-size:12.5px}
+.big{display:flex;align-items:center;gap:10px;margin-top:18px;padding:12px 14px;border-radius:12px;border:1px solid var(--hair);cursor:pointer;font-weight:600}
+.big input{width:20px;height:20px;accent-color:var(--ok)}
+.pd-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.pd-strip button{border:1px solid var(--hair);background:var(--surface);border-radius:12px;padding:8px;text-align:left;cursor:pointer}
+.pd-strip button:hover{background:var(--accent-soft)}
+.pd-strip b{display:block;font-size:13px}
+.pd-strip span{font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+.gh{display:flex;justify-content:space-between;align-items:baseline;margin:18px 0 8px;font-weight:700}
+.gh span{font-family:var(--font-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.gh:first-child{margin-top:0}
+.filt{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:13px}
+.filt input{accent-color:var(--accent)}
+
+/* matriz de risco */
+.mx{margin-top:2px}
+.mx-grid{display:grid;grid-template-columns:96px repeat(5,minmax(0,1fr));gap:3px;font-variant-numeric:tabular-nums}
+.mx-rl{font-size:11.5px;color:var(--muted);display:flex;align-items:center;line-height:1.2}
+.mx-c{position:relative;height:38px;border-radius:6px;display:grid;place-items:center;font-weight:600;font-size:13px;color:var(--ink)}
+.mx-c.low{background:var(--risk-low)} .mx-c.mid{background:var(--risk-mid)} .mx-c.high{background:var(--risk-high)}
+.mx-c i{position:absolute;right:3px;top:3px;font-style:normal;font:700 9.5px/1 var(--font-mono);background:var(--ink);color:var(--surface);border-radius:50%;width:15px;height:15px;display:grid;place-items:center}
+.mx-cl{text-align:center;font-size:11.5px;color:var(--muted);padding-top:2px}
+.mx-leg{display:grid;gap:3px;margin-top:10px;font-size:12.5px}
+.mx-leg div{display:flex;gap:8px}
+.mx-leg i{flex:none;font-style:normal;font:700 9.5px/1 var(--font-mono);background:var(--ink);color:var(--surface);border-radius:50%;width:15px;height:15px;display:grid;place-items:center;margin-top:2px}
+.mx-bands{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:12px;color:var(--muted)}
+.mx-bands span{display:inline-flex;gap:5px;align-items:center}
+
+@media (max-width:860px){
+  body{padding-block:10px}
+  .top{grid-template-columns:minmax(0,1fr) auto}
+  .srch{grid-column:1 / -1;order:3}
+  .ttl h1{font-size:17px}
+  .progress .pl{display:none}
+  .work{grid-template-columns:minmax(0,1fr)}
+  #panel{position:fixed;z-index:40;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-height:58%;height:58%;box-shadow:var(--shadow);transform:translateY(calc(100% + 40px));visibility:hidden;transition:transform .25s,visibility 0s .25s}
+  #panel.open{transform:none;visibility:visible;transition:transform .25s}
+  .tabs .pclose{display:grid}
+  .hint{max-width:calc(100% - 76px)}
+  .pd-strip{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){
+  .tg svg,.progress .bar i,#panel{transition:none!important}
+}
+</style>
+
+<div id="app">
+  <header class="top">
+    <div class="ttl">
+      <h1>Mapa Mental do SGS</h1>
+      <p>ABNT NBR ISO 21101 · Turismo de Aventura</p>
+    </div>
+    <div class="srch">
+      <label for="q" class="sr-only">Buscar no mapa</label>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg>
+      <input id="q" type="search" placeholder="Buscar: escopo, política, incidentes…" autocomplete="off">
+      <div id="sr" class="results" hidden></div>
+    </div>
+    <button id="prog" class="progress" type="button" aria-label="Itens prontos. Abrir checklist">
+      <span class="pl">Itens prontos</span><b id="pn">0/0</b><span class="bar"><i id="pb"></i></span>
+    </button>
+  </header>
+
+  <div class="legend" id="legend">
+    <button class="lg" type="button" data-hl="doc" aria-pressed="false"><span class="tag">DOC</span>Documentos</button>
+    <button class="lg" type="button" data-hl="reg" aria-pressed="false"><span class="tag" style="--solid:var(--reg-solid)">REG</span>Registros</button>
+    <button class="lg" type="button" data-hl="ex" aria-pressed="false"><span class="tag" style="--solid:var(--ex-solid)">EX</span>Exemplos</button>
+    <span class="note">Etiqueta cheia: exigido pela norma · Só contorno: recomendado</span>
+  </div>
+
+  <div class="work">
+    <section id="stage" aria-label="Mapa mental interativo">
+      <div id="world"><svg id="edges" aria-hidden="true"></svg></div>
+      <div class="hint" id="hint">Arraste para mover · role ou use + e − para ampliar · seta ao lado do nó abre o ramo</div>
+      <div class="ctl" role="group" aria-label="Controles do mapa">
+        <button id="bExp" type="button" title="Expandir tudo" aria-label="Expandir tudo"></button>
+        <button id="bCol" type="button" title="Recolher tudo" aria-label="Recolher tudo"></button>
+        <hr>
+        <button id="bIn" type="button" title="Ampliar" aria-label="Ampliar"></button>
+        <button id="bOut" type="button" title="Reduzir" aria-label="Reduzir"></button>
+        <button id="bFit" type="button" title="Ajustar à tela" aria-label="Ajustar à tela"></button>
+      </div>
+    </section>
+    <aside id="panel" aria-label="Detalhes">
+      <div class="tabs" role="tablist">
+        <button id="tabD" role="tab" type="button" aria-selected="true">Detalhes</button>
+        <button id="tabC" role="tab" type="button" aria-selected="false">Checklist</button>
+        <button class="pclose" id="pclose" type="button" aria-label="Fechar painel"></button>
+      </div>
+      <div class="pane" id="paneD" role="tabpanel"></div>
+      <div class="pane" id="paneC" role="tabpanel" hidden></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   CONTEÚDO
+   ============================================================ */
+const L=(to,why)=>({to,why});
+const P=(t,d,o)=>Object.assign({k:'pt',t,d},o||{});
+const X=(t,d,o)=>Object.assign({k:'ex',t,d},o||{});
+const D=ref=>({k:'doc',ref});
+const R=ref=>({k:'reg',ref});
+
+/* Documentos (têm versão e aprovação) e registros (provam que algo foi feito) */
+const DOCS={
+ d_contexto:{t:'Análise de Contexto da Empresa',type:'doc',norma:false,cl:'c4_1',p:'Uma folha com o que, dentro e fora da empresa, ajuda ou atrapalha a operação segura.',inc:['Questões internas pertinentes','Questões externas pertinentes','Data e responsável pela última revisão']},
+ d_partes:{t:'Partes Interessadas e Requisitos',type:'doc',norma:false,cl:'c4_2',p:'Lista de quem é afetado pela sua operação e do que cada um espera ou exige.',inc:['Quem são: participantes, equipe, proprietários de áreas, gestores de Unidades de Conservação, poder público, resgate e saúde, seguradora, parceiros','O que cada parte espera ou exige','Como cada requisito é atendido']},
+ d_escopo:{t:'Escopo do SGS',type:'doc',norma:true,cl:'c4_3',p:'Diz o que está dentro do SGS: atividades, produtos, locais e onde começa e termina a gestão da segurança. A norma exige que esteja documentado.',inc:['Atividades e produtos incluídos','Local de cada produto','Início e fim da responsabilidade de segurança','Partes interessadas consideradas','Data e versão']},
+ d_politica:{t:'Política de Segurança',type:'doc',norma:true,cl:'c5_2',p:'Compromissos da direção com a segurança, em linguagem simples, documentada, comunicada à equipe e disponível às partes interessadas.',inc:['Compromisso de atender aos requisitos aplicáveis (leis e normas)','Compromisso com a melhoria contínua','Base para os objetivos de segurança','Assinatura da direção, data e versão']},
+ d_funcoes:{t:'Quadro de Funções, Responsabilidades e Autoridades',type:'doc',norma:false,cl:'c5_3',p:'Define quem faz o quê no SGS e quem pode decidir o quê, inclusive interromper uma atividade. A norma exige atribuir e comunicar; o quadro é a forma mais simples de provar.',inc:['Organograma por função (uma pessoa pode ter várias)','Responsável pelo SGS e a quem reporta','Responsabilidades e autoridades de cada função','Como foi comunicado à equipe']},
+ d_contexto_ativ:{t:'Contexto da Atividade (um por produto)',type:'doc',norma:true,cl:'c6_1_2',p:'Define como os riscos serão gerenciados em cada produto: método e critérios. O processo de gestão de riscos precisa estar documentado.',inc:['Atividade e seu escopo: locais, duração, etapas','Objetivos da gestão de risco','Limites e interfaces: outros usuários da trilha, regras da Unidade de Conservação','Metodologia de análise','Escalas de probabilidade e consequência e nível de risco aceitável, com a justificativa']},
+ d_inventario:{t:'Inventário de Perigos e Riscos',type:'doc',norma:true,cl:'c6_1_2',p:'Planilha viva, por produto: etapa da atividade, perigo, dano, controles existentes, nível de risco e tratamento.',inc:['Etapa da atividade e perigo','Dano possível','Controles operacionais já existentes','Probabilidade, consequência e nível de risco','Tratamento planejado, responsável e prazo','Data da última revisão']},
+ d_legal:{t:'Lista de Requisitos Legais e Outros',type:'doc',norma:false,cl:'c6_1_3',p:'Leis, normas, regras de áreas e manuais de equipamentos que se aplicam, com a situação de atendimento. A norma exige procedimentos para identificar e atender; a lista é a forma prática.',inc:['Leis, decretos e resoluções federais, estaduais e municipais','Outros requisitos: normas ABNT, plano de manejo, regras de proprietários, manuais de fabricantes','Situação: atende ou não, e prazo para atender','Como foi comunicado à equipe e aos participantes']},
+ d_objetivos:{t:'Objetivos de Segurança e Plano de Ação',type:'doc',norma:true,cl:'c6_2',p:'O que a empresa quer alcançar em segurança, com meta, ações, responsável, prazo, recurso e situação.',inc:['Objetivo ligado à política','Meta mensurável e prazo','Ações, responsável, recursos e prazo','Situação e como o resultado será avaliado']},
+ d_matriz_comp:{t:'Matriz de Competências por Função',type:'doc',norma:false,cl:'c7_2',p:'Mostra o que cada função precisa saber e ter (formação, treinamento, experiência) e como cada pessoa atende.',inc:['Competência mínima de cada função','Situação de cada pessoa','Treinamentos a realizar']},
+ d_com_equipe:{t:'Processo de Comunicação e Consulta com a Equipe',type:'doc',norma:true,cl:'c7_4',p:'Como a equipe participa da criação e revisão das regras e é ouvida quando algo muda. A norma exige que o processo seja documentado.',inc:['Como a equipe participa: reuniões, debriefing, canal de mensagens','Como é consultada em mudanças que afetam sua segurança','Quem representa a equipe e quem representa a direção']},
+ d_com_part:{t:'Processo de Comunicação com Participantes',type:'doc',norma:true,cl:'c7_4',p:'Que informação de segurança o participante recebe e que informação ele deve dar à empresa. A norma exige que o processo seja documentado.',inc:['Informações antes da contratação, durante e depois da atividade','Dados que o participante deve informar','Forma e idioma da comunicação, de modo acessível']},
+ d_termo:{t:'Termo de Conhecimento de Riscos e Corresponsabilidade',type:'doc',norma:false,cl:'c7_4',p:'Termo assinado pelo participante com os riscos, as orientações e as responsabilidades. O Decreto 7.381/2010 (art. 34) prevê termos assinados pelo contratante e arquivados pela empresa.',inc:['Riscos inerentes à atividade','Compromisso de seguir as orientações da equipe','Direito da empresa de adiar, alterar ou cancelar por segurança','Condições de saúde informadas e dados de emergência','Assinatura, data e arquivamento']},
+ d_lista_mestra:{t:'Lista Mestra de Documentos e Registros',type:'doc',norma:true,cl:'c7_5',p:'Mostra os elementos do SGS e como se relacionam, onde cada documento e registro fica, quem acessa e por quanto tempo é guardado.',inc:['Nome, código e versão de cada documento','Onde fica e quem pode acessar','Local, forma e prazo de guarda dos registros','Backup dos arquivos digitais']},
+ d_proc_op:{t:'Procedimentos Operacionais por Atividade',type:'doc',norma:true,cl:'c8_1',p:'O passo a passo seguro de cada atividade, com briefing, checagens e medidas de prevenção para participantes e equipe.',inc:['Etapas da operação e quem faz cada uma','Briefing de segurança ao participante','Checagens críticas (check-list)','Critérios para interromper ou cancelar','Medidas dos tratamentos do inventário de riscos']},
+ d_equip:{t:'Procedimento de Manutenção e Controle de Equipamentos',type:'doc',norma:true,cl:'c8_1',p:'Como inspecionar, guardar, manter e descartar os equipamentos que afetam a segurança.',inc:['Lista de equipamentos e responsável','Inspeção antes de cada uso e inspeção periódica','Manutenção, vida útil e descarte','Critério para retirar de uso']},
+ d_comp_part:{t:'Competência Mínima do Participante',type:'doc',norma:true,cl:'c8_1',p:'O que o participante precisa saber, ter ou condicionar para fazer a atividade com segurança, e como a empresa confere. A norma exige definir, documentar e garantir.',inc:['Requisitos por atividade: aptidão física, saber nadar, idade, saúde','Como é verificado','O que fazer quando o participante não atende']},
+ d_pae:{t:'Plano de Atendimento a Emergências (PAE)',type:'doc',norma:true,cl:'c8_2',p:'O que fazer, quem faz e quem chamar quando algo grave acontece.',inc:['Emergências possíveis, vindas do inventário de riscos','Primeiros socorros, comunicação, remoção e atendimento médico-hospitalar','Contatos: bombeiros, SAMU, hospital, resgate, seguradora','Gestão de crise e contato com famílias e imprensa','Fluxograma simples e responsáveis']},
+ d_proc_inc:{t:'Procedimento de Gestão de Incidentes',type:'doc',norma:true,cl:'c8_3',p:'Quem lida, reporta e investiga incidentes e que medidas reduzem as consequências.',inc:['Responsabilidades e autoridade','Como reportar e em quanto tempo','Como investigar as causas','Como registrar (formulário)']},
+ d_monit:{t:'Plano de Monitoramento e Indicadores',type:'doc',norma:false,cl:'c9_1',p:'O que será acompanhado, como, quando, por quem e como os resultados serão analisados.',inc:['O que monitorar: política, objetivos, tratamentos, controles, requisitos legais, treinamentos, emergência','Método e frequência','Responsável','Indicadores e metas']},
+ d_prog_aud:{t:'Programa de Auditoria Interna',type:'doc',norma:true,cl:'c9_2',p:'Quando e como o SGS será auditado, por quem, com que critérios, e como os resultados serão relatados.',inc:['Frequência (o Guia ABNT/Sebrae cita duas por ano como mais que suficiente)','Escopo e critérios','Auditor imparcial','Como o relatório chega à direção']},
+ d_lv_aud:{t:'Lista de Verificação da Auditoria',type:'doc',norma:false,cl:'c9_2',p:'Roteiro de perguntas baseado nos requisitos da ISO 21101 para conferir cada item.',inc:['Uma pergunta por requisito, do 4 ao 10','Campo para a evidência observada','Resultado: conforme, não conformidade ou oportunidade']},
+
+ r_competencia:{t:'Evidências de Competência',type:'reg',norma:true,cl:'c7_2',p:'Certificados, cursos, listas de presença e avaliações que provam a competência de cada pessoa.',inc:['Certificados e comprovantes de formação','Listas de presença e avaliações de treinamentos','Comprovação de experiência']},
+ r_treinamento:{t:'Registro de Treinamentos e Integração',type:'reg',norma:false,cl:'c7_3',p:'Prova de que a equipe conhece a política e entende sua contribuição ao SGS.',inc:['Data, tema e participantes','Assinaturas ou confirmação','Quem conduziu']},
+ r_reuniao:{t:'Registro de Reuniões e Consultas com a Equipe',type:'reg',norma:false,cl:'c7_4',p:'Atas curtas ou debriefings com sugestões, mudanças comunicadas e decisões.',inc:['Data e participantes','Assuntos de segurança tratados','Sugestões e decisões']},
+ r_ficha:{t:'Ficha do Participante',type:'reg',norma:true,cl:'c8_2',p:'Dados mínimos coletados de cada participante antes da atividade. A norma exige um procedimento para coletá-los e tratá-los conforme a lei.',inc:['Identificação: nome completo e documento','Contato de emergência: nome e meio de contato','Assistência especial necessária','Condições de saúde e condições médicas','Aviso de uso dos dados pessoais, conforme a LGPD']},
+ r_checklist:{t:'Check-lists e Registros de Equipamentos',type:'reg',norma:true,cl:'c8_1',p:'Check-lists preenchidos e histórico de inspeção e manutenção. A norma pede informação documentada na medida necessária para confiar que tudo foi feito como planejado.',inc:['Check-list de cada saída preenchido','Inspeções e manutenções com data e responsável','Equipamentos retirados de uso']},
+ r_teste:{t:'Registro de Testes e Simulados de Emergência',type:'reg',norma:true,cl:'c8_2',p:'Resultado de cada teste do plano de emergência, com o que foi aprendido.',inc:['Data, cenário e participantes','Resultado e falhas encontradas','Melhorias definidas']},
+ r_incidente:{t:'Registro de Incidentes',type:'reg',norma:true,cl:'c8_3',p:'Um formulário por incidente, acidente ou quase acidente, com o conteúdo mínimo que a norma define.',inc:['Atividade','Data e hora','Local','Pessoas envolvidas: participantes e equipe','Descrição: condições ambientais, equipamentos, circunstâncias','Causas prováveis e fatores contribuintes','Resposta, incluindo tratamento médico','Consequências','Ações corretivas','Fonte da informação']},
+ r_monit:{t:'Registro de Monitoramento do SGS',type:'reg',norma:true,cl:'c9_1',p:'Anotações de não conformidades e de oportunidades de melhoria observadas na rotina.',inc:['Atividade, data e pessoas envolvidas','Não conformidade ou oportunidade observada','Quem registrou e quem aprovou']},
+ r_feedback:{t:'Feedback dos Participantes',type:'reg',norma:false,cl:'c9_1',p:'Respostas dos participantes sobre segurança e experiência. O monitoramento deve considerar essa retroalimentação.',inc:['Perguntas curtas sobre segurança, orientações e equipamentos','Data e atividade','Comentários e providências']},
+ r_rel_aud:{t:'Relatório de Auditoria Interna',type:'reg',norma:true,cl:'c9_2',p:'Evidência da auditoria: o que foi verificado, as não conformidades e as oportunidades de melhoria.',inc:['Escopo e critérios','Não conformidades e observações','Oportunidades de melhoria','Auditor e data']},
+ r_ata:{t:'Ata de Análise Crítica pela Direção',type:'reg',norma:true,cl:'c9_3',p:'Registro da reunião em que a direção analisa o SGS, com decisões, responsáveis e prazos.',inc:['Entradas analisadas','Decisões sobre melhoria e mudanças no SGS','Responsáveis e prazos','Participantes e data']},
+ r_nc:{t:'Registro de Não Conformidade e Ação Corretiva',type:'reg',norma:true,cl:'c10_1',p:'Evidência da natureza da não conformidade, das ações tomadas e dos resultados.',inc:['Descrição da não conformidade','Correção imediata','Causa e ação corretiva','Verificação da eficácia e data de conclusão']}
+};
+
+const PDCA={
+ Planejar:{c:'4 a 7',t:'Planejar'}, Fazer:{c:'8',t:'Fazer'}, Verificar:{c:'9',t:'Verificar'}, Agir:{c:'10',t:'Agir'}
+};
+
+const TREE={
+ id:'root',k:'root',t:'ABNT NBR ISO 21101 – Sistema de Gestão da Segurança no Turismo de Aventura',
+ intro:true,
+ c:[
+ /* ---------- POR ONDE COMEÇAR ---------- */
+ {id:'g0',k:'grp',t:'Por onde começar',pd:null,
+  d:'Seis passos para quem está começando. Quem já está implementando pode usar a aba Checklist para marcar o que já tem e ver o que falta.',
+  c:[
+   {id:'s1',k:'cl',num:'1',t:'Decidir e nomear o responsável',
+    d:'O SGS começa com uma decisão da direção e uma pessoa que cuida dele no dia a dia.',
+    how:['Reúna os sócios e registre a decisão de implantar o SGS.','Nomeie o responsável pelo SGS. Pode ser o próprio dono, desde que as funções fiquem claras.','Reserve horas por semana no calendário para o SGS.'],
+    links:[L('c5_1','Compromisso da direção.'),L('c5_3','Responsável pelo SGS.')]},
+   {id:'s2',k:'cl',num:'2',t:'Definir um escopo pequeno',
+    d:'Escolha 1 ou 2 produtos para começar: o mais vendido ou o mais arriscado. Depois amplie.',
+    how:['Liste atividades, produtos e locais.','Escolha os que entram agora.','Escreva o escopo com data e versão.'],
+    links:[L('c4_3','Escopo do SGS.')]},
+   {id:'s3',k:'cl',num:'3',t:'Escrever a política',
+    d:'Uma página, com frases diretas e só o que a empresa consegue cumprir.',
+    how:['Responda o que a empresa promete sobre segurança, meio ambiente, boas práticas e lei.','Assine, date e divulgue.'],
+    links:[L('c5_2','Política de Segurança.')]},
+   {id:'s4',k:'cl',num:'4',t:'Mapear os riscos de um produto',
+    d:'É o passo que mais ajuda a evitar acidentes. Faça para um produto e repita para os demais.',
+    how:['Escreva o Contexto da Atividade e as escalas de risco.','Divida a atividade em etapas e liste os perigos.','Dê nota de probabilidade e consequência.','Defina o tratamento do que passar do aceitável.'],
+    links:[L('c6_1_2','Gestão de riscos da atividade.'),L('c6_1_3','Requisitos legais.')]},
+   {id:'s5',k:'cl',num:'5',t:'Criar controles e plano de emergência',
+    d:'Os tratamentos de risco viram rotina: procedimentos, check-lists, briefing, Ficha do Participante e plano de emergência.',
+    how:['Escreva o passo a passo de cada atividade.','Crie check-list de equipamentos.','Escreva o PAE e a lista de contatos.','Prepare a Ficha do Participante e o termo de riscos.'],
+    links:[L('c8_1','Controle operacional.'),L('c8_2','Emergências.'),L('c7_4','Comunicação com participantes.')]},
+   {id:'s6',k:'cl',num:'6',t:'Registrar, conferir e melhorar',
+    d:'Registre incidentes, monitore, faça a primeira auditoria interna e a primeira análise crítica. Corrija o que aparecer.',
+    how:['Registre todo incidente e quase acidente.','Monitore com poucos indicadores.','Faça a auditoria interna e a análise crítica.','Trate cada não conformidade na causa.'],
+    links:[L('c8_3','Incidentes.'),L('c9_1','Monitoramento.'),L('c9_2','Auditoria interna.'),L('c9_3','Análise crítica.'),L('c10_1','Ação corretiva.')]}
+  ]},
+
+ /* ---------- 4 CONTEXTO ---------- */
+ {id:'g4',k:'grp',num:'4',t:'Contexto da Organização',pd:'Planejar',
+  d:'Antes de escrever qualquer regra, entenda o cenário em que a empresa opera e o que o SGS vai cobrir.',
+  c:[
+   {id:'c4_1',k:'cl',num:'4.1',t:'Entendimento do Contexto',
+    d:'A norma pede que a empresa determine as questões internas e externas que afetam sua capacidade de alcançar os resultados do SGS.',
+    how:['Liste o que há dentro da empresa: equipe, equipamentos, dinheiro, experiência, forma de trabalhar.','Liste o que vem de fora: leis, regras dos locais, clima, resgate e saúde da região, mercado.','Registre em uma folha simples e revise uma vez por ano ou quando algo mudar.'],
+    ex:'Interna: só 2 condutores têm primeiros socorros em área remota. Externa: o parque limita grupos a 10 pessoas e o hospital mais próximo fica a 90 minutos.',
+    tip:'No Brasil, o Guia ABNT/Sebrae lembra que o Decreto 7.381/2010 (art. 34) trata do sistema de gestão da segurança para quem comercializa turismo de aventura. Isso faz parte do seu contexto.',
+    links:[L('c4_2','Quem está interessado também faz parte do contexto.'),L('c6_1_1','O contexto alimenta a escolha de riscos e oportunidades.')],
+    c:[
+     P('Questões Internas Pertinentes','O que há dentro da empresa e influencia a segurança: tamanho e experiência da equipe, equipamentos, recursos financeiros, cultura de segurança e procedimentos que já existem.'),
+     P('Questões Externas Pertinentes','O que vem de fora: legislação e normas, regras de parques e proprietários de áreas, clima e sazonalidade, estrutura de resgate e saúde da região, mercado e expectativas dos clientes.'),
+     D('d_contexto')]},
+   {id:'c4_2',k:'cl',num:'4.2',t:'Partes Interessadas',
+    d:'Quem pode afetar, ser afetado ou se sentir afetado pelas suas atividades, e o que cada um espera ou exige.',
+    how:['Pare e liste todos. Pense além do cliente e da família.','Para cada um, escreva o que espera ou exige de você.','Marque quais viram obrigação: lei, contrato ou regra do local.','Use a lista no escopo (4.3) e nos requisitos legais (6.1.3).'],
+    ex:'Gestor da Unidade de Conservação: exige agendamento e respeito ao plano de manejo. Seguradora: exige a lista de participantes. Participante: espera equipamentos íntegros e condutor competente.',
+    links:[L('c4_3','As partes interessadas são citadas no escopo.'),L('c6_1_3','Parte dos requisitos delas é legal.'),L('c7_4','Define com quem você precisa se comunicar.')],
+    c:[
+     P('Identificação de Partes Relevantes','Participantes, equipe e condutores, terceirizados e fornecedores, proprietários das áreas, gestores de Unidades de Conservação, poder público municipal, bombeiros, SAMU, hospitais, grupos de busca e salvamento, seguradora e agências parceiras.'),
+     P('Necessidades e Expectativas','O que cada parte espera ou exige: segurança, informação clara, cumprimento das regras do local, documentos, respeito à comunidade. As que são obrigatórias viram requisitos do SGS.'),
+     D('d_partes')]},
+   {id:'c4_3',k:'cl',num:'4.3',t:'Escopo do SGS',
+    d:'Define de forma clara o que está dentro do SGS e o que está fora. A norma exige que o escopo esteja disponível como informação documentada.',
+    how:['Escolha poucos produtos para começar: os carros-chefe ou os mais arriscados.','Para cada produto, anote a atividade e o local.','Defina onde a gestão da segurança começa e termina: transporte, ponto de encontro ou base da atividade.','Cite as partes interessadas e coloque data e versão.','Amplie aos poucos, atualizando a versão.'],
+    tip:'Só é possível divulgar certificação dos produtos que estão no escopo. O Guia ABNT/Sebrae recomenda não começar com um escopo grande.',
+    links:[L('c4_1','Considera as questões internas e externas.'),L('c4_2','Considera os requisitos das partes interessadas.'),L('c6_1_2','Cada produto do escopo precisa de contexto e de inventário de riscos.')],
+    c:[
+     P('Limites e Aplicabilidade','Onde a gestão da segurança começa e termina em cada produto, por exemplo desde o transporte ou só a partir da base da atividade, e quais locais estão dentro.'),
+     P('Atividades e Produtos Abrangidos','Atividade é o tipo de aventura (caminhada, rafting). Produto é o pacote completo para operar a atividade: informações, equipe, equipamentos, estruturas, seguro. Uma atividade pode ter vários produtos e um produto pode ter várias atividades.'),
+     X('Exemplo de escopo','A [Nome da Empresa] inclui no escopo do SGS as atividades de caminhada e cachoeirismo, nos produtos “Trilha da Cachoeira Encantada” e “Cachoeira do Véu”, localizados no [Nome do Parque]. A gestão da segurança começa no ponto de encontro e termina no retorno ao mesmo ponto. Partes interessadas: participantes, equipe, gestão do parque, proprietários da área e poder público municipal. Versão 1, [data].'),
+     D('d_escopo')]},
+   {id:'c4_4',k:'cl',num:'4.4',t:'Sistema de Gestão',
+    d:'Estabelecer, implementar, manter e melhorar continuamente o SGS, com os processos necessários e suas interações.',
+    how:['Use este mapa: os ramos 5 a 10 são os processos.','Integre à rotina. O SGS é o jeito de trabalhar da empresa, não um departamento à parte.','Defina o ritmo: revisão e melhoria pelo menos uma vez por ano.'],
+    links:[L('g5','Comece pela liderança.'),L('c9_3','A análise crítica revisa o sistema inteiro.')],
+    c:[P('Estabelecer, implementar, manter e melhorar','É um ciclo: planejar (4 a 7), fazer (8), verificar (9) e agir (10). Depois, repetir.')]}
+  ]},
+
+ /* ---------- 5 LIDERANÇA ---------- */
+ {id:'g5',k:'grp',num:'5',t:'Liderança',pd:'Planejar',
+  d:'A direção mostra, na prática, que a segurança vem primeiro: define a política, designa responsáveis e garante recursos.',
+  c:[
+   {id:'c5_1',k:'cl',num:'5.1',t:'Liderança e Comprometimento',
+    d:'A alta direção, que na empresa pequena costuma ser o dono ou os sócios, demonstra liderança e compromisso com o SGS.',
+    how:['Decida por escrito implantar o SGS e reserve tempo e orçamento.','Integre a segurança às decisões comerciais e operacionais.','Fale de segurança com a equipe em toda saída.','Cumpra as regras que você exige dos outros.'],
+    ex:'O dono cancela uma saída por previsão de chuva forte, mesmo com grupo pago, registra a decisão e explica o motivo à equipe. A política passa a valer na prática.',
+    tip:'Uma pessoa pode ter várias funções, inclusive da direção. Não é problema, desde que fique claro em que função ela atua em cada momento.',
+    links:[L('c5_2','A política é a principal forma de mostrar o compromisso.'),L('c7_1','Compromisso se prova com recursos.'),L('c9_3','A direção revisa o SGS na análise crítica.')],
+    c:[
+     P('Política e objetivos na prática','Garantir que política e objetivos estejam alinhados à estratégia e sejam vividos, não só escritos.'),
+     P('SGS dentro do negócio','Os requisitos entram nos processos de venda, operação e administração. O SGS não é um apêndice da empresa.'),
+     P('Recursos garantidos','Dinheiro, pessoas, tempo, equipamentos e tecnologia para implementar e manter o SGS.'),
+     P('Comunicar e orientar a equipe','Explicar por que a gestão da segurança importa e apoiar as pessoas para que contribuam.'),
+     P('Promover a melhoria contínua','Pedir resultados, ouvir a equipe e decidir a partir de incidentes, auditorias e análises.')]},
+   {id:'c5_2',k:'cl',num:'5.2',t:'Política de Segurança',
+    d:'Texto curto em que a direção assume compromissos de segurança. Deve ser documentada, comunicada dentro da empresa e estar disponível às partes interessadas.',
+    how:['Responda: quem somos e o que prometemos sobre segurança, meio ambiente, boas práticas e lei?','Escreva em até uma página, com frases diretas e só o que dá para cumprir.','Assine, date e divulgue: briefing, mural, site, material de venda.','Revise uma vez por ano e confira se a prática bate com o texto.'],
+    tip:'O Guia ABNT/Sebrae sugere três apoios para a política: segurança, responsabilidade socioambiental e atendimento aos requisitos aplicáveis.',
+    links:[L('c6_2','Os objetivos nascem da política.'),L('c7_3','A equipe precisa conhecer a política.'),L('c7_4','Participantes e partes interessadas também recebem a política.')],
+    c:[
+     P('Apropriada ao propósito da empresa','Reflete o que a empresa realmente faz e consegue manter. Evite promessas que a operação não sustenta.'),
+     P('Estrutura para os objetivos','Cada compromisso da política vira objetivo e meta em 6.2.'),
+     P('Compromisso com requisitos aplicáveis','Atender leis, normas ABNT, planos de manejo e regras dos locais onde atua.'),
+     P('Compromisso com melhoria contínua','Prometer revisar e melhorar o SGS. É exigência explícita da norma.'),
+     X('Exemplo de política','A [Nome da Empresa] se compromete a: identificar e controlar os riscos de cada atividade; manter equipe competente e equipamentos em bom estado; cumprir a legislação, as normas e as regras dos locais onde atua; reduzir impactos ambientais e sociais; informar o participante sobre os riscos antes da atividade; melhorar continuamente o seu sistema de gestão da segurança.'),
+     D('d_politica')]},
+   {id:'c5_3',k:'cl',num:'5.3',t:'Funções, Responsabilidades e Autoridades',
+    d:'Cada função que afeta a segurança tem responsabilidades e autoridades definidas e comunicadas. A direção também designa quem garante que o SGS cumpre a norma e quem reporta o desempenho à direção.',
+    how:['Desenhe um organograma por função. Uma pessoa pode ter várias funções.','Nomeie o responsável pelo SGS. Ele precisa de disciplina e visão do sistema, não precisa ser o melhor condutor.','Dê ao condutor principal autoridade para interromper a atividade, cancelar e vetar participante que não atenda aos requisitos.','Comunique por reunião, e-mail ou mural e guarde a prova.'],
+    ex:'Direção e responsável pelo SGS: [Nome]. Condutor principal: [Nome], pode interromper a atividade e impedir participante sem aptidão. Condutor auxiliar: [Nome], apoia as decisões do principal e cuida da retaguarda do grupo.',
+    tip:'Defina por função, não por nome. O nome muda, a função continua.',
+    links:[L('c7_2','Cada função tem uma competência mínima.'),L('c8_1','Os procedimentos operacionais dizem quem faz.'),L('c8_3','Define quem investiga e reporta incidentes.')],
+    c:[
+     P('Responsável pelo SGS','Designado formalmente pela direção. Garante a implantação dos requisitos e leva o desempenho do SGS à direção.'),
+     P('Organograma por função','Inclui quem lidera, executa e verifica atividades de segurança, e também quem pode ser acionado em emergência.'),
+     P('Autoridade para interromper','Condutor com poder real de parar a atividade e vetar participantes. Essa decisão pode salvar vidas.'),
+     D('d_funcoes')]}
+  ]},
+
+ /* ---------- 6 PLANEJAMENTO ---------- */
+ {id:'g6',k:'grp',num:'6',t:'Planejamento',pd:'Planejar',
+  d:'Decidir o que fazer: riscos, leis, objetivos e plano de ação. É o coração do SGS.',
+  c:[
+   {id:'c6_1_1',k:'cl',num:'6.1.1',t:'Riscos e Oportunidades do SGS',
+    d:'Com o contexto e as partes interessadas em mãos, a empresa decide quais riscos e oportunidades precisam de ação para o SGS dar certo, evitar efeitos indesejados e melhorar.',
+    how:['Releia as questões do contexto (4.1) e os requisitos das partes interessadas (4.2).','Para cada uma, pergunte: o que pode dar errado? o que pode melhorar?','Planeje as ações, onde entram nos processos e como saber se funcionaram.'],
+    ex:'Risco do SGS: só um condutor sabe vistoriar as ancoragens. Ação: treinar um segundo condutor até [data]. Oportunidade: parceria com o grupo de resgate local para simulados.',
+    tip:'Não confunda: 6.1.1 trata dos riscos do próprio sistema de gestão; 6.1.2 trata dos riscos das atividades de aventura.',
+    links:[L('c4_1','Parte do contexto.'),L('c6_1_2','Riscos das atividades.'),L('c6_2','As ações viram objetivos e plano.')],
+    c:[
+     P('Garantir os resultados pretendidos','O SGS só funciona se os riscos e as oportunidades do próprio sistema forem tratados.'),
+     P('Evitar ou reduzir efeitos indesejáveis','Antecipar falhas, como depender de uma única pessoa ou não ter equipamento reserva.'),
+     P('Alcançar a melhoria contínua','Aproveitar oportunidades: treinamentos, parcerias e novas práticas.')]},
+   {id:'c6_1_2',k:'cl',num:'6.1.2',t:'Gestão de Riscos da Atividade',
+    d:'A empresa estabelece e implementa um processo sistemático de gestão de riscos para as atividades de aventura. O processo é documentado e faz parte do SGS. Está detalhado no Anexo A da norma.',
+    how:['Faça o Contexto de cada produto.','Divida a atividade em etapas e liste os perigos de cada uma.','Dê nota de probabilidade e consequência, considerando os controles que você já usa.','Compare com o nível de risco aceitável.','Trate o que passar do aceitável e revise sempre que houver incidente.'],
+    tip:'Um inventário por produto. Ele nunca está pronto: revise depois de incidentes e de mudanças.',
+    links:[L('c4_3','Cada produto do escopo precisa de contexto e inventário.'),L('c8_1','Cada tratamento vira controle operacional.'),L('c8_2','Os piores cenários do inventário viram emergências do PAE.'),L('c9_2','A auditoria considera os resultados da avaliação de riscos.'),L('n31000','Base metodológica.')],
+    c:[
+     P('1 · Contexto da atividade','Para cada produto, defina: a atividade e seu escopo (locais, duração, etapas); os objetivos da gestão de risco; limites e interfaces, como ciclistas na mesma trilha ou regras de uma Unidade de Conservação; a metodologia; e os critérios de avaliação, incluindo o nível de risco aceitável com a justificativa. Riscos de transporte, hospedagem, meio ambiente, saúde e cultura também entram.'),
+     P('2 · Identificar perigos e riscos','Divida a atividade em etapas. No rapel, por exemplo: caminhada de acesso, preleção, descida e retorno. Em cada etapa, liste o que pode causar dano, em rotina e fora da rotina, com e sem supervisão, considerando a competência do participante, os terceirizados e os equipamentos da empresa e do participante. Envolva os condutores e use a experiência de outras operações. Exemplos de perigos: queda de pedras, ataque de abelhas, cabelo preso no descensor, rompimento de ancoragem.'),
+     P('3 · Analisar: probabilidade × consequência','Dê nota de 1 a 5 à probabilidade e à consequência e multiplique. Considere causas, fontes e os controles que você já usa. O mesmo dano pesa diferente conforme o local: uma torção dentro de um cânion, longe de socorro, pode ser mais grave que uma fratura perto da estrada.',{matrix:true}),
+     P('4 · Avaliar: o risco é aceitável?','Compare o nível de risco com o critério definido no contexto. Quem define o que é aceitável é a empresa: o arvorismo, com público leigo, aceita menos risco que uma travessia de alta montanha, que exige participante preparado. Risco maior não significa gestão pior, mas exige informar o participante.',{matrix:true}),
+     P('5 · Tratar o risco','Quando o risco passa do aceitável, escolha uma ou mais opções: reduzir a probabilidade (briefing, capacitação, procedimentos, manutenção), reduzir a consequência (capacete, colete, perneira), eliminar (não operar na chuva, mudar o roteiro) ou compartilhar (seguro, contrato, parceiros). Defina responsável, prazo e recursos. Depois de implantado, o tratamento vira controle operacional.'),
+     X('Exemplo: inventário de rapel','Etapa: descida. Perigo: queda de grande bloco de pedra solta sobre participantes e equipe. Controle existente: identificação de pedra solta. Probabilidade 4 × consequência 5 = nível 20, inaceitável. Tratamento: retirar o bloco, manter a verificação regular e interromper a operação sempre que houver bloco solto.\n\nOutra linha: prender o cabelo no descensor. Probabilidade 3 × consequência 2 = 6. Tratamento: melhorar o briefing explicando o porquê e definir o tamanho máximo do cabelo solto.'),
+     D('d_contexto_ativ'),D('d_inventario')]},
+   {id:'c6_1_3',k:'cl',num:'6.1.3',t:'Requisitos Legais',
+    d:'Identificar as leis e outros requisitos aplicáveis, cumprir e comunicar às pessoas envolvidas.',
+    how:['Levante leis, decretos e resoluções federais, estaduais e municipais sobre segurança na sua atividade.','Levante os outros requisitos: normas ABNT, plano de manejo da Unidade de Conservação, regras do proprietário da área e manuais de equipamentos.','Marque o que você já atende e dê prazo para o que falta.','Comunique à equipe e aos participantes o que importa para eles. Não é preciso distribuir o texto da lei.','Revise a lista a cada ano e guarde cópia da legislação.'],
+    ex:'Se a lei exige colete salva-vidas, o condutor precisa saber disso e o participante precisa ser avisado no briefing.',
+    tip:'O Guia ABNT/Sebrae cita o Decreto 7.381/2010 (art. 34): condutores conforme normas, sistema de gestão da segurança, seguro facultativo e termos de conhecimento, responsabilidade e ciência. Assessoria jurídica ajuda, mas não é obrigatória.',
+    links:[L('c4_2','Vem das partes interessadas.'),L('c5_2','A política se compromete com os requisitos.'),L('c7_4','Parte deles precisa ser comunicada.'),L('c9_1','O atendimento é monitorado.')],
+    c:[
+     P('Identificar leis e normas aplicáveis','Leis, decretos e resoluções (federal, estadual e municipal) e normas ABNT. Em Unidades de Conservação e áreas privadas, as regras do local pesam ainda mais.'),
+     P('Manter atualizado','Reveja a lista periodicamente e guarde cópia da legislação, em meio físico ou eletrônico.'),
+     P('Comunicar à equipe e aos participantes','Informar o que cada um precisa saber para agir de acordo com a lei e com as regras do local.'),
+     D('d_legal')]},
+   {id:'c6_2',k:'cl',num:'6.2',t:'Objetivos de Segurança e Plano',
+    d:'Objetivos de segurança coerentes com a política, mensuráveis quando possível, monitorados, comunicados e atualizados, junto com o plano para alcançá-los. Devem ser mantidos como informação documentada.',
+    how:['Para cada compromisso da política, defina um objetivo e uma meta com prazo.','Coloque os tratamentos de risco do inventário no mesmo plano.','Para cada ação, anote responsável, recurso, prazo e situação.','Acompanhe com frequência e atualize o plano quando a operação mudar.'],
+    tip:'Objetivo fácil demais mostra pouco compromisso e difícil demais desmotiva. Escolha algo que agregue valor e dê para medir.',
+    links:[L('c5_2','Os objetivos vêm da política.'),L('c6_1_2','Os tratamentos de risco entram no plano.'),L('c9_1','A situação do plano é monitorada.'),L('c7_1','O plano mostra de quais recursos você precisa.')],
+    c:[
+     P('Objetivos mensuráveis (metas)','Meta é o objetivo com número e prazo. Exemplo: 100% dos condutores com primeiros socorros em dia até [mês/ano].'),
+     P('Plano de ação: o quê, quem, quando','A norma pede: o que será feito, quais recursos, quem é o responsável, quando termina e como os resultados serão avaliados.'),
+     P('Tratamentos de risco entram no plano','A documentação de tratamento de riscos faz parte do planejamento para alcançar os objetivos.'),
+     X('Exemplo de objetivo e plano','Política: reduzir os riscos à vida e à integridade física de todos os envolvidos.\nObjetivo: capacitar os condutores.\nMeta: 100% dos condutores atendendo à competência mínima da norma de condutores até [mês/ano].\nAções: identificar cursos ([Responsável], [prazo], atingido); orçar os cursos ([Responsável], [prazo], atingido); definir a data ([Responsável], [prazo], em andamento); realizar o curso (orçamento de [valor], [prazo], não atingido).'),
+     D('d_objetivos')]}
+  ]},
+
+ /* ---------- 7 APOIO ---------- */
+ {id:'g7',k:'grp',num:'7',t:'Apoio',pd:'Planejar',
+  d:'O que sustenta o SGS no dia a dia: recursos, pessoas competentes, comunicação e documentos.',
+  c:[
+   {id:'c7_1',k:'cl',num:'7.1',t:'Recursos',
+    d:'A direção determina e fornece os recursos necessários: dinheiro, pessoas, equipamentos e tecnologia.',
+    how:['Separe o que é mínimo para operar com segurança do que é para alcançar novos objetivos.','Use o plano de objetivos e os tratamentos de risco para estimar o que precisa.','Nunca opere com equipamento de segurança sucateado por falta de verba.'],
+    tip:'Esperar recursos para metas futuras é aceitável. Não ter recurso para o mínimo de segurança não é.',
+    links:[L('c6_2','Os recursos entram no plano.'),L('c5_1','A direção garante recursos.')],
+    c:[
+     P('Recursos mínimos de segurança','Equipamentos íntegros, equipe competente, comunicação e primeiros socorros. Sem isso, a atividade não deve acontecer.'),
+     P('Recursos para novos objetivos','Treinamentos, melhorias de estrutura e tecnologias planejadas em prazos viáveis.')]},
+   {id:'c7_2',k:'cl',num:'7.2',t:'Competência',
+    d:'Definir a competência necessária de quem trabalha com segurança, garantir que as pessoas a tenham (formação, treinamento ou experiência), agir quando faltar e guardar a prova.',
+    how:['Para cada função (condutor principal, auxiliar, apoio), liste o mínimo: conhecimentos, habilidades e atitudes.','Use as normas de competência de condutores e a ISO 21102 como referência.','Compare com o currículo e os certificados de cada pessoa.','Planeje treinamento para o que falta e confira se funcionou.','Guarde certificados, listas de presença e avaliações.'],
+    tip:'Primeiro garanta a competência mínima. Depois busque a desejada.',
+    links:[L('c5_3','Competência por função.'),L('n21102','Referência para líderes.'),L('c8_2','Equipe de emergência competente.'),L('c9_1','A eficácia dos treinamentos é monitorada.')],
+    c:[
+     P('Definir a competência mínima por função','Conhecimentos (nós, primeiros socorros), habilidades (decidir, falar com clareza) e atitudes (empatia, firmeza).'),
+     P('Formação, treinamento ou experiência','A competência vem de educação formal, treinamento da empresa, qualificação externa e experiência comprovada.'),
+     P('Avaliar se o treinamento funcionou','Observar na prática, aplicar prova ou simulado e acompanhar as saídas seguintes.'),
+     D('d_matriz_comp'),R('r_competencia')]},
+   {id:'c7_3',k:'cl',num:'7.3',t:'Consciência',
+    d:'Todas as pessoas que trabalham sob o controle da empresa conhecem a política, entendem como contribuem e sabem o que acontece se o SGS não for cumprido.',
+    how:['Faça uma integração curta para quem entra: política, regras de ouro e quem decide o quê.','Retome o tema em reuniões e briefings de equipe.','Peça que expliquem a política com as próprias palavras.','Guarde a lista de presença.'],
+    ex:'Integração de 30 minutos para novos condutores: política, três regras de ouro da operação e a consequência de ignorá-las.',
+    links:[L('c5_2','A política é o conteúdo principal.'),L('c7_2','Complementa a competência técnica.')],
+    c:[
+     P('Conhecer a política','Cada pessoa sabe o que a empresa promete e consegue explicar.'),
+     P('Saber como contribui','Entende seu papel na eficácia do SGS e os ganhos de um desempenho de segurança melhor.'),
+     P('Conhecer as consequências de não cumprir','Entende o que o descumprimento causa: riscos, não conformidades e medidas da empresa.'),
+     R('r_treinamento')]},
+   {id:'c7_4',k:'cl',num:'7.4',t:'Comunicação',
+    d:'A empresa define o que comunicar, quando, a quem e como. Há três frentes: comunicação geral, com a equipe e com os participantes.',
+    how:['Monte um quadro com o quê, quando, quem e como.','Defina um processo documentado de consulta com a equipe.','Defina um processo documentado de informação aos participantes, antes, durante e depois.','Use a ISO 21103 como referência do conteúdo mínimo.'],
+    tip:'A comunicação deve ser acessível: considere idioma, alfabetização e deficiência de fala, audição ou visão (ISO 21103). Informar o participante sobre os riscos é, em si, um controle operacional.',
+    links:[L('n21103','Conteúdo mínimo ao participante.'),L('c8_2','O participante é informado do plano de emergência.'),L('c6_1_2','Comunicar riscos é um controle operacional.'),L('c4_2','Quem são os interlocutores.')],
+    c:[
+     P('7.4.1 Plano geral: o quê, quando, quem, como','Define as comunicações internas e externas ligadas ao SGS.'),
+     P('7.4.2 Com a equipe: engajamento e consulta','A equipe participa da criação e revisão de políticas e procedimentos, é consultada em mudanças que afetam sua segurança, tem representação e sabe quem a representa e quem representa a direção. O processo deve ser documentado.'),
+     P('7.4.3 Com participantes: informar e ouvir','A empresa informa os participantes sobre segurança e pede a eles as informações que afetam a gestão da segurança. O processo deve ser documentado.'),
+     P('Antes, durante e depois da atividade','Antes: quem somos, atividade, preço, nível de dificuldade, itinerário, seguro, riscos, o que levar e condicionamento físico. Durante: o que acontece em cada etapa, mudanças e resposta a incidentes. Depois: se houve problema, o que foi, suas implicações e o que o participante precisa saber ou fazer.'),
+     D('d_com_equipe'),D('d_com_part'),D('d_termo'),R('r_reuniao')]},
+   {id:'c7_5',k:'cl',num:'7.5',t:'Informação Documentada',
+    d:'A informação documentada que a norma exige e a que a empresa julga necessária, criada, atualizada e controlada.',
+    how:['Documente só o necessário. Documento que ninguém usa não ajuda.','Padronize cabeçalho e rodapé: título, código, data, versão, quem criou e quem aprovou.','Todo documento é revisado e aprovado antes de entrar em uso.','Defina onde fica, quem acessa, backup, versão, guarda e descarte.','Registros não são editados e não têm versão.'],
+    tip:'Documento tem versão e aprovação. Registro prova que algo foi feito e não se altera. O Guia ABNT/Sebrae alerta que alterar um registro pode ser considerado fraude.',
+    links:[L('c4_3','O escopo está entre os documentos.'),L('c9_2','A auditoria confere documentos e registros.')],
+    c:[
+     P('7.5.1 O que documentar','Escopo, política, gestão de riscos, objetivos, evidências de competência, consultas, procedimentos operacionais, testes de emergência, incidentes, monitoramento, auditorias, análises críticas e não conformidades. A quantidade depende do tamanho da empresa, da complexidade dos processos e da competência das pessoas.'),
+     P('7.5.2 Criar e atualizar','Identificação (título, data, autor, código), formato e mídia (papel, digital, foto, vídeo) e revisão e aprovação.'),
+     P('7.5.3 Controlar','Distribuição e acesso, armazenamento e legibilidade, controle de versão, retenção e descarte. Documentos externos usados, como normas e leis, também são identificados e controlados.'),
+     D('d_lista_mestra')]}
+  ]},
+
+ /* ---------- 8 OPERAÇÃO ---------- */
+ {id:'g8',k:'grp',num:'8',t:'Operação',pd:'Fazer',
+  d:'Colocar em prática o que foi planejado: rotina segura, preparo para emergência e tratamento de incidentes.',
+  c:[
+   {id:'c8_1',k:'cl',num:'8.1',t:'Planejamento e Controle Operacional',
+    d:'Transformar as decisões do planejamento em rotina: critérios, controle, procedimentos documentados, controle de mudanças e de terceirizados.',
+    how:['Para cada tratamento do inventário de riscos, crie ou ajuste um controle operacional.','Escreva o passo a passo de cada atividade, com briefing e check-list. Fotos e vídeos valem.','Crie procedimento para manutenção e controle dos equipamentos.','Defina a competência mínima do participante e confira antes de começar.','Controle quem terceiriza parte da operação e o que muda.'],
+    tip:'Documente “na medida necessária”: o suficiente para ter confiança de que foi feito como planejado. Nem mais, nem menos.',
+    links:[L('c6_1_2','Os controles vêm do inventário de riscos.'),L('c5_3','Os procedimentos dizem quem faz.'),L('c7_2','A equipe precisa ser competente para executá-los.'),L('c8_2','Plano de emergência.')],
+    c:[
+     P('Terceirizados e fornecedores','Quando outra empresa faz parte da operação, como transporte, hospedagem ou alimentação, o processo continua sendo seu. Defina critérios e confira.'),
+     P('Mudanças e plano B','Controle as mudanças planejadas e analise as não planejadas. Tenha planos alternativos para cumprir os objetivos de segurança, como outro roteiro em caso de chuva.'),
+     X('Exemplo: tirolesa na plataforma de lançamento','Conectar o autosseguro do participante à linha de vida e verificar a trava do mosquetão. Conferir em voz alta: capacete, fivelas da cadeirinha, autosseguro e roldanas. Anotar o número da roldana no formulário. Orientar sobre a posição de descida e a frenagem. Confirmar por rádio que o condutor da frenagem está pronto. Se houver descontrole emocional, abortar a descida.'),
+     D('d_proc_op'),D('d_equip'),D('d_comp_part'),R('r_checklist')]},
+   {id:'c8_2',k:'cl',num:'8.2',t:'Preparação e Resposta à Emergência',
+    d:'Identificar emergências possíveis e seus impactos, ter planos e procedimentos de resposta, recursos e pessoas competentes, testar o plano e informar os participantes.',
+    how:['Liste as emergências do inventário: afogamento, queda, picada, participante perdido, clima.','Mapeie bombeiros, SAMU, hospital e resgate e deixe os contatos à mão.','Escreva o PAE: primeiros socorros, comunicação, remoção, atendimento médico, seguro, família e imprensa.','Colete a Ficha do Participante antes da atividade.','Faça simulado ou exercício de mesa e registre o resultado.','Informe os participantes do que eles precisam saber e fazer.'],
+    tip:'A estrutura de resposta é inversamente proporcional ao socorro disponível na região. Em área remota, a equipe precisa de mais capacidade própria.',
+    links:[L('c6_1_2','As emergências nascem do inventário de riscos.'),L('c7_4','Os participantes são informados do plano.'),L('c7_2','Equipe competente em primeiros socorros.'),L('c8_3','Cada emergência vira um incidente a registrar.')],
+    c:[
+     P('Identificar emergências possíveis','Situações sérias que pedem ação imediata e seus impactos, conforme o local e a atividade.'),
+     P('Dados mínimos do participante','Identificação, contato de emergência (nome e meio), assistência especial e condições de saúde. Colete, guarde e use os dados conforme a lei aplicável, que no Brasil inclui a LGPD.'),
+     P('Testar o plano','Testes periódicos, no local ou em exercício de mesa, em que a equipe simula o plano sobre um mapa. Documente e melhore.'),
+     P('Informar os participantes','Antes de começar, o participante conhece o que lhe cabe no plano. Em muitos casos, a melhor ação é aguardar a orientação da equipe.'),
+     D('d_pae'),R('r_ficha'),R('r_teste')]},
+   {id:'c8_3',k:'cl',num:'8.3',t:'Gerenciando Incidentes',
+    d:'Procedimentos para lidar, reportar e investigar incidentes (quase acidentes e acidentes) e para reduzir suas consequências.',
+    how:['Registre todo incidente, com ou sem dano.','Investigue as causas sem procurar culpado.','Defina ações corretivas e confira se funcionaram.','Atualize o inventário de riscos e o PAE com o que aprendeu.'],
+    tip:'Incidente é fonte de informação. O objetivo é prevenir, não punir.',
+    links:[L('c6_1_2','O incidente pede revisão do inventário.'),L('c10_1','Gera ação corretiva.'),L('c9_3','Entra na análise crítica.'),L('c8_2','Acionamento do PAE.')],
+    c:[
+     P('Lidar e reportar','Quem faz o quê na hora, como avisar a direção e como reduzir as consequências.'),
+     P('Investigar as causas','Levantar causas prováveis e fatores contribuintes: pessoas, equipamento, ambiente, procedimento.'),
+     P('O que registrar (mínimo)','Atividade; data e hora; local; pessoas envolvidas; descrição (ambiente, equipamentos, circunstâncias); causas prováveis; resposta, incluindo tratamento médico; consequências; ações corretivas; fonte da informação.'),
+     D('d_proc_inc'),R('r_incidente')]}
+  ]},
+
+ /* ---------- 9 AVALIAÇÃO ---------- */
+ {id:'g9',k:'grp',num:'9',t:'Avaliação de Desempenho',pd:'Verificar',
+  d:'Conferir se o que foi planejado está sendo feito e se funciona: monitorar, auditar e a direção analisar.',
+  c:[
+   {id:'c9_1',k:'cl',num:'9.1',t:'Monitoramento e Medição',
+    d:'Definir o que monitorar e medir, como, quando e por quem, e guardar a evidência. Avaliar o desempenho de segurança e a eficácia do SGS.',
+    how:['Escolha poucos indicadores simples.','Use check-lists, observação em campo, relatórios e conversas.','Registre toda não conformidade e toda oportunidade de melhoria, qualquer que seja a gravidade.','Considere os incidentes e o feedback dos participantes.'],
+    ex:'Indicadores possíveis: percentual de saídas com check-list completo; incidentes e quase acidentes por mil participantes; percentual de condutores com treinamento em dia; ações do plano concluídas no prazo; nota média do feedback.',
+    links:[L('c6_2','Mede os objetivos.'),L('c8_3','Considera os incidentes.'),L('c10_1','Não conformidades seguem para ação corretiva.'),L('c9_3','Os resultados alimentam a análise crítica.')],
+    c:[
+     P('O que monitorar','Política, objetivos, tratamentos de risco, controles operacionais, requisitos legais, treinamentos, resposta à emergência e incidentes.'),
+     P('Como e quando medir','Defina método, frequência e responsável. Dá para usar check-lists, fichas de controle, relatórios, pesquisas e observação no local.'),
+     D('d_monit'),R('r_monit'),R('r_feedback')]},
+   {id:'c9_2',k:'cl',num:'9.2',t:'Auditoria Interna',
+    d:'Auditorias internas planejadas verificam se o SGS atende à própria empresa e à ISO 21101 e se está implementado e mantido de forma eficaz.',
+    how:['Monte o programa: frequência, método, responsável e relato. O Guia ABNT/Sebrae diz que duas por ano são mais que suficientes.','Use uma lista de verificação com os requisitos da norma.','Busque auditor imparcial: externo, ou troque auditorias com uma empresa parceira.','Relate à direção e guarde o relatório.'],
+    tip:'Ao planejar, considere os resultados da avaliação de riscos e de auditorias anteriores.',
+    links:[L('c9_3','O resultado entra na análise crítica.'),L('c10_1','Não conformidades viram ações.'),L('c6_1_2','Riscos mais altos pedem auditoria mais atenta.')],
+    c:[
+     P('Programa de auditoria','Frequência, métodos, responsabilidades, planejamento e relato, considerando a importância dos processos e as auditorias anteriores.'),
+     P('Auditor imparcial','Quem audita não audita o próprio trabalho. Em empresas pequenas, troque auditorias com parceiros.'),
+     P('Relatar à direção','Os resultados vão à gerência pertinente. Guarde evidência do programa e dos resultados.'),
+     D('d_prog_aud'),D('d_lv_aud'),R('r_rel_aud')]},
+   {id:'c9_3',k:'cl',num:'9.3',t:'Análise Crítica pela Direção',
+    d:'A alta direção analisa o SGS em intervalos planejados para garantir que ele continua adequado, eficaz e em conformidade. O resultado é registrado.',
+    how:['Marque a data junto com a auditoria interna.','Reúna as entradas: auditoria, monitoramento, incidentes, não conformidades, objetivos e mudanças.','Reserve tempo (o Guia ABNT/Sebrae sugere ao menos um dia) e ouça a equipe.','Registre decisões, responsáveis e prazos em ata.'],
+    links:[L('c9_2','Principal entrada.'),L('c10_2','As decisões geram melhoria.'),L('c5_1','Momento em que a direção demonstra liderança.')],
+    c:[
+     P('Entradas da análise','Situação das ações anteriores, mudanças no contexto, desempenho de segurança (não conformidades, resultados de monitoramento e de auditorias) e oportunidades de melhoria.'),
+     P('Saídas: decisões e melhorias','Decisões sobre melhoria contínua e sobre mudanças necessárias no SGS.'),
+     R('r_ata')]}
+  ]},
+
+ /* ---------- 10 MELHORIA ---------- */
+ {id:'g10',k:'grp',num:'10',t:'Melhoria',pd:'Agir',
+  d:'Corrigir o que falhou, tratar a causa e melhorar sempre.',
+  c:[
+   {id:'c10_1',k:'cl',num:'10.1',t:'Não Conformidade e Ação Corretiva',
+    d:'Quando algo não atende a um requisito, a empresa reage, corrige, trata a causa, confere a eficácia e ajusta o SGS se preciso. Guarda a evidência.',
+    how:['Registre a não conformidade.','Corrija na hora (correção).','Descubra a causa com a equipe. Perguntar “por quê?” cinco vezes é um método simples.','Defina a ação corretiva para a causa e quando verificar.','Confira se não voltou a acontecer.'],
+    links:[L('c9_1','Fonte das não conformidades.'),L('c9_2','Auditorias também geram.'),L('c8_3','Incidentes também.'),L('c10_2','O aprendizado vira melhoria.')],
+    c:[
+     P('Reagir e corrigir','Correção é a ação imediata para controlar o problema e lidar com as consequências.'),
+     P('Investigar a causa','Analisar a não conformidade, determinar as causas e ver se existem casos parecidos ou possíveis.'),
+     P('Ação corretiva e eficácia','A ação corretiva atua na causa para o problema não se repetir. Depois, verifique se funcionou, normalmente com monitoramento mais focado por um período.'),
+     X('Exemplo: mountain bike sem capacete','Correção: o líder passa a conferir pessoalmente o capacete de todos durante o percurso.\nCausa: o briefing de segurança não estava sendo passado direito e os condutores não tinham autoridade para exigir o capacete.\nAção corretiva: treinamento específico dos condutores e reforço de suas responsabilidades e autoridades.\nEficácia: monitoramento focado nas saídas seguintes e registros do treinamento, como lista de presença e fotos.'),
+     R('r_nc')]},
+   {id:'c10_2',k:'cl',num:'10.2',t:'Melhoria Contínua',
+    d:'A empresa melhora continuamente a adequação, o cabimento e a eficácia do SGS.',
+    how:['Use incidentes, auditorias, feedback e ideias da equipe como fonte.','Estimule todos a registrarem oportunidades de melhoria.','Leve as melhorias para o plano de ação e para a análise crítica.'],
+    tip:'Sempre existe algo a melhorar. Um sistema que “não precisa evoluir” está parado.',
+    links:[L('c9_3','As decisões de melhoria nascem da análise crítica.'),L('c6_2','Melhorias viram objetivos e ações.')],
+    c:[
+     P('Adequação, cabimento e eficácia','O SGS combina com a empresa, atende ao que precisa e entrega o resultado esperado.'),
+     P('Fontes de melhoria','Incidentes, quase acidentes, auditorias, feedback de participantes e sugestões da equipe.')]}
+  ]},
+
+ /* ---------- NORMAS ---------- */
+ {id:'gN',k:'grp',t:'Normas que se conectam',pd:null,
+  d:'A ISO 21101 trabalha junto com outras normas. Cada uma cobre um aspecto da segurança no turismo de aventura.',
+  c:[
+   {id:'n21102',k:'cl',num:'ISO 21102',t:'Competência de líderes',
+    d:'Traz dados sobre a competência mínima de líderes (condutores) de turismo de aventura. Apoia a definição de competências em 7.2 e de funções em 5.3.',
+    how:['Use como referência para montar a matriz de competências.','Complemente com as normas ABNT de condutores da sua atividade.'],
+    links:[L('c7_2','Competência.'),L('c5_3','Funções.')]},
+   {id:'n21103',k:'cl',num:'ISO 21103',t:'Informação aos participantes',
+    d:'Define o mínimo de informação que o participante recebe antes, durante e depois da atividade, e como comunicar de forma acessível.',
+    how:['Antes da contratação: prestador, atividade, acordo (seguro, riscos, cancelamento, reclamações) e o que se espera do participante.','Durante: direcionamento de cada etapa, mudanças e resposta a incidentes e emergências.','Depois: se houve problema, descrição, implicações e o que o participante precisa saber ou fazer.','Considere idioma, alfabetização e deficiências de fala, audição ou visão.'],
+    links:[L('c7_4','Comunicação com participantes.'),L('c8_2','Informar o plano de emergência.')]},
+   {id:'n31000',k:'cl',num:'ISO 31000',t:'Gestão de riscos',
+    d:'A ABNT NBR ISO 31000 traz princípios e diretrizes de gestão de riscos. A ABNT NBR ISO/IEC 31010 reúne técnicas de avaliação. Apoiam o Anexo A da ISO 21101.',
+    how:['Use como base do método do Contexto da Atividade.','Escolha a ferramenta mais adequada à sua realidade. Não há solução única.'],
+    links:[L('c6_1_2','Gestão de riscos da atividade.')]},
+   {id:'nabnt',k:'cl',num:'ABNT',t:'Normas por atividade e de condutores',
+    d:'O Guia ABNT/Sebrae cita normas de terminologia (ABNT NBR 15500), de competências de condutores (ABNT NBR 15285) e normas específicas por atividade, como montanhismo, caminhada de longo curso, turismo fora de estrada e rafting.',
+    how:['Identifique as normas da sua atividade e inclua na lista de requisitos.','Use a terminologia padronizada nos documentos e no briefing.'],
+    links:[L('c6_1_3','Entram como outros requisitos.'),L('c7_2','Competência dos condutores.')]}
+  ]}
+ ]
+};
+
+const INTRO=`
+<h2>Como usar este mapa</h2>
+<p class="lead">O SGS é um jeito organizado de planejar, executar, conferir e melhorar a segurança das atividades. A norma pede o mínimo e vale para empresas de qualquer tamanho, inclusive de uma ou duas pessoas.</p>
+<div class="sec"><h3>Ciclo do SGS</h3>
+<div class="pd-strip">
+ <button type="button" data-go="g4"><b>Planejar</b><span>cap. 4 a 7</span></button>
+ <button type="button" data-go="g8"><b>Fazer</b><span>cap. 8</span></button>
+ <button type="button" data-go="g9"><b>Verificar</b><span>cap. 9</span></button>
+ <button type="button" data-go="g10"><b>Agir</b><span>cap. 10</span></button>
+</div></div>
+<div class="sec"><h3>Para navegar</h3>
+<ul>
+ <li>Toque na seta ao lado do nó para abrir ou fechar o ramo.</li>
+ <li>Toque no nome do nó para ler o detalhe aqui.</li>
+ <li>As linhas tracejadas mostram com quais outros requisitos o nó se conecta.</li>
+ <li>Use DOC, REG e EX acima do mapa para destacar documentos, registros e exemplos.</li>
+</ul></div>
+<div class="sec"><h3>Documento ou registro?</h3>
+<div class="box"><b>Em uma frase</b>Documento tem versão e aprovação (política, procedimento). Registro prova que algo foi feito (ficha preenchida, ata) e não se altera.</div></div>
+<div class="sec"><h3>Já está implementando?</h3>
+<p>Abra a aba <b>Checklist</b>, marque o que a empresa já tem e veja o que falta. As marcações ficam salvas neste navegador.</p></div>
+<div class="sec"><h3>Fonte</h3>
+<p style="color:var(--muted);font-size:13px">ABNT NBR ISO 21101:2014, ABNT NBR ISO 21103:2014 e Guia de Implementação ABNT/Sebrae (2016). Os exemplos usam nomes fictícios ou campos entre colchetes para você preencher.</p></div>`;
+
+/* ============================================================
+   MOTOR DO MAPA
+   ============================================================ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm=s=>String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const IC={
+ plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',
+ fit:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+ expand:'<path d="M7 9l5-5 5 5M7 15l5 5 5-5"/>',collapse:'<path d="M7 4l5 5 5-5M7 20l5-5 5 5"/>',
+ chev:'<path d="M9 6l6 6-6 6"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>'
+};
+const ico=(n,s)=>`<svg width="${s||18}" height="${s||18}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+
+const GAPX=64,GAPY=12;
+const RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const nodes=[],byId={},leafOf={};
+let root,colX=[];
+
+function build(def,parent,depth,idx){
+  const n={def,parent,depth,c:[],open:false,vis:false,shown:false,x:0,y:0,o:0,fx:0,fy:0,fo:0,tx:0,ty:0,to:0};
+  n.k=def.k;
+  if(def.ref){const d=DOCS[def.ref];n.ref=def.ref;n.t=d.t;n.id='i_'+def.ref;n.k=d.type;n.norma=d.norma;leafOf[def.ref]=n;}
+  else{n.t=def.t;n.id=def.id||(parent.id+'_'+idx);}
+  n.num=def.num||'';
+  n.pd=def.pd||null;
+  nodes.push(n);byId[n.id]=n;
+  (def.c||[]).forEach((cd,i)=>n.c.push(build(cd,n,depth+1,i)));
+  return n;
+}
+function groupOf(n){while(n.parent&&n.parent.parent)n=n.parent;return n;}
+function crumbs(n){const a=[];for(let p=n.parent;p;p=p.parent)a.unshift(p);return a;}
+
+/* ---- progresso (preferência só deste navegador) ---- */
+const KEY='sgs-mapa-itens-v1';
+let done={};
+try{done=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){done={};}
+function saveDone(){try{localStorage.setItem(KEY,JSON.stringify(done));}catch(e){}}
+const REFS=[];
+
+/* ---- DOM ---- */
+const stage=$('#stage'),world=$('#world'),edges=$('#edges');
+let linkG;
+function nodeEl(n){
+  const w=document.createElement('div');
+  w.className='nw d'+Math.min(n.depth,3)+(n.k==='doc'||n.k==='reg'||n.k==='ex'?' k-'+n.k:'');
+  w.dataset.id=n.id;
+  let inner='';
+  if(n.k==='doc'||n.k==='reg'||n.k==='ex'){
+    const tx={doc:'DOC',reg:'REG',ex:'EX'}[n.k];
+    inner+=`<span class="tag${n.k!=='ex'&&!n.norma?' rec':''}">${tx}</span>`;
+  }
+  if(n.num)inner+=`<span class="num">${esc(n.num)}</span>`;
+  inner+=`<span class="lbl">${esc(n.t)}</span><span class="ck" aria-hidden="true">${ico('check',11)}</span>`;
+  w.innerHTML=`<button class="node" type="button">${inner}</button>`+(n.c.length?`<button class="tg" type="button" aria-expanded="false" aria-label="Abrir ou fechar ${esc(n.t)}">${ico('chev',13)}</button>`:'');
+  w.style.visibility='hidden';
+  n.el=w;n.btn=w.querySelector('.node');n.tg=w.querySelector('.tg');
+  world.appendChild(w);
+  if(n.parent){
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('class','edge e'+Math.min(n.depth,3));
+    p.style.display='none';
+    edges.appendChild(p);n.edge=p;
+  }
+}
+function measureAll(){
+  const maxW=[];
+  nodes.forEach(n=>{
+    n.nw=n.btn.offsetWidth;n.h=n.btn.offsetHeight;n.ww=n.el.offsetWidth;
+    maxW[n.depth]=Math.max(maxW[n.depth]||0,n.ww);
+  });
+  colX=[];let x=0;
+  for(let d=0;d<maxW.length;d++){colX[d]=x;x+=(maxW[d]||0)+GAPX;}
+  nodes.forEach(n=>{n.el.style.display='none';n.el.style.visibility='';});
+}
+
+/* ---- layout ---- */
+function markVisible(){
+  const set=new Set();
+  (function m(n){set.add(n);if(n.open)n.c.forEach(m);})(root);
+  nodes.forEach(n=>n.vis=set.has(n));
+}
+function slot(n){
+  if(n.open&&n.c.length){let s=0;n.c.forEach((c,i)=>{s+=slot(c)+(i?GAPY:0);});n.sh=Math.max(n.h,s);}
+  else n.sh=n.h;
+  return n.sh;
+}
+function place(n,top){
+  n.tx=colX[n.depth];
+  if(n.open&&n.c.length){
+    let tot=0;n.c.forEach((c,i)=>{tot+=c.sh+(i?GAPY:0);});
+    let y=top+(n.sh-tot)/2;
+    n.c.forEach(c=>{place(c,y);y+=c.sh+GAPY;});
+    const a=n.c[0],b=n.c[n.c.length-1];
+    n.ty=((a.ty+a.h/2)+(b.ty+b.h/2))/2-n.h/2;
+  }else n.ty=top+(n.sh-n.h)/2;
+}
+function visAnc(n){let a=n.parent;while(a&&!a.vis)a=a.parent;return a||root;}
+
+let anim=null,vAnim=null,raf=0;
+const view={x:0,y:0,k:1};
+let moved=false;
+function relayout(){
+  markVisible();slot(root);place(root,0);
+  const t0=performance.now();
+  nodes.forEach(n=>{
+    if(n.vis){
+      if(!n.shown){
+        n.shown=true;n.el.style.display='';
+        const a=visAnc(n);n.x=a.x;n.y=a.y;n.o=0;
+        if(n.edge)n.edge.style.display='';
+      }
+      n.fx=n.x;n.fy=n.y;n.fo=n.o;n.to=1;n.dying=false;
+      if(n.tg)n.tg.setAttribute('aria-expanded',n.open?'true':'false');
+    }else if(n.shown){
+      const a=visAnc(n);
+      n.fx=n.x;n.fy=n.y;n.fo=n.o;n.tx=a.tx;n.ty=a.ty;n.to=0;n.dying=true;
+    }
+  });
+  anim={t0,dur:RM?0:300};
+  kick();
+}
+function kick(){if(!raf)raf=requestAnimationFrame(frame);}
+const ease=p=>1-Math.pow(1-p,3);
+function frame(now){
+  raf=0;let more=false;
+  if(anim){
+    const p=anim.dur?Math.min(1,(now-anim.t0)/anim.dur):1,e=ease(p);
+    nodes.forEach(n=>{
+      if(!n.shown)return;
+      n.x=n.fx+(n.tx-n.fx)*e;n.y=n.fy+(n.ty-n.fy)*e;n.o=n.fo+(n.to-n.fo)*e;
+    });
+    if(p>=1){
+      anim=null;
+      nodes.forEach(n=>{if(n.shown&&n.dying){n.shown=false;n.dying=false;n.el.style.display='none';if(n.edge)n.edge.style.display='none';}});
+    }else more=true;
+  }
+  if(vAnim){
+    const p=vAnim.dur?Math.min(1,(now-vAnim.t0)/vAnim.dur):1,e=ease(p);
+    view.x=vAnim.f.x+(vAnim.t.x-vAnim.f.x)*e;view.y=vAnim.f.y+(vAnim.t.y-vAnim.f.y)*e;view.k=vAnim.f.k+(vAnim.t.k-vAnim.f.k)*e;
+    if(p>=1)vAnim=null;else more=true;
+    applyView();
+  }
+  draw();
+  if(more)kick();
+}
+function draw(){
+  nodes.forEach(n=>{
+    if(!n.shown)return;
+    n.el.style.transform=`translate(${n.x.toFixed(1)}px,${n.y.toFixed(1)}px)`;
+    n.el.style.opacity=n.o.toFixed(2);
+    if(n.edge&&n.parent){
+      const p=n.parent,sx=p.x+p.ww,sy=p.y+p.h/2,ex=n.x,ey=n.y+n.h/2,dx=Math.max(24,(ex-sx)*.5);
+      n.edge.setAttribute('d',`M${sx.toFixed(1)} ${sy.toFixed(1)}C${(sx+dx).toFixed(1)} ${sy.toFixed(1)} ${(ex-dx).toFixed(1)} ${ey.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`);
+      n.edge.style.opacity=n.o.toFixed(2);
+    }
+  });
+  drawLinks();
+}
+function drawLinks(){
+  if(!linkG)return;
+  let h='';const s=state.sel;
+  if(s&&s.shown&&s.def.links){
+    s.def.links.forEach(l=>{
+      const t=byId[l.to];if(!t||!t.shown||t.dying)return;
+      const a=s,b=t;
+      let sx,sy,ex,ey,c1x,c1y,c2x,c2y;
+      sy=a.y+a.h/2;ey=b.y+b.h/2;
+      if(a.x+a.nw<b.x-10){sx=a.x+a.nw;ex=b.x;const d=Math.max(40,(ex-sx)/2);c1x=sx+d;c2x=ex-d;c1y=sy;c2y=ey;}
+      else if(b.x+b.nw<a.x-10){sx=a.x;ex=b.x+b.nw;const d=Math.max(40,(sx-ex)/2);c1x=sx-d;c2x=ex+d;c1y=sy;c2y=ey;}
+      else{sx=a.x+a.nw;ex=b.x+b.nw;c1x=sx+70;c2x=ex+70;c1y=sy;c2y=ey;}
+      h+=`<path class="link" d="M${sx.toFixed(1)} ${sy.toFixed(1)}C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}"/><circle class="linkdot" cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="4"/>`;
+    });
+  }
+  linkG.innerHTML=h;
+}
+
+/* ---- vista: pan, zoom, ajuste ---- */
+function applyView(){world.style.transform=`translate(${view.x}px,${view.y}px) scale(${view.k})`;}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function viewTo(t,dur){
+  vAnim={t0:performance.now(),dur:RM?0:(dur==null?320:dur),f:{x:view.x,y:view.y,k:view.k},t};kick();
+}
+function bounds(){
+  let x1=0,x2=0,y1=1e9,y2=-1e9;
+  nodes.forEach(n=>{if(!n.vis)return;x2=Math.max(x2,n.tx+n.ww);y1=Math.min(y1,n.ty);y2=Math.max(y2,n.ty+n.h);});
+  return {x1,x2,y1,y2};
+}
+function fit(dur){
+  const b=bounds(),W=stage.clientWidth,H=stage.clientHeight,pad=28;
+  const bw=b.x2-b.x1,bh=b.y2-b.y1;
+  const k=clamp(Math.min((W-pad*2)/bw,(H-pad*2)/bh,1),.5,1);
+  const fitsAll=Math.min((W-pad*2)/bw,(H-pad*2)/bh);
+  const kk=fitsAll<.5?clamp(fitsAll,.2,.5):k;
+  viewTo({k:kk,x:(W-bw*kk)/2-b.x1*kk,y:(H-bh*kk)/2-b.y1*kk},dur);
+}
+function centerOn(n,dur){
+  const W=stage.clientWidth,H=stage.clientHeight;
+  const k=clamp(Math.max(view.k,.7),.2,1.2);
+  const cx=(n.tx+n.ww/2),cy=(n.ty+n.h/2);
+  const bx=bounds();
+  // mantém a raiz à esquerda quando o ramo cabe; senão centraliza o nó
+  let x=W/2-cx*k,y=H/2-cy*k;
+  const left=n.depth>=2?(n.parent.tx):n.tx;
+  x=Math.min(x,24-left*k+ (W*0.0));
+  viewTo({k,x:Math.min(x,W/2-cx*k),y},dur);
+}
+function zoomAt(cx,cy,f){
+  const k0=view.k,k1=clamp(k0*f,.2,1.8);
+  view.x=cx-(cx-view.x)*(k1/k0);view.y=cy-(cy-view.y)*(k1/k0);view.k=k1;applyView();moved=true;hideHint();
+}
+function hideHint(){$('#hint').classList.add('off');}
+
+/* pointer: arrastar e pinçar */
+const ptrs=new Map();let drag=null,dragged=false,pinch=null;
+stage.addEventListener('pointerdown',e=>{
+  if(e.target.closest('.ctl')||e.button>0)return;
+  dragged=false;vAnim=null;
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===1)drag={id:e.pointerId,x:e.clientX,y:e.clientY,vx:view.x,vy:view.y,on:false};
+  if(ptrs.size===2){
+    const [a,b]=[...ptrs.values()];
+    pinch={d:Math.hypot(a.x-b.x,a.y-b.y),mx:(a.x+b.x)/2,my:(a.y+b.y)/2};drag=null;dragged=true;
+  }
+});
+stage.addEventListener('pointermove',e=>{
+  if(!ptrs.has(e.pointerId))return;
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const r=stage.getBoundingClientRect();
+  if(pinch&&ptrs.size>=2){
+    const [a,b]=[...ptrs.values()],d=Math.hypot(a.x-b.x,a.y-b.y),mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+    view.x+=mx-pinch.mx;view.y+=my-pinch.my;
+    zoomAt(mx-r.left,my-r.top,d/pinch.d);
+    pinch.d=d;pinch.mx=mx;pinch.my=my;return;
+  }
+  if(drag&&drag.id===e.pointerId){
+    const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+    if(!drag.on&&Math.hypot(dx,dy)>5){drag.on=true;dragged=true;try{stage.setPointerCapture(e.pointerId);}catch(_){}stage.classList.add('grabbing');moved=true;hideHint();}
+    if(drag.on){view.x=drag.vx+dx;view.y=drag.vy+dy;applyView();}
+  }
+});
+function endPtr(e){
+  ptrs.delete(e.pointerId);
+  if(ptrs.size<2)pinch=null;
+  if(drag&&drag.id===e.pointerId){drag=null;stage.classList.remove('grabbing');}
+}
+stage.addEventListener('pointerup',endPtr);
+stage.addEventListener('pointercancel',endPtr);
+stage.addEventListener('click',e=>{if(dragged){e.stopPropagation();e.preventDefault();dragged=false;}},true);
+stage.addEventListener('wheel',e=>{
+  e.preventDefault();vAnim=null;
+  const r=stage.getBoundingClientRect();
+  zoomAt(e.clientX-r.left,e.clientY-r.top,Math.exp(-e.deltaY*(e.ctrlKey?.01:.0016)));
+},{passive:false});
+
+/* ---- abrir / fechar / selecionar ---- */
+const state={sel:null,hl:null,initial:[]};
+function toggle(n,force){
+  if(!n.c.length)return;
+  n.open=force==null?!n.open:force;
+  if(!n.open)n.c.forEach(closeAll);
+  relayout();
+  if(n.open)requestAnimationFrame(()=>ensureVisible(n));
+}
+function closeAll(n){n.open=false;n.c.forEach(closeAll);}
+function ensureVisible(n){
+  // se o ramo aberto sai da tela, desloca a vista para trazê-lo
+  const W=stage.clientWidth,H=stage.clientHeight,k=view.k,m=24;
+  let x1=n.tx,x2=n.tx+n.ww,y1=n.ty,y2=n.ty+n.h;
+  const walk=c=>{if(!c.vis)return;x2=Math.max(x2,c.tx+c.ww);y1=Math.min(y1,c.ty);y2=Math.max(y2,c.ty+c.h);if(c.open)c.c.forEach(walk);};
+  n.c.forEach(walk);
+  let nx=view.x,ny=view.y;
+  if(x2*k+nx>W-m)nx=W-m-x2*k;
+  if(x1*k+nx<m)nx=m-x1*k;
+  if(y2*k+ny>H-m)ny=H-m-y2*k;
+  if(y1*k+ny<m)ny=m-y1*k;
+  if(nx!==view.x||ny!==view.y)viewTo({x:nx,y:ny,k},260);
+}
+function select(n,open){
+  state.sel=n;
+  nodes.forEach(m=>m.btn.classList.toggle('sel',m===n));
+  renderPanel(n);setTab('d');
+  if(window.matchMedia('(max-width:860px)').matches)$('#panel').classList.add('open');
+  draw();
+}
+function focusNode(id){
+  const n=byId[id];if(!n)return;
+  for(let a=n.parent;a;a=a.parent)a.open=true;
+  relayout();select(n);
+  requestAnimationFrame(()=>centerOn(n));
+  moved=true;hideHint();
+}
+function expandAll(){nodes.forEach(n=>{if(n.c.length)n.open=true;});relayout();requestAnimationFrame(()=>fit());moved=true;}
+function collapseAll(){
+  nodes.forEach(n=>n.open=false);
+  state.initial.forEach(n=>n.open=true);
+  relayout();requestAnimationFrame(()=>fit());
+}
+
+world.addEventListener('click',e=>{
+  const w=e.target.closest('.nw');if(!w)return;
+  const n=byId[w.dataset.id];
+  if(e.target.closest('.tg')){toggle(n);return;}
+  if(e.target.closest('.node')){
+    select(n);
+    if(n.c.length&&!n.open)toggle(n,true);
+  }
+});
+world.addEventListener('keydown',e=>{
+  const w=e.target.closest('.nw');if(!w)return;
+  const n=byId[w.dataset.id];
+  if(e.key==='ArrowRight'&&n.c.length){e.preventDefault();if(!n.open)toggle(n,true);else n.c[0].btn.focus();}
+  if(e.key==='ArrowLeft'){e.preventDefault();if(n.open)toggle(n,false);else if(n.parent)n.parent.btn.focus();}
+});
+
+/* ---- destaque por tipo ---- */
+function applyHL(){
+  const hl=state.hl;
+  const keep=new Set();
+  if(hl){nodes.forEach(n=>{if(n.k===hl){keep.add(n);for(let a=n.parent;a;a=a.parent)keep.add(a);}});}
+  nodes.forEach(n=>n.el.classList.toggle('dim',!!hl&&!keep.has(n)));
+  document.querySelectorAll('.lg').forEach(b=>b.setAttribute('aria-pressed',b.dataset.hl===hl?'true':'false'));
+}
+$('#legend').addEventListener('click',e=>{
+  const b=e.target.closest('.lg');if(!b)return;
+  state.hl=state.hl===b.dataset.hl?null:b.dataset.hl;
+  if(state.hl){nodes.forEach(n=>{if(n.c.length)n.open=true;});relayout();requestAnimationFrame(()=>fit());}
+  applyHL();
+});
+
+/* ============================================================
+   PAINEL
+   ============================================================ */
+function setTab(t){
+  const d=t==='d';
+  $('#tabD').setAttribute('aria-selected',d);$('#tabC').setAttribute('aria-selected',!d);
+  $('#paneD').hidden=!d;$('#paneC').hidden=d;
+}
+$('#tabD').onclick=()=>setTab('d');
+$('#tabC').onclick=()=>{renderChecklist();setTab('c');};
+$('#prog').onclick=()=>{renderChecklist();setTab('c');$('#panel').classList.add('open');};
+$('#pclose').innerHTML=ico('close',16);
+$('#pclose').onclick=()=>$('#panel').classList.remove('open');
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('#panel').classList.remove('open');closeResults();}});
+
+function ol(a){return a&&a.length?`<div class="sec"><h3>Na prática</h3><ol>${a.map(x=>`<li>${x}</li>`).join('')}</ol></div>`:'';}
+function boxes(d){
+  let h='';
+  if(d.ex)h+=`<div class="sec"><div class="box ex"><b>Exemplo</b>${esc(d.ex).replace(/\n/g,'<br>')}</div></div>`;
+  if(d.tip)h+=`<div class="sec"><div class="box tip"><b>Dica</b>${esc(d.tip)}</div></div>`;
+  return h;
+}
+function refRow(ref){
+  const d=DOCS[ref];
+  return `<div class="row"><input class="cb" type="checkbox" data-ref="${ref}" aria-label="Já tenho: ${esc(d.t)}" ${done[ref]?'checked':''}>
+  <button class="nm" type="button" data-go="i_${ref}">${esc(d.t)}<small>${d.type==='doc'?'Documento':'Registro'} · ${d.norma?'exigido pela norma':'recomendado'}</small></button></div>`;
+}
+function linksHTML(n){
+  const ls=(n.def&&n.def.links)||[];
+  if(!ls.length)return '';
+  return `<div class="sec"><h3>Conecta com</h3><div class="links">${ls.map(l=>{
+    const t=byId[l.to];if(!t)return '';
+    return `<button class="lk" type="button" data-go="${t.id}">${t.num?`<span class="num">${esc(t.num)}</span>`:''}<span><span class="t">${esc(t.t)}</span><span class="w">${esc(l.why)}</span></span></button>`;
+  }).join('')}</div></div>`;
+}
+function matrixHTML(){
+  const pl={5:'Quase certo',4:'Provável',3:'Pouco provável',2:'Improvável',1:'Quase impossível'};
+  const pts={'3,4':'A','3,3':'B','1,5':'C','2,5':'D','4,5':'E','3,2':'F'};
+  let h='<div class="sec"><h3>Matriz de risco 5 × 5 (exemplo)</h3><div class="mx"><div class="mx-grid" role="img" aria-label="Matriz de probabilidade por consequência, com seis riscos de exemplo do rapel">';
+  for(let p=5;p>=1;p--){
+    h+=`<div class="mx-rl">${p} · ${pl[p]}</div>`;
+    for(let c=1;c<=5;c++){
+      const v=p*c,b=v<=4?'low':v<=12?'mid':'high',m=pts[p+','+c];
+      h+=`<div class="mx-c ${b}">${v}${m?`<i>${m}</i>`:''}</div>`;
+    }
+  }
+  h+='<div></div>';
+  for(let c=1;c<=5;c++)h+=`<div class="mx-cl">${c}</div>`;
+  h+='</div>';
+  h+=`<div class="mx-bands"><span><span class="dot" style="background:var(--risk-low)"></span>Aceitável 1 a 4</span><span><span class="dot" style="background:var(--risk-mid)"></span>Tolerável 5 a 12</span><span><span class="dot" style="background:var(--risk-high)"></span>Inaceitável 15 a 25</span></div>`;
+  h+=`<p style="margin-top:8px;color:var(--muted);font-size:12.5px">Linhas: probabilidade. Colunas: consequência (1 insignificante, 2 baixa, 3 moderada, 4 alta, 5 catastrófica). As faixas são ilustrativas: a empresa define o que é aceitável no Contexto da Atividade.</p>`;
+  h+=`<div class="mx-leg"><div><i>A</i>Ataque de abelhas: 3 × 4 = 12</div><div><i>B</i>Queda de objetos sobre o participante: 3 × 3 = 9</div><div><i>C</i>Rompimento da ancoragem: 1 × 5 = 5</div><div><i>D</i>Rompimento da corda por atrito: 2 × 5 = 10</div><div><i>E</i>Queda de bloco de pedra solta: 4 × 5 = 20</div><div><i>F</i>Cabelo preso no descensor: 3 × 2 = 6</div></div>`;
+  h+=`<p style="margin-top:8px;color:var(--muted);font-size:12.5px">Riscos de exemplo do Guia ABNT/Sebrae (rapel). Dica: mesmo com probabilidade baixa, trate como prioridade qualquer risco de consequência catastrófica.</p></div></div>`;
+  return h;
+}
+function crumbHTML(n){
+  const cs=crumbs(n).filter(a=>a!==root);
+  if(!cs.length)return '';
+  return `<div class="crumb">${cs.map(a=>`<button type="button" data-go="${a.id}">${a.num?esc(a.num)+' ':''}${esc(a.t)}</button>`).join('<span aria-hidden="true">›</span>')}</div>`;
+}
+function renderPanel(n){
+  const el=$('#paneD');
+  let h='';
+  if(n===root){h=INTRO;}
+  else if(n.ref){
+    const d=DOCS[n.ref],c=byId[d.cl];
+    h=crumbHTML(n)+`<h2>${esc(d.t)}</h2>
+    <div class="chips"><span class="chip ${d.type==='doc'?'must':'reg'}">${d.type==='doc'?'Documento':'Registro'}</span><span class="chip ${d.norma?'must':''}">${d.norma?'Exigido pela norma':'Recomendado'}</span>${c?`<span class="chip">Requisito ${esc(c.num)}</span>`:''}</div>
+    <p class="lead">${esc(d.p)}</p>
+    <div class="sec"><h3>O que não pode faltar</h3><ul>${d.inc.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+    <div class="sec"><div class="box"><b>${d.type==='doc'?'Como é um documento':'Como é um registro'}</b>${d.type==='doc'?'Tem cabeçalho com título, código, data e versão, e rodapé com quem criou e quem aprovou. Quando muda, ganha nova versão.':'Prova que algo foi feito. Não tem versão e não se altera depois de preenchido. Precisa ser fácil de achar.'} Liste na Lista Mestra de Documentos e Registros.</div></div>
+    <label class="big"><input type="checkbox" data-ref="${n.ref}" ${done[n.ref]?'checked':''}>Já tenho este item</label>
+    ${c?`<div class="sec"><h3>Faz parte de</h3><div class="links"><button class="lk" type="button" data-go="${c.id}"><span class="num">${esc(c.num)}</span><span><span class="t">${esc(c.t)}</span><span class="w">Abrir o requisito</span></span></button></div></div>`:''}`;
+  }else{
+    const def=n.def;
+    const pdc=groupOf(n).pd;
+    const refs=n.c.filter(c=>c.ref).map(c=>c.ref);
+    h=crumbHTML(n)+`<h2>${n.num?`<span class="num">${esc(n.num)}</span>`:''}${esc(n.t)}</h2>`;
+    h+=`<div class="chips">${pdc?`<span class="chip">${pdc}</span>`:''}${n.k==='ex'?'<span class="chip ex">Exemplo</span>':''}</div>`;
+    h+=`<p class="lead">${esc(def.d||'')}</p>`;
+    if(n.k==='ex')h=h.replace('<p class="lead">','<div class="sec"><div class="box ex">').replace(/<\/p>$/,'</div></div>');
+    h+=ol(def.how);
+    h+=boxes(def);
+    if(def.matrix)h+=matrixHTML();
+    if(refs.length)h+=`<div class="sec"><h3>Documentos e registros desta etapa</h3><div class="rows">${refs.map(refRow).join('')}</div></div>`;
+    h+=linksHTML(n);
+  }
+  el.innerHTML=h;
+  el.scrollTop=0;
+  if(n.k==='ex'){
+    const b=el.querySelector('.box.ex');
+    if(b)b.innerHTML=esc(n.def.d).replace(/\n/g,'<br>').replace(/^/,'<b>Exemplo</b>');
+  }
+}
+$('#panel').addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');
+  if(g){focusNode(g.dataset.go);}
+});
+$('#panel').addEventListener('change',e=>{
+  const c=e.target.closest('.cb,.big input');if(!c)return;
+  setDone(c.dataset.ref,c.checked);
+});
+function setDone(ref,v){
+  if(v)done[ref]=1;else delete done[ref];
+  saveDone();syncDone();
+}
+function syncDone(){
+  let n=0;
+  REFS.forEach(r=>{
+    const on=!!done[r];if(on)n++;
+    const l=leafOf[r];if(l)l.el.classList.toggle('done',on);
+  });
+  $('#pn').textContent=n+'/'+REFS.length;
+  $('#pb').style.width=(REFS.length?n/REFS.length*100:0)+'%';
+  document.querySelectorAll('#panel input[data-ref]').forEach(i=>{i.checked=!!done[i.dataset.ref];});
+  if(!$('#paneC').hidden)renderChecklist();
+}
+let onlyNorma=false;
+function renderChecklist(){
+  const groups=root.c.filter(g=>g.c.some(c=>c.c.some(l=>l.ref)));
+  let h=`<label class="filt"><input type="checkbox" id="fNorma" ${onlyNorma?'checked':''}>Mostrar só os exigidos pela norma</label>`;
+  groups.forEach(g=>{
+    const items=[];g.c.forEach(c=>c.c.forEach(l=>{if(l.ref&&(!onlyNorma||DOCS[l.ref].norma))items.push(l.ref);}));
+    if(!items.length)return;
+    const dn=items.filter(r=>done[r]).length;
+    h+=`<div class="gh"><span style="font-family:var(--font-ui);font-size:14px;color:var(--ink)">${esc(g.num)} · ${esc(g.t)}</span><span>${dn}/${items.length}</span></div><div class="rows">${items.map(refRow).join('')}</div>`;
+  });
+  const pane=$('#paneC');pane.innerHTML=h;
+  const f=$('#fNorma');f.onchange=()=>{onlyNorma=f.checked;renderChecklist();};
+}
+
+/* ---- busca ---- */
+const idx=[];
+function buildIndex(){nodes.forEach(n=>{if(n===root)return;const d=n.ref?DOCS[n.ref].p+' '+DOCS[n.ref].inc.join(' '):(n.def.d||'')+' '+((n.def.how||[]).join(' '));idx.push({n,k:norm(n.t+' '+n.num+' '+d)});});}
+const q=$('#q'),sr=$('#sr');
+function closeResults(){sr.hidden=true;}
+q.addEventListener('input',()=>{
+  const v=norm(q.value.trim());
+  if(v.length<2){closeResults();return;}
+  const ws=v.split(/\s+/);
+  const hits=idx.filter(i=>ws.every(w=>i.k.includes(w)));
+  hits.sort((a,b)=>(norm(b.n.t).includes(v)?1:0)-(norm(a.n.t).includes(v)?1:0));
+  sr.innerHTML=hits.length?hits.slice(0,8).map(h=>`<button type="button" data-go="${h.n.id}"><b>${h.n.num?esc(h.n.num)+' · ':''}${esc(h.n.t)}</b><small>${esc(crumbs(h.n).filter(a=>a!==root).map(a=>a.t).join(' › '))}</small></button>`).join(''):'<div class="none">Nada encontrado. Tente outra palavra.</div>';
+  sr.hidden=false;
+});
+q.addEventListener('keydown',e=>{if(e.key==='Enter'){const b=sr.querySelector('button');if(b)b.click();}});
+sr.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){focusNode(b.dataset.go);closeResults();q.blur();}});
+document.addEventListener('click',e=>{if(!e.target.closest('.srch'))closeResults();});
+
+/* ---- controles ---- */
+$('#bIn').innerHTML=ico('plus');$('#bOut').innerHTML=ico('minus');$('#bFit').innerHTML=ico('fit');
+$('#bExp').innerHTML=ico('expand');$('#bCol').innerHTML=ico('collapse');
+const mid=()=>[stage.clientWidth/2,stage.clientHeight/2];
+$('#bIn').onclick=()=>{const[m,n]=mid();zoomAt(m,n,1.25);};
+$('#bOut').onclick=()=>{const[m,n]=mid();zoomAt(m,n,.8);};
+$('#bFit').onclick=()=>{moved=false;fit();};
+$('#bExp').onclick=expandAll;
+$('#bCol').onclick=()=>{state.hl=null;applyHL();collapseAll();};
+
+/* ---- início ---- */
+function init(){
+  root=build(TREE,null,0,0);
+  nodes.forEach(n=>{if(n.ref)REFS.push(n.ref);});
+  linkG=document.createElementNS('http://www.w3.org/2000/svg','g');
+  edges.appendChild(linkG);
+  nodes.forEach(nodeEl);
+  measureAll();
+  buildIndex();
+  root.open=true;state.initial=[root];
+  if(window.innerWidth>860){byId.g4.open=true;state.initial.push(byId.g4);}
+  relayout();
+  // posição inicial sem animação
+  nodes.forEach(n=>{if(n.shown){n.x=n.tx;n.y=n.ty;n.o=1;}});
+  anim=null;draw();
+  fit(0);
+  select(root);
+  syncDone();
+  if(window.ResizeObserver)new ResizeObserver(()=>{if(!moved)fit(0);}).observe(stage);
+  $('#panel').classList.remove('open');
+}
+const ready=document.fonts&&document.fonts.ready?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1400))]):Promise.resolve();
+ready.then(init);
+</script>
+
+</body>
+</html>
