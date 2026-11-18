@@ -1,0 +1,11 @@
+# Arquivos que NÃO devem ser publicados no site (Cloudflare Workers Static Assets).
+# Só o mapa mental (index.html) é público.
+.assetsignore
+.git
+.github
+.gitignore
+.env*
+README.md
+app
+docs
+modelos
