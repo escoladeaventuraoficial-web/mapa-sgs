@@ -1,0 +1,26 @@
+name: Testes do banco de dados
+
+on:
+  pull_request:
+    paths: ['app/db/**', '.github/workflows/testes-banco.yml']
+  push:
+    branches: [main]
+    paths: ['app/db/**']
+
+jobs:
+  regras:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Migrações, dados fictícios e testes das regras
+        env:
+          DATABASE_URL: postgres://postgres@localhost:5432/postgres
+        run: app/db/run-tests.sh
