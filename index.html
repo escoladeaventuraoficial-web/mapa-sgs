@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="SGS Turismo: plataforma de SGS por produto da Trilhas do Sul, com o mapa da ABNT NBR ISO 21101.">
+<meta name="description" content="Mapa mental interativo da ABNT NBR ISO 21101: como implementar o SGS no turismo de aventura.">
 <style>:root{color-scheme:light}html,body{height:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>SGS Turismo</title>
+<title>Mapa Mental do SGS</title>
 </head>
 <body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -212,124 +212,6 @@ h1,h2,h3,p,ul,ol{margin:0}
 .mx-bands{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:12px;color:var(--muted)}
 .mx-bands span{display:inline-flex;gap:5px;align-items:center}
 
-
-/* ---------- tela inicial: produtos ---------- */
-#home{height:100%;overflow:auto;margin-inline:-16px;padding:4px 16px 32px;overscroll-behavior:contain}
-.hwrap{max-width:1120px;margin:0 auto}
-.htop{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;padding:10px 0 4px}
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
-.logo{flex:none;width:44px;height:44px;border-radius:13px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center}
-.brand h1{font-size:22px;line-height:1.15;font-weight:700;letter-spacing:-.01em}
-.brand p{color:var(--muted);font-size:13px;margin-top:2px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:20px;border:1px solid var(--hair);background:var(--surface);color:var(--ink);font-weight:600;cursor:pointer;white-space:nowrap}
-.btn:hover{background:var(--accent-soft)}
-.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.btn.pri:hover{filter:brightness(1.06);background:var(--accent)}
-.btn.dng{color:#b4232f;border-color:currentColor;background:transparent}
-.hsum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0 6px}
-.kpi{background:var(--surface);border:1px solid var(--hair);border-radius:16px;padding:14px 16px;min-width:0}
-.kpi small{display:block;color:var(--muted);font-size:12.5px}
-.kpi b{display:block;font:600 24px/1.2 var(--font-mono);font-variant-numeric:tabular-nums;margin-top:4px}
-.kpi .bar{margin-top:8px}
-.kpi p{color:var(--muted);font-size:12px;margin-top:6px}
-.hbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:22px 0 12px}
-.hbar h2{font-size:17px;font-weight:700}
-.hbar .srch{width:min(320px,100%)}
-.bar{display:block;height:6px;border-radius:3px;background:var(--hair);overflow:hidden}
-.bar i{display:block;height:100%;background:var(--ok);border-radius:3px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
-.card{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--hair);border-radius:18px;overflow:hidden;transition:box-shadow .2s,transform .2s;min-width:0}
-.card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
-.card .open{all:unset;cursor:pointer;display:flex;flex-direction:column;flex:1;padding:16px 16px 14px;gap:10px}
-.card .open:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:18px}
-.card .stripe{height:6px;background:var(--pc,var(--accent))}
-.chead{display:flex;gap:12px;align-items:flex-start;padding-right:34px}
-.av{flex:none;width:42px;height:42px;border-radius:12px;background:var(--pc,var(--accent));color:#fff;display:grid;place-items:center;font-weight:700;font-size:16px}
-.chead h3{font-size:16.5px;line-height:1.25;font-weight:700}
-.chead p{color:var(--muted);font-size:12.5px;margin-top:2px}
-.cdesc{color:var(--muted);font-size:13px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.acts{display:flex;flex-wrap:wrap;gap:5px}
-.acts span{font-size:12px;padding:2px 9px;border-radius:11px;background:var(--canvas);border:1px solid var(--hair)}
-.cmeta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:4px}
-.st{font-size:12px;font-weight:600;padding:3px 9px;border-radius:11px;background:var(--accent-soft)}
-.st.s-impl{background:var(--doc-bg);color:var(--doc-ink)}
-.st.s-ok{background:var(--ok-soft);color:var(--ok)}
-.st.s-rev{background:var(--reg-bg);color:var(--reg-ink)}
-.ex-b{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ex-solid);border:1.5px solid currentColor;border-radius:6px;padding:1px 6px}
-.cprog{display:grid;gap:5px}
-.cprog .l{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
-.cprog .l b{font:600 12px var(--font-mono);color:var(--ink);font-variant-numeric:tabular-nums}
-.cgo{font-weight:600;color:var(--accent);font-size:13px;display:flex;align-items:center;gap:4px}
-.more{position:absolute;right:10px;top:16px;width:32px;height:32px;border-radius:10px;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:var(--muted)}
-.more:hover{background:var(--accent-soft);color:var(--ink)}
-.menu{position:absolute;right:10px;top:50px;z-index:5;background:var(--surface);border:1px solid var(--hair);border-radius:12px;box-shadow:var(--shadow);padding:4px;min-width:150px}
-.menu button{display:block;width:100%;text-align:left;border:0;background:none;padding:8px 12px;border-radius:8px;cursor:pointer}
-.menu button:hover{background:var(--accent-soft)}
-.menu button.del{color:#b4232f}
-.newc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:220px;border:2px dashed var(--hair);border-radius:18px;background:transparent;cursor:pointer;color:var(--muted);font-weight:600}
-.newc:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-.newc i{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:1px solid var(--hair);color:var(--accent)}
-.empty{grid-column:1/-1;color:var(--muted);padding:20px 4px}
-.hnote{margin-top:26px;color:var(--muted);font-size:12.5px;max-width:80ch}
-/* formulário */
-.ov{position:fixed;inset:0;z-index:60;background:rgba(16,19,28,.45);display:grid;place-items:center;padding:16px}
-.dlg{width:min(560px,100%);max-height:calc(100% - 16px);overflow:auto;background:var(--surface);border-radius:20px;box-shadow:var(--shadow);padding:22px}
-.dlg h2{font-size:20px;font-weight:700}
-.dlg>p{color:var(--muted);font-size:13px;margin-top:4px}
-.fg{display:grid;gap:14px;margin-top:18px}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.fl{display:grid;gap:5px;min-width:0}
-.fl>span{font-size:13px;font-weight:600}
-.fl>span em{font-style:normal;color:var(--muted);font-weight:400}
-.fl input,.fl select,.fl textarea{width:100%;font:inherit;color:var(--ink);background:var(--canvas);border:1px solid var(--hair);border-radius:10px;padding:9px 11px}
-.fl textarea{min-height:72px;resize:vertical}
-.fl input:focus,.fl select:focus,.fl textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
-.sugs{display:flex;flex-wrap:wrap;gap:5px}
-.sugs button{font-size:12px;border:1px solid var(--hair);background:var(--surface);border-radius:12px;padding:3px 9px;cursor:pointer}
-.sugs button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
-.err{color:#b4232f;font-size:12.5px}
-.dact{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;flex-wrap:wrap}
-/* login, conta e avisos */
-#login{height:100%;overflow:auto;display:grid;place-items:center;padding:16px 0}
-.lbox{width:min(400px,100%);background:var(--surface);border:1px solid var(--hair);border-radius:20px;padding:28px 24px;display:grid;gap:14px;box-shadow:var(--shadow)}
-.lbox h1{font-size:22px;font-weight:700}
-.lsub{color:var(--muted);font-size:13px;margin-top:-10px}
-#lform{display:grid;gap:12px}
-.lmsg{font-size:13.5px;border-radius:12px;padding:10px 12px;background:var(--accent-soft)}
-.lmsg.ok{background:var(--ok-soft)} .lmsg.err{background:var(--reg-bg);color:var(--reg-ink)} .lmsg.warn{background:var(--doc-bg);color:var(--doc-ink)}
-.hright{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-.conta{display:flex;align-items:center;gap:8px}
-.quem{display:grid;text-align:right;line-height:1.25}
-.quem b{font-size:12.5px;font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.quem small{color:var(--muted);font-size:11.5px}
-.modo{font-size:12px;font-weight:600;color:var(--doc-ink);background:var(--doc-bg);border-radius:11px;padding:3px 10px}
-.btn:disabled{opacity:.6;cursor:wait}
-#toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:80;background:var(--ink);color:var(--surface);border-radius:12px;padding:10px 16px;font-size:13.5px;max-width:min(520px,calc(100% - 32px));transition:opacity .2s,transform .2s}
-#toast.on{opacity:1;transform:translate(-50%,0)}
-/* cabeçalho do produto */
-.ttl{display:flex;align-items:center;gap:10px}
-.back{flex:none;display:inline-flex;align-items:center;gap:4px;height:36px;padding:0 12px 0 8px;border-radius:18px;border:1px solid var(--hair);background:var(--surface);cursor:pointer;font-weight:600;font-size:13px}
-.back:hover{background:var(--accent-soft)}
-.ttl .tt{min-width:0}
-.ttl h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chip.emp{background:var(--l1-bg);color:var(--l1-ink)}
-.chip.prd{background:var(--ok-soft);color:var(--ok)}
-.scope{display:block;font-size:12.5px;font-weight:400;color:var(--muted)}
-@media (max-width:860px){
-  .hsum{gap:8px;margin-top:14px}
-  .kpi{padding:10px 12px}
-  .kpi b{font-size:18px}
-  .kpi small{font-size:11.5px;line-height:1.3}
-  .kpi p{display:none}
-  .htop{flex-wrap:nowrap}
-  .brand p{display:none}
-  .quem{display:none}
-  .htop .btn{padding:0 14px}
-  .fr{grid-template-columns:1fr}
-  .brand h1{font-size:19px}
-  .back .bl{display:none}
-  .back{padding:0 10px}
-}
 @media (max-width:860px){
   body{padding-block:10px}
   .top{grid-template-columns:minmax(0,1fr) auto}
@@ -348,82 +230,11 @@ h1,h2,h3,p,ul,ol{margin:0}
 }
 </style>
 
-<div id="login" hidden>
- <div class="lbox">
-  <div class="logo" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
-  <h1>SGS Turismo</h1>
-  <p class="lsub">Trilhas do Sul · acesso restrito à equipe</p>
-  <form id="lform" novalidate>
-   <label class="fl"><span>Seu e-mail</span><input id="lemail" type="email" autocomplete="email" required placeholder="nome@empresa.com.br"></label>
-   <button class="btn pri" id="lbtn" type="submit">Enviar link de acesso</button>
-  </form>
-  <p id="lmsg" class="lmsg" hidden></p>
-  <button class="btn" id="lout" type="button" hidden>Sair e entrar com outro e-mail</button>
- </div>
-</div>
-
-<div id="home" hidden>
- <div class="hwrap">
-  <header class="htop">
-   <div class="brand">
-    <div class="logo" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
-    <div><h1>SGS Turismo</h1><p>Trilhas do Sul · Sistemas de Gestão da Segurança por produto · ABNT NBR ISO 21101</p></div>
-   </div>
-   <div class="hright"><div id="conta" class="conta"></div>
-   <button class="btn pri" id="hNew" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Novo produto</button></div>
-  </header>
-  <div class="hsum" id="hsum"></div>
-  <div class="hbar">
-   <h2>Produtos</h2>
-   <div class="srch">
-    <label for="hq" class="sr-only">Buscar produto</label>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg>
-    <input id="hq" type="search" placeholder="Buscar produto, local ou atividade" autocomplete="off">
-   </div>
-  </div>
-  <div class="grid" id="hgrid"></div>
-  <p class="hnote" id="hnote">Os documentos da empresa (contexto, política, funções, auditoria…) valem para todos os produtos; os documentos de operação (riscos, procedimentos, PAE, registros de campo) são de cada produto.</p>
- </div>
-</div>
-
-<div class="ov" id="ov" hidden>
- <form class="dlg" id="pform" novalidate role="dialog" aria-modal="true" aria-labelledby="ftitle">
-  <h2 id="ftitle">Novo produto</h2>
-  <p>O produto ganha um SGS próprio com o mesmo mapa da norma.</p>
-  <div class="fg">
-   <label class="fl"><span>Nome do produto</span><input name="nome" required maxlength="80" placeholder="Ex.: Poço de Ferro"></label>
-   <div class="fr">
-    <label class="fl"><span>Município <em>(opcional)</em></span><input name="municipio" maxlength="80" placeholder="Cidade – UF"></label>
-    <label class="fl"><span>Ponto de apoio <em>(opcional)</em></span><input name="base" maxlength="80" placeholder="Ex.: Recanto SOBRAGI"></label>
-   </div>
-   <div class="fl"><label for="fAt"><span style="font-size:13px;font-weight:600">Atividades</span> <span style="color:var(--muted);font-size:13px">separe por vírgula</span></label>
-    <input id="fAt" name="atividades" maxlength="200" placeholder="Ex.: rapel, banho no poço">
-    <div class="sugs" id="sugs"></div></div>
-   <div class="fr">
-    <label class="fl"><span>Responsável pelo SGS <em>(opcional)</em></span><input name="responsavel" maxlength="80"></label>
-    <label class="fl"><span>Situação do SGS</span><select name="situacao"><option>Em implantação</option><option>Implantado</option><option>Em revisão</option></select></label>
-   </div>
-   <label class="fl"><span>Descrição curta <em>(opcional)</em></span><textarea name="descricao" maxlength="400" placeholder="Como é o passeio, em uma ou duas frases"></textarea></label>
-   <p class="err" id="ferr" hidden></p>
-  </div>
-  <div class="dact">
-   <button class="btn" type="button" id="fCancel">Cancelar</button>
-   <button class="btn pri" type="submit" id="fSave">Salvar e abrir o SGS</button>
-  </div>
- </form>
- <div class="dlg" id="pdel" hidden role="dialog" aria-modal="true" aria-labelledby="dtitle">
-  <h2 id="dtitle">Excluir produto?</h2>
-  <p id="dtext" style="margin-top:8px"></p>
-  <div class="dact"><button class="btn" type="button" id="dCancel">Cancelar</button><button class="btn dng" type="button" id="dOk">Excluir</button></div>
- </div>
-</div>
-
-<div id="app" hidden>
+<div id="app">
   <header class="top">
     <div class="ttl">
-      <button class="back" id="back" type="button" aria-label="Voltar aos produtos"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span class="bl">Produtos</span></button>
-      <div class="tt"><h1 id="pname">SGS</h1>
-      <p>SGS Turismo · ABNT NBR ISO 21101 · v1.2</p></div>
+      <h1>Mapa Mental do SGS</h1>
+      <p>ABNT NBR ISO 21101 · Turismo de Aventura · v1.1</p>
     </div>
     <div class="srch">
       <label for="q" class="sr-only">Buscar no mapa</label>
@@ -437,7 +248,7 @@ h1,h2,h3,p,ul,ol{margin:0}
   </header>
 
   <div class="legend" id="legend">
-    <button class="lg" type="button" data-hl="doc" aria-pressed="false"><span class="tag" style="--solid:var(--doc-solid)">DOC</span>Documentos</button>
+    <button class="lg" type="button" data-hl="doc" aria-pressed="false"><span class="tag">DOC</span>Documentos</button>
     <button class="lg" type="button" data-hl="reg" aria-pressed="false"><span class="tag" style="--solid:var(--reg-solid)">REG</span>Registros</button>
     <button class="lg" type="button" data-hl="ex" aria-pressed="false"><span class="tag" style="--solid:var(--ex-solid)">EX</span>Exemplos</button>
     <span class="note">Etiqueta cheia: exigido pela norma · Só contorno: recomendado</span>
@@ -918,99 +729,11 @@ function build(def,parent,depth,idx){
 function groupOf(n){while(n.parent&&n.parent.parent)n=n.parent;return n;}
 function crumbs(n){const a=[];for(let p=n.parent;p;p=p.parent)a.unshift(p);return a;}
 
-/* ============================================================
-   PRODUTOS E PROGRESSO
-   Cada produto tem um id estável. Itens da empresa são compartilhados por
-   todos os produtos; itens de operação são guardados por produto
-   (decisão de Vagner, 20/11/2026). Sem servidor: dados neste navegador.
-   ============================================================ */
-const PROD_REFS=new Set(['d_contexto_ativ','d_inventario','d_proc_op','d_comp_part','d_termo','d_pae',
-  'r_ficha','r_checklist','r_teste','r_incidente','r_feedback']);
-const isProd=ref=>PROD_REFS.has(ref);
-const K_PROD='sgs-produtos-v1',K_EMP='sgs-itens-empresa-v1',K_PI='sgs-itens-produto-v1:',K_OLD='sgs-mapa-itens-v1';
-function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
-function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-function lsDel(k){try{localStorage.removeItem(k);}catch(e){}}
-const SEED=[
- {id:'poco-de-ferro',nome:'Poço de Ferro',municipio:'',base:'Recanto SOBRAGI',atividades:['Rapel','Banho no poço','Escada de ferro'],
-  responsavel:'Vagner Fagundes',situacao:'Em implantação',descricao:'Rapel e banho no poço, com subida pela escada de ferro. Roteiro piloto do SGS.',piloto:true},
- {id:'exemplo-travessia',nome:'Travessia da Serra Azul',municipio:'Exemplo – SC',base:'Pousada Fictícia',atividades:['Caminhada','Pernoite'],
-  responsavel:'',situacao:'Em implantação',descricao:'Produto fictício para demonstração: travessia de dois dias com pernoite em abrigo.',exemplo:true},
- {id:'exemplo-cachoeirismo',nome:'Cachoeirismo do Vale Verde',municipio:'Exemplo – RS',base:'',atividades:['Cachoeirismo','Rapel'],
-  responsavel:'',situacao:'Em revisão',descricao:'Produto fictício para demonstração: descida de cachoeiras com corda.',exemplo:true}
-];
-/* ---- configuração do servidor ----
-   Com url e chave públicas (anon) preenchidas, a plataforma usa o banco no Supabase
-   e pede login. Sem elas, funciona como antes, só neste navegador (modo local).
-   A chave anon é pública por desenho: quem protege os dados é a segurança por linha (RLS). */
-const SGS_CONFIG={supabaseUrl:'',supabaseKey:''};
-const REMOTO=!!(SGS_CONFIG.supabaseUrl&&SGS_CONFIG.supabaseKey);
-
-let produtos=[];                     // produtos ativos
-let doneEmp={},doneByProd={};        // progresso: empresa e por produto
-let cur=null;                        // produto aberto
-let doneProd={};
-let sb=null,usuario=null,papel=null;
-let canEdit=true;
-function prodDone(id){return doneByProd[id]||{};}
-function isDone(ref){return !!(isProd(ref)?doneProd:doneEmp)[ref];}
-
-/* modo local (navegador) */
-const local={
-  async load(){
-    let ps=lsGet(K_PROD,null);
-    if(!Array.isArray(ps)){
-      ps=JSON.parse(JSON.stringify(SEED));lsSet(K_PROD,ps);
-      // progresso do mapa antigo (um só SGS) passa para a empresa e para o piloto
-      const old=lsGet(K_OLD,null);
-      if(old&&typeof old==='object'){
-        const emp={},pf={};
-        Object.keys(old).forEach(r=>{if(old[r])(isProd(r)?pf:emp)[r]=1;});
-        lsSet(K_EMP,emp);lsSet(K_PI+'poco-de-ferro',pf);
-      }
-    }
-    produtos=ps;doneEmp=lsGet(K_EMP,{});doneByProd={};
-    ps.forEach(p=>{doneByProd[p.id]=lsGet(K_PI+p.id,{});});
-  },
-  async setItem(ref,pid,v){if(pid)lsSet(K_PI+pid,doneByProd[pid]);else lsSet(K_EMP,doneEmp);},
-  async saveProduto(p,nova){lsSet(K_PROD,produtos);return p;},
-  async arquivar(p){lsDel(K_PI+p.id);lsSet(K_PROD,produtos);}
-};
-
-/* modo servidor (Supabase) */
-const COLS='id,nome,municipio,base,atividades,responsavel,situacao,descricao,piloto,exemplo,ordem';
-function chk(r){if(r.error)throw r.error;return r.data;}
-const remoto={
-  async load(){
-    const ps=chk(await sb.from('produtos').select(COLS).eq('arquivado',false).order('ordem').order('criado_em'));
-    const pr=chk(await sb.from('progresso_itens').select('item,produto_id,pronto'));
-    produtos=ps;doneEmp={};doneByProd={};
-    ps.forEach(p=>{doneByProd[p.id]={};});
-    pr.forEach(r=>{if(!r.pronto)return;if(r.produto_id){(doneByProd[r.produto_id]=doneByProd[r.produto_id]||{})[r.item]=1;}else doneEmp[r.item]=1;});
-  },
-  async setItem(ref,pid,v){chk(await sb.rpc('sgs_marcar_item',{p_item:ref,p_produto:pid||null,p_pronto:!!v}));},
-  async saveProduto(p,nova){
-    const row={nome:p.nome,municipio:p.municipio,base:p.base,atividades:p.atividades,responsavel:p.responsavel,situacao:p.situacao,descricao:p.descricao};
-    if(!nova){chk(await sb.from('produtos').update(row).eq('id',p.id));return p;}
-    for(let i=0;i<6;i++){
-      const id=i?p.id+'-'+(i+1):p.id;
-      const r=await sb.from('produtos').insert(Object.assign({id},row)).select(COLS).single();
-      if(!r.error){Object.assign(p,r.data);return p;}
-      if(r.error.code!=='23505'||/nome/.test(r.error.message||''))throw r.error;
-    }
-    throw new Error('Não foi possível gerar um identificador para o produto.');
-  },
-  async arquivar(p){chk(await sb.from('produtos').update({arquivado:true}).eq('id',p.id));}
-};
-const store=REMOTO?remoto:local;
-
-function toast(msg){
-  let t=$('#toast');
-  if(!t){t=document.createElement('div');t.id='toast';t.setAttribute('role','status');document.body.appendChild(t);}
-  t.textContent=msg;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),5200);
-}
-function falha(e,acao){console.error(e);toast('Não foi possível '+acao+'. '+((e&&e.message)||'Verifique a conexão e tente de novo.'));}
-function scopeTxt(ref){return isProd(ref)?'deste produto':'da empresa';}
+/* ---- progresso (preferência só deste navegador) ---- */
+const KEY='sgs-mapa-itens-v1';
+let done={};
+try{done=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){done={};}
+function saveDone(){try{localStorage.setItem(KEY,JSON.stringify(done));}catch(e){}}
 const REFS=[];
 
 /* ---- DOM ---- */
@@ -1327,8 +1050,8 @@ function boxes(d){
 }
 function refRow(ref){
   const d=DOCS[ref];
-  return `<div class="row"><input class="cb" type="checkbox" data-ref="${ref}" ${canEdit?'':'disabled'} aria-label="Já tenho: ${esc(d.t)}" ${isDone(ref)?'checked':''}>
-  <button class="nm" type="button" data-go="i_${ref}">${esc(d.t)}<small>${d.type==='doc'?'Documento':'Registro'} · ${d.norma?'exigido pela norma':'recomendado'} · ${scopeTxt(ref)}</small></button></div>`;
+  return `<div class="row"><input class="cb" type="checkbox" data-ref="${ref}" aria-label="Já tenho: ${esc(d.t)}" ${done[ref]?'checked':''}>
+  <button class="nm" type="button" data-go="i_${ref}">${esc(d.t)}<small>${d.type==='doc'?'Documento':'Registro'} · ${d.norma?'exigido pela norma':'recomendado'}</small></button></div>`;
 }
 function linksHTML(n){
   const ls=(n.def&&n.def.links)||[];
@@ -1370,11 +1093,11 @@ function renderPanel(n){
   else if(n.ref){
     const d=DOCS[n.ref],c=byId[d.cl];
     h=crumbHTML(n)+`<h2>${esc(d.t)}</h2>
-    <div class="chips"><span class="chip ${d.type==='doc'?'must':'reg'}">${d.type==='doc'?'Documento':'Registro'}</span><span class="chip ${d.norma?'must':''}">${d.norma?'Exigido pela norma':'Recomendado'}</span>${c?`<span class="chip">Requisito ${esc(c.num)}</span>`:''}<span class="chip ${isProd(n.ref)?'prd':'emp'}">${isProd(n.ref)?'Do produto':'Da empresa'}</span></div>
+    <div class="chips"><span class="chip ${d.type==='doc'?'must':'reg'}">${d.type==='doc'?'Documento':'Registro'}</span><span class="chip ${d.norma?'must':''}">${d.norma?'Exigido pela norma':'Recomendado'}</span>${c?`<span class="chip">Requisito ${esc(c.num)}</span>`:''}</div>
     <p class="lead">${esc(d.p)}</p>
     <div class="sec"><h3>O que não pode faltar</h3><ul>${d.inc.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
-    <div class="sec"><div class="box"><b>${d.type==='doc'?'Como é um documento':'Como é um registro'}</b>${d.type==='doc'?'Tem cabeçalho com o nome (o requisito que atende), data e versão, e rodapé com quem criou e quem aprovou. Quando muda, ganha nova versão.':'Prova que algo foi feito. Não tem versão e não se altera depois de preenchido. Precisa ser fácil de achar.'} Liste na Lista Mestra de Documentos e Registros.</div></div>
-    <label class="big"><input type="checkbox" data-ref="${n.ref}" ${canEdit?'':'disabled'} ${isDone(n.ref)?'checked':''}><span>Já tenho este item<span class="scope">${isProd(n.ref)?'Vale só para '+esc(cur?cur.nome:'este produto'):'Vale para todos os produtos da empresa'}</span></span></label>
+    <div class="sec"><div class="box"><b>${d.type==='doc'?'Como é um documento':'Como é um registro'}</b>${d.type==='doc'?'Tem cabeçalho com título, código, data e versão, e rodapé com quem criou e quem aprovou. Quando muda, ganha nova versão.':'Prova que algo foi feito. Não tem versão e não se altera depois de preenchido. Precisa ser fácil de achar.'} Liste na Lista Mestra de Documentos e Registros.</div></div>
+    <label class="big"><input type="checkbox" data-ref="${n.ref}" ${done[n.ref]?'checked':''}>Já tenho este item</label>
     ${c?`<div class="sec"><h3>Faz parte de</h3><div class="links"><button class="lk" type="button" data-go="${c.id}"><span class="num">${esc(c.num)}</span><span><span class="t">${esc(c.t)}</span><span class="w">Abrir o requisito</span></span></button></div></div>`:''}`;
   }else{
     const def=n.def;
@@ -1406,23 +1129,18 @@ $('#panel').addEventListener('change',e=>{
   setDone(c.dataset.ref,c.checked);
 });
 function setDone(ref,v){
-  if(!canEdit){syncDone();return;}
-  const pid=isProd(ref)?(cur&&cur.id):null;
-  if(isProd(ref)&&!pid)return;
-  const t=pid?doneProd:doneEmp;
-  if(v)t[ref]=1;else delete t[ref];
-  syncDone();
-  store.setItem(ref,pid,v).catch(e=>{if(v)delete t[ref];else t[ref]=1;syncDone();falha(e,'salvar o item');});
+  if(v)done[ref]=1;else delete done[ref];
+  saveDone();syncDone();
 }
 function syncDone(){
   let n=0;
   REFS.forEach(r=>{
-    const on=isDone(r);if(on)n++;
+    const on=!!done[r];if(on)n++;
     const l=leafOf[r];if(l)l.el.classList.toggle('done',on);
   });
   $('#pn').textContent=n+'/'+REFS.length;
   $('#pb').style.width=(REFS.length?n/REFS.length*100:0)+'%';
-  document.querySelectorAll('#panel input[data-ref]').forEach(i=>{i.checked=isDone(i.dataset.ref);});
+  document.querySelectorAll('#panel input[data-ref]').forEach(i=>{i.checked=!!done[i.dataset.ref];});
   if(!$('#paneC').hidden)renderChecklist();
 }
 let onlyNorma=false;
@@ -1432,7 +1150,7 @@ function renderChecklist(){
   groups.forEach(g=>{
     const items=[];g.c.forEach(c=>c.c.forEach(l=>{if(l.ref&&(!onlyNorma||DOCS[l.ref].norma))items.push(l.ref);}));
     if(!items.length)return;
-    const dn=items.filter(isDone).length;
+    const dn=items.filter(r=>done[r]).length;
     h+=`<div class="gh"><span style="font-family:var(--font-ui);font-size:14px;color:var(--ink)">${esc(g.num)} · ${esc(g.t)}</span><span>${dn}/${items.length}</span></div><div class="rows">${items.map(refRow).join('')}</div>`;
   });
   const pane=$('#paneC');pane.innerHTML=h;
@@ -1470,7 +1188,7 @@ $('#bCol').onclick=()=>{state.hl=null;applyHL();collapseAll();};
 /* ---- início ---- */
 function init(){
   root=build(TREE,null,0,0);
-  REFS.length=0;nodes.forEach(n=>{if(n.ref&&!REFS.includes(n.ref))REFS.push(n.ref);});
+  nodes.forEach(n=>{if(n.ref)REFS.push(n.ref);});
   linkG=document.createElementNS('http://www.w3.org/2000/svg','g');
   edges.appendChild(linkG);
   nodes.forEach(nodeEl);
@@ -1485,231 +1203,11 @@ function init(){
   fit(0);
   select(root);
   syncDone();
-  if(window.ResizeObserver)new ResizeObserver(()=>{if(!moved&&!$('#app').hidden)fit(0);}).observe(stage);
+  if(window.ResizeObserver)new ResizeObserver(()=>{if(!moved)fit(0);}).observe(stage);
   $('#panel').classList.remove('open');
-}
-
-/* ============================================================
-   TELA INICIAL (produtos) E NAVEGAÇÃO
-   #/            → produtos
-   #/p/<id>      → SGS do produto
-   ============================================================ */
-const PCOL=['#3552d6','#1d8a57','#b4562a','#7a3fb5','#0f7d8c','#a3243f','#5a6a12'];
-function pColor(p){let h=0;for(const c of p.id)h=(h*31+c.charCodeAt(0))>>>0;return p.piloto?PCOL[0]:PCOL[1+h%(PCOL.length-1)];}
-function initials(n){const w=n.trim().split(/\s+/).filter(x=>x.length>2||/^[A-ZÀ-Ú]/.test(x));return ((w[0]||n)[0]+((w[1]||'')[0]||'')).toUpperCase();}
-function counts(pd){
-  let e=0,et=0,p=0,pt=0;
-  REFS.forEach(r=>{if(isProd(r)){pt++;if(pd[r])p++;}else{et++;if(doneEmp[r])e++;}});
-  return {e,et,p,pt,all:e+p,tot:et+pt};
-}
-function allRefs(){if(!REFS.length)Object.keys(DOCS).forEach(r=>REFS.push(r));}
-const stCls={'Em implantação':'s-impl','Implantado':'s-ok','Em revisão':'s-rev'};
-function cardHTML(p){
-  const c=counts(prodDone(p.id)),pct=c.tot?Math.round(c.all/c.tot*100):0;
-  const loc=[p.municipio,p.base].filter(Boolean).join(' · ')||'Local a definir';
-  return `<article class="card" style="--pc:${pColor(p)}" data-id="${esc(p.id)}">
-   <div class="stripe"></div>
-   <button class="open" type="button" data-open="${esc(p.id)}" aria-label="Abrir o SGS de ${esc(p.nome)}">
-    <div class="chead"><div class="av" aria-hidden="true">${esc(initials(p.nome))}</div>
-     <div><h3>${esc(p.nome)}</h3><p>${esc(loc)}</p></div></div>
-    ${p.descricao?`<p class="cdesc">${esc(p.descricao)}</p>`:''}
-    ${p.atividades&&p.atividades.length?`<div class="acts">${p.atividades.map(a=>`<span>${esc(a)}</span>`).join('')}</div>`:''}
-    <div class="cprog"><div class="l"><span>Itens prontos</span><b>${c.all}/${c.tot} · ${pct}%</b></div><span class="bar"><i style="width:${pct}%;background:var(--pc)"></i></span>
-     <div class="l"><span>Deste produto ${c.p}/${c.pt}</span><span>Da empresa ${c.e}/${c.et}</span></div></div>
-    <div class="cmeta"><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="st ${stCls[p.situacao]||''}">${esc(p.situacao||'Em implantação')}</span>${p.piloto?'<span class="st">Piloto</span>':''}${p.exemplo?'<span class="ex-b">Exemplo</span>':''}</span>
-     <span class="cgo">Abrir SGS ${ico('chev',14)}</span></div>
-   </button>
-   ${canEdit?'':'<!--'}<button class="more" type="button" data-more="${esc(p.id)}" aria-label="Opções de ${esc(p.nome)}" aria-haspopup="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>${canEdit?'':'-->'}
-  </article>`;
-}
-function renderHome(){
-  allRefs();
-  const c=counts({});
-  const pe=c.et?Math.round(c.e/c.et*100):0;
-  const nImpl=produtos.filter(p=>p.situacao==='Implantado').length;
-  $('#hsum').innerHTML=`
-   <div class="kpi"><small>Produtos cadastrados</small><b>${produtos.length}</b><p>${nImpl} com SGS implantado</p></div>
-   <div class="kpi"><small>Documentos da empresa prontos</small><b>${c.e}/${c.et}</b><span class="bar"><i style="width:${pe}%"></i></span><p>Valem para todos os produtos</p></div>
-   <div class="kpi"><small>Itens de operação por produto</small><b>${c.pt}</b><p>Riscos, procedimentos, PAE e registros de campo</p></div>`;
-  const v=norm($('#hq').value.trim());
-  const list=produtos.filter(p=>!v||norm([p.nome,p.municipio,p.base,(p.atividades||[]).join(' '),p.descricao].join(' ')).includes(v));
-  let h=list.map(cardHTML).join('');
-  if(!list.length&&v)h=`<p class="empty">Nenhum produto encontrado para “${esc($('#hq').value)}”.</p>`;
-  if(!v&&canEdit)h+=`<button class="newc" type="button" id="hNew2"><i>${ico('plus',22)}</i>Cadastrar novo produto</button>`;
-  $('#hgrid').innerHTML=h;
-}
-$('#hq').addEventListener('input',renderHome);
-function closeMenu(){const m=document.querySelector('.menu');if(m)m.remove();}
-$('#hgrid').addEventListener('click',e=>{
-  const o=e.target.closest('[data-open]');if(o){location.hash='#/p/'+o.dataset.open;return;}
-  if(e.target.closest('#hNew2')){openForm();return;}
-  const mb=e.target.closest('[data-more]');
-  if(mb){
-    const had=mb.parentNode.querySelector('.menu');closeMenu();if(had)return;
-    const id=mb.dataset.more,m=document.createElement('div');
-    m.className='menu';m.setAttribute('role','menu');
-    m.innerHTML=`<button type="button" role="menuitem" data-act="edit">Editar dados</button><button type="button" role="menuitem" data-act="open">Abrir SGS</button><button type="button" role="menuitem" class="del" data-act="del">Excluir</button>`;
-    m.onclick=ev=>{const a=ev.target.closest('[data-act]');if(!a)return;closeMenu();
-      const p=produtos.find(x=>x.id===id);if(!p)return;
-      if(a.dataset.act==='edit')openForm(p);else if(a.dataset.act==='open')location.hash='#/p/'+id;else askDelete(p);};
-    mb.parentNode.appendChild(m);m.querySelector('button').focus();
-    return;
-  }
-});
-document.addEventListener('click',e=>{if(!e.target.closest('.menu,[data-more]'))closeMenu();});
-$('#hNew').onclick=()=>openForm();
-
-/* ---- formulário de produto ---- */
-const SUG=['Rapel','Caminhada','Trilha','Cachoeirismo','Canionismo','Banho no poço','Escalada','Tirolesa','Arvorismo','Bike','Caiaque','Rafting','Pernoite'];
-const form=$('#pform'),ov=$('#ov');
-let editing=null,lastFocus=null;
-function parseAts(v){return v.split(',').map(x=>x.trim()).filter(Boolean).filter((x,i,a)=>a.findIndex(y=>norm(y)===norm(x))===i);}
-function renderSugs(){
-  const at=parseAts(form.atividades.value).map(norm);
-  $('#sugs').innerHTML=SUG.map(x=>`<button type="button" aria-pressed="${at.includes(norm(x))}">${esc(x)}</button>`).join('');
-}
-$('#sugs').addEventListener('click',e=>{
-  const b=e.target.closest('button');if(!b)return;
-  let at=parseAts(form.atividades.value);const t=b.textContent;
-  at=at.some(a=>norm(a)===norm(t))?at.filter(a=>norm(a)!==norm(t)):at.concat(t);
-  form.atividades.value=at.join(', ');renderSugs();
-});
-form.atividades.addEventListener('input',renderSugs);
-function showOv(which){lastFocus=document.activeElement;ov.hidden=false;form.hidden=which!=='form';$('#pdel').hidden=which!=='del';}
-function hideOv(){ov.hidden=true;if(lastFocus&&lastFocus.focus)lastFocus.focus();}
-function openForm(p){
-  editing=p||null;form.reset();$('#ferr').hidden=true;
-  $('#ftitle').textContent=p?'Editar produto':'Novo produto';
-  $('#fSave').textContent=p?'Salvar':'Salvar e abrir o SGS';
-  if(p){['nome','municipio','base','responsavel','situacao','descricao'].forEach(k=>form[k].value=p[k]||'');form.atividades.value=(p.atividades||[]).join(', ');}
-  renderSugs();showOv('form');form.nome.focus();
-}
-function slug(t){return norm(t).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'produto';}
-form.addEventListener('submit',e=>{
-  e.preventDefault();
-  const nome=form.nome.value.trim();
-  const err=m=>{$('#ferr').textContent=m;$('#ferr').hidden=false;};
-  if(!nome){err('Informe o nome do produto.');form.nome.focus();return;}
-  if(produtos.some(p=>p!==editing&&norm(p.nome)===norm(nome))){err('Já existe um produto com esse nome.');form.nome.focus();return;}
-  const data={nome,municipio:form.municipio.value.trim(),base:form.base.value.trim(),atividades:parseAts(form.atividades.value),
-    responsavel:form.responsavel.value.trim(),situacao:form.situacao.value,descricao:form.descricao.value.trim()};
-  const btn=$('#fSave');btn.disabled=true;
-  const fim=()=>{btn.disabled=false;};
-  if(editing){
-    const antes=Object.assign({},editing),alvo=editing;
-    Object.assign(alvo,data);
-    store.saveProduto(alvo,false).then(()=>{fim();hideOv();if(cur===alvo)$('#pname').textContent=alvo.nome;renderHome();})
-      .catch(e=>{Object.assign(alvo,antes);fim();err('Não foi possível salvar: '+(e.message||e));});
-    return;
-  }
-  let id=slug(nome),i=2;while(produtos.some(p=>p.id===id))id=slug(nome)+'-'+(i++);
-  const p=Object.assign({id,criadoEm:new Date().toISOString()},data);
-  produtos.push(p);
-  store.saveProduto(p,true).then(()=>{fim();doneByProd[p.id]={};hideOv();location.hash='#/p/'+p.id;})
-    .catch(e=>{produtos=produtos.filter(x=>x!==p);fim();err('Não foi possível salvar: '+(e.message||e));});
-});
-$('#fCancel').onclick=hideOv;
-ov.addEventListener('click',e=>{if(e.target===ov)hideOv();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!ov.hidden)hideOv();});
-let delTarget=null;
-function askDelete(p){
-  delTarget=p;
-  $('#dtext').textContent=REMOTO
-    ?`O produto “${p.nome}” sai da lista. O histórico dele fica guardado no banco e pode ser recuperado. Os documentos da empresa não mudam.`
-    :`O produto “${p.nome}” e o progresso dos itens de operação dele serão apagados deste navegador. Os documentos da empresa não mudam.`;
-  showOv('del');$('#dCancel').focus();
-}
-$('#dCancel').onclick=hideOv;
-$('#dOk').onclick=()=>{
-  if(!delTarget)return;
-  const p=delTarget;delTarget=null;
-  produtos=produtos.filter(x=>x!==p);hideOv();renderHome();
-  store.arquivar(p).catch(e=>{produtos.push(p);renderHome();falha(e,'excluir o produto');});
-};
-
-/* ---- rotas ---- */
-function openProduct(p){
-  cur=p;doneProd=doneByProd[p.id]=doneByProd[p.id]||{};
-  $('#home').hidden=true;$('#app').hidden=false;
-  $('#pname').textContent=p.nome;document.title=p.nome+' · SGS Turismo';
-  if(!root){init();return;}
-  // reinicia a vista do mapa para o novo produto
-  state.hl=null;applyHL();
-  nodes.forEach(n=>n.open=false);state.initial.forEach(n=>n.open=true);
-  relayout();moved=false;fit(0);select(root);syncDone();
-  $('#panel').classList.remove('open');
-}
-function route(){
-  closeMenu();if(!ov.hidden)ov.hidden=true;
-  const m=location.hash.match(/^#\/p\/([^/?#]+)/);
-  const p=m&&produtos.find(x=>x.id===decodeURIComponent(m[1]));
-  if(p){openProduct(p);return;}
-  if(m)history.replaceState(null,'','#/');
-  cur=null;
-  $('#app').hidden=true;$('#home').hidden=false;document.title='SGS Turismo';
-  renderHome();
-}
-$('#back').onclick=()=>{location.hash='#/';};
-window.addEventListener('hashchange',route);
-if(!REMOTO)window.addEventListener('storage',e=>{if(e.key&&e.key.startsWith('sgs-')&&!cur)local.load().then(route);});
-
-/* ---- login (modo servidor) ---- */
-function show(id){['home','app','login'].forEach(x=>{$('#'+x).hidden=x!==id;});}
-function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>no(new Error('Não foi possível carregar '+src));document.head.appendChild(s);});}
-function loginMsg(h,tipo){const m=$('#lmsg');m.hidden=!h;m.className='lmsg '+(tipo||'');m.innerHTML=h||'';}
-async function entrar(){
-  await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js');
-  sb=window.supabase.createClient(SGS_CONFIG.supabaseUrl,SGS_CONFIG.supabaseKey);
-  sb.auth.onAuthStateChange((ev)=>{if(ev==='SIGNED_OUT'){location.hash='#/';location.reload();}});
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session){show('login');document.title='Entrar · SGS Turismo';return false;}
-  usuario=session.user;
-  const r=await sb.from('perfis').select('nome,papel,ativo').eq('id',usuario.id).maybeSingle();
-  const pf=r.data;
-  if(!pf||!pf.ativo){
-    show('login');$('#lform').hidden=true;
-    loginMsg(`Você entrou como <b>${esc(usuario.email||'')}</b>, mas o seu acesso ainda não foi liberado. Peça ao responsável pelo SGS para ativar o seu usuário.`,'warn');
-    $('#lout').hidden=false;return false;
-  }
-  papel=pf.papel;canEdit=['admin_sgs','aprovador','revisor','autor'].includes(papel);
-  return true;
-}
-const PAPEIS={admin_sgs:'Responsável pelo SGS',aprovador:'Aprovador',revisor:'Revisor',autor:'Autor',equipe_campo:'Equipe de campo',leitura:'Leitura',agente_ia:'Agente de IA'};
-function renderConta(){
-  const el=$('#conta');
-  if(!REMOTO){el.innerHTML='<span class="modo" title="Sem servidor: os dados ficam só neste navegador">Modo local</span>';return;}
-  el.innerHTML=`<span class="quem"><b>${esc(usuario.email||'')}</b><small>${esc(PAPEIS[papel]||papel)}</small></span><button class="btn" type="button" id="sair">Sair</button>`;
-  $('#sair').onclick=()=>sb.auth.signOut();
-}
-$('#lform').addEventListener('submit',async e=>{
-  e.preventDefault();
-  const email=$('#lemail').value.trim();
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){loginMsg('Informe um e-mail válido.','err');return;}
-  const b=$('#lbtn');b.disabled=true;
-  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
-  b.disabled=false;
-  if(error)loginMsg('Não foi possível enviar o link: '+esc(error.message),'err');
-  else loginMsg(`Enviamos um link de acesso para <b>${esc(email)}</b>. Abra o e-mail neste aparelho e toque no link.`,'ok');
-});
-$('#lout').onclick=()=>sb.auth.signOut();
-
-async function iniciar(){
-  try{
-    if(REMOTO&&!(await entrar()))return;
-    await store.load();
-  }catch(e){
-    show('login');$('#lform').hidden=true;
-    loginMsg('Não foi possível conectar ao servidor. '+esc((e&&e.message)||'')+' Tente recarregar a página.','err');
-    return;
-  }
-  $('#hNew').hidden=!canEdit;
-  if(!canEdit)document.body.classList.add('ro');
-  renderConta();
-  if(!REMOTO)$('#hnote').textContent='Modo local: os produtos e o progresso ficam guardados só neste navegador. '+$('#hnote').textContent;
-  route();
 }
 const ready=document.fonts&&document.fonts.ready?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1400))]):Promise.resolve();
-ready.then(iniciar);
+ready.then(init);
 </script>
 
 </body>

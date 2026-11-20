@@ -497,6 +497,8 @@ CREATE POLICY editar ON public.versoes FOR UPDATE TO authenticated
 CREATE POLICY incluir ON public.decisoes FOR INSERT TO authenticated
   WITH CHECK (public.sgs_papel() IN ('admin_sgs', 'aprovador'));
 
+-- O Supabase concede tudo (inclusive DELETE e TRUNCATE) a anon e authenticated por padrão: começa do zero.
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon, authenticated;
 GRANT USAGE ON SCHEMA public TO authenticated;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO authenticated;
 GRANT INSERT, UPDATE ON public.produtos, public.progresso_itens, public.documentos, public.versoes, public.perfis TO authenticated;

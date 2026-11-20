@@ -2,7 +2,8 @@
 
 Plataforma de Sistemas de Gestão da Segurança (SGS) por produto da Trilhas do Sul,
 com o mapa interativo da ABNT NBR ISO 21101 (turismo de aventura).
-O site é o arquivo `index.html`, publicado em sgsturismo.com.br.
+- `index.html`: mapa mental público (continua em sgsturismo.com.br).
+- `sgs/index.html`: plataforma com login (sgsturismo.com.br/sgs/), ligada ao banco no Supabase.
 
 ## Como funciona
 
@@ -25,8 +26,11 @@ O site é o arquivo `index.html`, publicado em sgsturismo.com.br.
   de arquivos). `supabase/seed.sql` tem só **dados fictícios** para o ambiente de testes.
 - `supabase/tests/run.sh`: aplica tudo num PostgreSQL local temporário (simulando o Supabase) e roda os
   testes de regras (`regras.sql`). Precisa do PostgreSQL instalado e de usuário que não seja root.
-- Para ligar o site ao banco, preencha `SGS_CONFIG` no `index.html` com a URL do projeto e a chave
+- O site se liga ao banco por `SGS_CONFIG` no `sgs/index.html` com a URL do projeto e a chave
   pública (anon). A chave anon é pública por desenho; os dados são protegidos pela RLS. Nunca coloque a
   chave `service_role` no site.
+- No Supabase (Authentication › URL Configuration), o Site URL e as Redirect URLs precisam incluir o
+  endereço da plataforma (ex.: `https://www.sgsturismo.com.br/sgs/`), senão o link de acesso por e-mail não volta para o site.
+- Sem `SGS_CONFIG`, a plataforma funciona em modo local (só no navegador), útil para testes.
 - O primeiro usuário que entrar vira **Responsável pelo SGS**. Depois disso, desative novos cadastros
   abertos no Supabase (Authentication › Sign In / Providers) ou libere os usuários um a um.
