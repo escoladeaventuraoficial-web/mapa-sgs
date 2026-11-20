@@ -1,0 +1,132 @@
+-- Testes das regras do SGS. Rodar com supabase/tests/run.sh (PostgreSQL local, sem Supabase).
+\set ON_ERROR_STOP 1
+SET client_min_messages = warning;
+\o /dev/null
+
+CREATE FUNCTION pg_temp.espera_erro(p_sql text, p_trecho text) RETURNS void LANGUAGE plpgsql AS $$
+BEGIN
+  BEGIN
+    EXECUTE p_sql;
+  EXCEPTION WHEN OTHERS THEN
+    IF position(p_trecho IN SQLERRM) = 0 THEN
+      RAISE EXCEPTION 'Erro inesperado em [%]: %', p_sql, SQLERRM;
+    END IF;
+    RETURN;
+  END;
+  RAISE EXCEPTION 'Deveria falhar: %', p_sql;
+END $$;
+GRANT EXECUTE ON FUNCTION pg_temp.espera_erro(text, text) TO authenticated;
+
+-- Usuários: o primeiro vira responsável ativo; os demais nascem inativos.
+INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
+ ('00000000-0000-0000-0000-000000000001', 'vagner@exemplo.invalid', '{"name":"Responsável Teste"}'),
+ ('00000000-0000-0000-0000-000000000002', 'autor@exemplo.invalid', '{}'),
+ ('00000000-0000-0000-0000-000000000003', 'campo@exemplo.invalid', '{}'),
+ ('00000000-0000-0000-0000-000000000004', 'ia@exemplo.invalid', '{}');
+DO $$ BEGIN
+  ASSERT (SELECT papel::text || ativo FROM perfis WHERE email = 'vagner@exemplo.invalid') = 'admin_sgstrue', 'primeiro usuário';
+  ASSERT (SELECT papel::text || ativo FROM perfis WHERE email = 'autor@exemplo.invalid') = 'leiturafalse', 'demais inativos';
+END $$;
+
+-- Itens e produtos de referência.
+DO $$ BEGIN
+  ASSERT (SELECT count(*) FROM itens_mapa) = 34, 'itens do mapa';
+  ASSERT (SELECT count(*) FROM itens_mapa WHERE escopo = 'produto') = 11, 'itens de produto';
+  ASSERT (SELECT nome FROM produtos WHERE piloto) = 'Poço de Ferro', 'piloto';
+END $$;
+
+SET ROLE authenticated;
+
+-- Usuário inativo não vê nada e não escreve.
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000002';
+DO $$ BEGIN ASSERT (SELECT count(*) FROM produtos) = 0, 'inativo não lê'; END $$;
+SELECT pg_temp.espera_erro($$INSERT INTO produtos (id, nome) VALUES ('x', 'X')$$, 'row-level security');
+SELECT pg_temp.espera_erro($$UPDATE perfis SET papel = 'admin_sgs', ativo = true WHERE id = auth.uid()$$, 'Só o responsável');
+
+-- Responsável ativa os demais.
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000001';
+UPDATE perfis SET papel = 'autor', ativo = true WHERE email = 'autor@exemplo.invalid';
+UPDATE perfis SET papel = 'equipe_campo', ativo = true WHERE email = 'campo@exemplo.invalid';
+UPDATE perfis SET papel = 'agente_ia', ativo = true WHERE email = 'ia@exemplo.invalid';
+
+-- Produtos e progresso.
+INSERT INTO produtos (id, nome, atividades) VALUES ('tirolesa-teste', 'Tirolesa Teste', ARRAY['Tirolesa']);
+SELECT pg_temp.espera_erro($$INSERT INTO produtos (id, nome) VALUES ('outra', 'tirolesa teste')$$, 'produtos_nome_unico');
+SELECT pg_temp.espera_erro($$DELETE FROM produtos WHERE id = 'tirolesa-teste'$$, 'permission denied');
+UPDATE produtos SET arquivado = true WHERE id = 'tirolesa-teste';
+INSERT INTO progresso_itens (item) VALUES ('d_politica');
+INSERT INTO progresso_itens (item, produto_id) VALUES ('d_pae', 'poco-de-ferro');
+SELECT pg_temp.espera_erro($$INSERT INTO progresso_itens (item, produto_id) VALUES ('d_politica', 'poco-de-ferro')$$, 'é da empresa');
+SELECT pg_temp.espera_erro($$INSERT INTO progresso_itens (item) VALUES ('d_inventario')$$, 'precisa de um produto');
+SELECT pg_temp.espera_erro($$INSERT INTO progresso_itens (item) VALUES ('d_politica')$$, 'progresso_unico');
+SELECT sgs_marcar_item('d_politica', NULL, false);
+SELECT sgs_marcar_item('d_pae', 'poco-de-ferro', true);
+SELECT sgs_marcar_item('d_escopo', NULL, true);
+DO $$ BEGIN
+  ASSERT (SELECT pronto FROM progresso_itens WHERE item = 'd_politica') = false, 'desmarcar';
+  ASSERT (SELECT count(*) FROM progresso_itens) = 3, 'sem duplicar';
+END $$;
+SELECT pg_temp.espera_erro($$SELECT sgs_marcar_item('d_pae', NULL, true)$$, 'precisa de um produto');
+
+-- Documento da empresa e documento do produto, sem código.
+INSERT INTO documentos (requisito, titulo, item) VALUES ('4.1', 'Contexto da Organização', 'd_contexto');
+INSERT INTO documentos (requisito, titulo, produto_id, item) VALUES ('8.2', 'PAE', 'poco-de-ferro', 'd_pae');
+SELECT pg_temp.espera_erro($$INSERT INTO documentos (requisito, titulo) VALUES ('4.1', 'Outro')$$, 'documentos_unicos');
+DO $$ BEGIN
+  ASSERT (SELECT nome FROM v_documentos WHERE requisito = '8.2') = 'Documento 8.2 – PAE – Poço de Ferro', 'nome do documento';
+END $$;
+
+-- Agente de IA cria rascunho 1.0, mas não muda estado.
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000004';
+INSERT INTO versoes (documento_id, conteudo) SELECT id, '{"itens":[]}' FROM documentos WHERE requisito = '4.1';
+DO $$ BEGIN
+  ASSERT (SELECT versao FROM versoes v JOIN documentos d ON d.id = v.documento_id WHERE d.requisito = '4.1') = '1.0', 'primeira é 1.0';
+  ASSERT (SELECT data_criacao FROM versoes WHERE id = 1) IS NULL, 'sem data de criação no rascunho';
+END $$;
+SELECT pg_temp.espera_erro($$SELECT sgs_transicionar(1, 'em_revisao')$$, 'não pode mudar o estado');
+SELECT pg_temp.espera_erro($$INSERT INTO versoes (documento_id, estado) VALUES (1, 'vigente')$$, 'nasce como Rascunho');
+
+-- Autor edita o rascunho e envia para revisão; não aprova.
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000002';
+UPDATE versoes SET conteudo = '{"itens":[{"fator":"F"}]}' WHERE id = 1;
+SELECT pg_temp.espera_erro($$UPDATE versoes SET estado = 'aprovado' WHERE id = 1$$, 'só muda pela função');
+SELECT pg_temp.espera_erro($$INSERT INTO versoes (documento_id) VALUES (1)$$, 'duplicate key');
+SELECT sgs_transicionar(1, 'em_revisao');
+SELECT pg_temp.espera_erro($$SELECT sgs_transicionar(1, 'aprovado')$$, 'não permitida');
+UPDATE versoes SET conteudo = '{}' WHERE id = 1;   -- fora de Rascunho: a política ignora
+DO $$ BEGIN ASSERT (SELECT conteudo FROM versoes WHERE id = 1) <> '{}'::jsonb, 'versão em revisão congelada'; END $$;
+
+-- Responsável aprova (data de criação preenchida) e torna vigente.
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000001';
+SELECT sgs_transicionar(1, 'aprovado', 'Primeira versão aprovada');
+DO $$ BEGIN ASSERT (SELECT data_criacao FROM versoes WHERE id = 1) = current_date, 'data de criação na aprovação'; END $$;
+SELECT sgs_transicionar(1, 'vigente');
+
+-- Revisão 1.1: ao ficar vigente, a 1.0 vira Substituída; data de criação não muda.
+SELECT sgs_nova_versao(1, 'Inclusão de item SWOT') AS nv \gset
+SELECT sgs_transicionar(:nv, 'em_revisao');
+SELECT sgs_transicionar(:nv, 'aprovado');
+SELECT sgs_transicionar(:nv, 'vigente');
+DO $$ BEGIN
+  ASSERT (SELECT versao || estado FROM versoes WHERE documento_id = 1 AND estado = 'vigente') = '1.1vigente', 'nova vigente';
+  ASSERT (SELECT estado::text FROM versoes WHERE id = 1) = 'substituido', 'anterior substituída';
+  ASSERT (SELECT data_criacao FROM versoes WHERE documento_id = 1 AND versao = '1.1') IS NULL, 'data de criação só na primeira';
+  ASSERT (SELECT count(*) FROM versoes WHERE documento_id = 1 AND estado = 'vigente') = 1, 'uma vigente';
+  ASSERT (SELECT count(*) FROM transicoes_versao WHERE versao_id = 1) = 5, 'histórico da 1.0';
+END $$;
+SELECT pg_temp.espera_erro($$DELETE FROM versoes WHERE id = 1$$, 'permission denied');
+
+-- Equipe de campo só vê a versão vigente.
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000003';
+DO $$ BEGIN ASSERT (SELECT count(*) FROM versoes) = 1, 'campo vê só vigente'; END $$;
+SELECT pg_temp.espera_erro($$SELECT sgs_marcar_item('d_escopo', NULL, false)$$, 'row-level security');
+
+RESET ROLE;
+DO $$ BEGIN
+  ASSERT (SELECT count(*) FROM auditoria WHERE tabela = 'versoes') >= 8, 'auditoria das versões';
+  ASSERT (SELECT count(*) FROM auditoria WHERE usuario_id IS NOT NULL) > 0, 'auditoria com usuário';
+END $$;
+SELECT pg_temp.espera_erro($$DELETE FROM auditoria$$, 'só aceita inclusão');
+
+\o
+\echo 'Todos os testes passaram.'
