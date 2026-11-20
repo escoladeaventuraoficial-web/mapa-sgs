@@ -289,6 +289,23 @@ h1,h2,h3,p,ul,ol{margin:0}
 .sugs button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
 .err{color:#b4232f;font-size:12.5px}
 .dact{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;flex-wrap:wrap}
+/* login, conta e avisos */
+#login{height:100%;overflow:auto;display:grid;place-items:center;padding:16px 0}
+.lbox{width:min(400px,100%);background:var(--surface);border:1px solid var(--hair);border-radius:20px;padding:28px 24px;display:grid;gap:14px;box-shadow:var(--shadow)}
+.lbox h1{font-size:22px;font-weight:700}
+.lsub{color:var(--muted);font-size:13px;margin-top:-10px}
+#lform{display:grid;gap:12px}
+.lmsg{font-size:13.5px;border-radius:12px;padding:10px 12px;background:var(--accent-soft)}
+.lmsg.ok{background:var(--ok-soft)} .lmsg.err{background:var(--reg-bg);color:var(--reg-ink)} .lmsg.warn{background:var(--doc-bg);color:var(--doc-ink)}
+.hright{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.conta{display:flex;align-items:center;gap:8px}
+.quem{display:grid;text-align:right;line-height:1.25}
+.quem b{font-size:12.5px;font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.quem small{color:var(--muted);font-size:11.5px}
+.modo{font-size:12px;font-weight:600;color:var(--doc-ink);background:var(--doc-bg);border-radius:11px;padding:3px 10px}
+.btn:disabled{opacity:.6;cursor:wait}
+#toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:80;background:var(--ink);color:var(--surface);border-radius:12px;padding:10px 16px;font-size:13.5px;max-width:min(520px,calc(100% - 32px));transition:opacity .2s,transform .2s}
+#toast.on{opacity:1;transform:translate(-50%,0)}
 /* cabeçalho do produto */
 .ttl{display:flex;align-items:center;gap:10px}
 .back{flex:none;display:inline-flex;align-items:center;gap:4px;height:36px;padding:0 12px 0 8px;border-radius:18px;border:1px solid var(--hair);background:var(--surface);cursor:pointer;font-weight:600;font-size:13px}
@@ -306,6 +323,7 @@ h1,h2,h3,p,ul,ol{margin:0}
   .kpi p{display:none}
   .htop{flex-wrap:nowrap}
   .brand p{display:none}
+  .quem{display:none}
   .htop .btn{padding:0 14px}
   .fr{grid-template-columns:1fr}
   .brand h1{font-size:19px}
@@ -330,6 +348,20 @@ h1,h2,h3,p,ul,ol{margin:0}
 }
 </style>
 
+<div id="login" hidden>
+ <div class="lbox">
+  <div class="logo" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
+  <h1>SGS Turismo</h1>
+  <p class="lsub">Trilhas do Sul · acesso restrito à equipe</p>
+  <form id="lform" novalidate>
+   <label class="fl"><span>Seu e-mail</span><input id="lemail" type="email" autocomplete="email" required placeholder="nome@empresa.com.br"></label>
+   <button class="btn pri" id="lbtn" type="submit">Enviar link de acesso</button>
+  </form>
+  <p id="lmsg" class="lmsg" hidden></p>
+  <button class="btn" id="lout" type="button" hidden>Sair e entrar com outro e-mail</button>
+ </div>
+</div>
+
 <div id="home" hidden>
  <div class="hwrap">
   <header class="htop">
@@ -337,7 +369,8 @@ h1,h2,h3,p,ul,ol{margin:0}
     <div class="logo" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
     <div><h1>SGS Turismo</h1><p>Trilhas do Sul · Sistemas de Gestão da Segurança por produto · ABNT NBR ISO 21101</p></div>
    </div>
-   <button class="btn pri" id="hNew" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Novo produto</button>
+   <div class="hright"><div id="conta" class="conta"></div>
+   <button class="btn pri" id="hNew" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Novo produto</button></div>
   </header>
   <div class="hsum" id="hsum"></div>
   <div class="hbar">
@@ -349,7 +382,7 @@ h1,h2,h3,p,ul,ol{margin:0}
    </div>
   </div>
   <div class="grid" id="hgrid"></div>
-  <p class="hnote">Os produtos e o progresso ficam guardados neste navegador enquanto a plataforma não tem servidor. Os documentos da empresa (contexto, política, funções, auditoria…) valem para todos os produtos; os documentos de operação (riscos, procedimentos, PAE, registros de campo) são de cada produto.</p>
+  <p class="hnote" id="hnote">Os documentos da empresa (contexto, política, funções, auditoria…) valem para todos os produtos; os documentos de operação (riscos, procedimentos, PAE, registros de campo) são de cada produto.</p>
  </div>
 </div>
 
@@ -906,23 +939,77 @@ const SEED=[
  {id:'exemplo-cachoeirismo',nome:'Cachoeirismo do Vale Verde',municipio:'Exemplo – RS',base:'',atividades:['Cachoeirismo','Rapel'],
   responsavel:'',situacao:'Em revisão',descricao:'Produto fictício para demonstração: descida de cachoeiras com corda.',exemplo:true}
 ];
-let produtos=lsGet(K_PROD,null);
-if(!Array.isArray(produtos)){
-  produtos=JSON.parse(JSON.stringify(SEED));lsSet(K_PROD,produtos);
-  // progresso do mapa antigo (um só SGS) passa para a empresa e para o piloto
-  const old=lsGet(K_OLD,null);
-  if(old&&typeof old==='object'){
-    const emp={},pf={};
-    Object.keys(old).forEach(r=>{if(old[r])(isProd(r)?pf:emp)[r]=1;});
-    lsSet(K_EMP,emp);lsSet(K_PI+'poco-de-ferro',pf);
-  }
-}
-function saveProdutos(){lsSet(K_PROD,produtos);}
+/* ---- configuração do servidor ----
+   Com url e chave públicas (anon) preenchidas, a plataforma usa o banco no Supabase
+   e pede login. Sem elas, funciona como antes, só neste navegador (modo local).
+   A chave anon é pública por desenho: quem protege os dados é a segurança por linha (RLS). */
+const SGS_CONFIG={supabaseUrl:'',supabaseKey:''};
+const REMOTO=!!(SGS_CONFIG.supabaseUrl&&SGS_CONFIG.supabaseKey);
+
+let produtos=[];                     // produtos ativos
+let doneEmp={},doneByProd={};        // progresso: empresa e por produto
 let cur=null;                        // produto aberto
-let doneEmp=lsGet(K_EMP,{}),doneProd={};
-function prodDone(id){return lsGet(K_PI+id,{});}
+let doneProd={};
+let sb=null,usuario=null,papel=null;
+let canEdit=true;
+function prodDone(id){return doneByProd[id]||{};}
 function isDone(ref){return !!(isProd(ref)?doneProd:doneEmp)[ref];}
-function saveDone(){lsSet(K_EMP,doneEmp);if(cur)lsSet(K_PI+cur.id,doneProd);}
+
+/* modo local (navegador) */
+const local={
+  async load(){
+    let ps=lsGet(K_PROD,null);
+    if(!Array.isArray(ps)){
+      ps=JSON.parse(JSON.stringify(SEED));lsSet(K_PROD,ps);
+      // progresso do mapa antigo (um só SGS) passa para a empresa e para o piloto
+      const old=lsGet(K_OLD,null);
+      if(old&&typeof old==='object'){
+        const emp={},pf={};
+        Object.keys(old).forEach(r=>{if(old[r])(isProd(r)?pf:emp)[r]=1;});
+        lsSet(K_EMP,emp);lsSet(K_PI+'poco-de-ferro',pf);
+      }
+    }
+    produtos=ps;doneEmp=lsGet(K_EMP,{});doneByProd={};
+    ps.forEach(p=>{doneByProd[p.id]=lsGet(K_PI+p.id,{});});
+  },
+  async setItem(ref,pid,v){if(pid)lsSet(K_PI+pid,doneByProd[pid]);else lsSet(K_EMP,doneEmp);},
+  async saveProduto(p,nova){lsSet(K_PROD,produtos);return p;},
+  async arquivar(p){lsDel(K_PI+p.id);lsSet(K_PROD,produtos);}
+};
+
+/* modo servidor (Supabase) */
+const COLS='id,nome,municipio,base,atividades,responsavel,situacao,descricao,piloto,exemplo,ordem';
+function chk(r){if(r.error)throw r.error;return r.data;}
+const remoto={
+  async load(){
+    const ps=chk(await sb.from('produtos').select(COLS).eq('arquivado',false).order('ordem').order('criado_em'));
+    const pr=chk(await sb.from('progresso_itens').select('item,produto_id,pronto'));
+    produtos=ps;doneEmp={};doneByProd={};
+    ps.forEach(p=>{doneByProd[p.id]={};});
+    pr.forEach(r=>{if(!r.pronto)return;if(r.produto_id){(doneByProd[r.produto_id]=doneByProd[r.produto_id]||{})[r.item]=1;}else doneEmp[r.item]=1;});
+  },
+  async setItem(ref,pid,v){chk(await sb.rpc('sgs_marcar_item',{p_item:ref,p_produto:pid||null,p_pronto:!!v}));},
+  async saveProduto(p,nova){
+    const row={nome:p.nome,municipio:p.municipio,base:p.base,atividades:p.atividades,responsavel:p.responsavel,situacao:p.situacao,descricao:p.descricao};
+    if(!nova){chk(await sb.from('produtos').update(row).eq('id',p.id));return p;}
+    for(let i=0;i<6;i++){
+      const id=i?p.id+'-'+(i+1):p.id;
+      const r=await sb.from('produtos').insert(Object.assign({id},row)).select(COLS).single();
+      if(!r.error){Object.assign(p,r.data);return p;}
+      if(r.error.code!=='23505'||/nome/.test(r.error.message||''))throw r.error;
+    }
+    throw new Error('Não foi possível gerar um identificador para o produto.');
+  },
+  async arquivar(p){chk(await sb.from('produtos').update({arquivado:true}).eq('id',p.id));}
+};
+const store=REMOTO?remoto:local;
+
+function toast(msg){
+  let t=$('#toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.setAttribute('role','status');document.body.appendChild(t);}
+  t.textContent=msg;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),5200);
+}
+function falha(e,acao){console.error(e);toast('Não foi possível '+acao+'. '+((e&&e.message)||'Verifique a conexão e tente de novo.'));}
 function scopeTxt(ref){return isProd(ref)?'deste produto':'da empresa';}
 const REFS=[];
 
@@ -1240,7 +1327,7 @@ function boxes(d){
 }
 function refRow(ref){
   const d=DOCS[ref];
-  return `<div class="row"><input class="cb" type="checkbox" data-ref="${ref}" aria-label="Já tenho: ${esc(d.t)}" ${isDone(ref)?'checked':''}>
+  return `<div class="row"><input class="cb" type="checkbox" data-ref="${ref}" ${canEdit?'':'disabled'} aria-label="Já tenho: ${esc(d.t)}" ${isDone(ref)?'checked':''}>
   <button class="nm" type="button" data-go="i_${ref}">${esc(d.t)}<small>${d.type==='doc'?'Documento':'Registro'} · ${d.norma?'exigido pela norma':'recomendado'} · ${scopeTxt(ref)}</small></button></div>`;
 }
 function linksHTML(n){
@@ -1287,7 +1374,7 @@ function renderPanel(n){
     <p class="lead">${esc(d.p)}</p>
     <div class="sec"><h3>O que não pode faltar</h3><ul>${d.inc.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
     <div class="sec"><div class="box"><b>${d.type==='doc'?'Como é um documento':'Como é um registro'}</b>${d.type==='doc'?'Tem cabeçalho com o nome (o requisito que atende), data e versão, e rodapé com quem criou e quem aprovou. Quando muda, ganha nova versão.':'Prova que algo foi feito. Não tem versão e não se altera depois de preenchido. Precisa ser fácil de achar.'} Liste na Lista Mestra de Documentos e Registros.</div></div>
-    <label class="big"><input type="checkbox" data-ref="${n.ref}" ${isDone(n.ref)?'checked':''}><span>Já tenho este item<span class="scope">${isProd(n.ref)?'Vale só para '+esc(cur?cur.nome:'este produto'):'Vale para todos os produtos da empresa'}</span></span></label>
+    <label class="big"><input type="checkbox" data-ref="${n.ref}" ${canEdit?'':'disabled'} ${isDone(n.ref)?'checked':''}><span>Já tenho este item<span class="scope">${isProd(n.ref)?'Vale só para '+esc(cur?cur.nome:'este produto'):'Vale para todos os produtos da empresa'}</span></span></label>
     ${c?`<div class="sec"><h3>Faz parte de</h3><div class="links"><button class="lk" type="button" data-go="${c.id}"><span class="num">${esc(c.num)}</span><span><span class="t">${esc(c.t)}</span><span class="w">Abrir o requisito</span></span></button></div></div>`:''}`;
   }else{
     const def=n.def;
@@ -1319,8 +1406,13 @@ $('#panel').addEventListener('change',e=>{
   setDone(c.dataset.ref,c.checked);
 });
 function setDone(ref,v){
-  const t=isProd(ref)?doneProd:doneEmp;if(v)t[ref]=1;else delete t[ref];
-  saveDone();syncDone();
+  if(!canEdit){syncDone();return;}
+  const pid=isProd(ref)?(cur&&cur.id):null;
+  if(isProd(ref)&&!pid)return;
+  const t=pid?doneProd:doneEmp;
+  if(v)t[ref]=1;else delete t[ref];
+  syncDone();
+  store.setItem(ref,pid,v).catch(e=>{if(v)delete t[ref];else t[ref]=1;syncDone();falha(e,'salvar o item');});
 }
 function syncDone(){
   let n=0;
@@ -1427,7 +1519,7 @@ function cardHTML(p){
     <div class="cmeta"><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="st ${stCls[p.situacao]||''}">${esc(p.situacao||'Em implantação')}</span>${p.piloto?'<span class="st">Piloto</span>':''}${p.exemplo?'<span class="ex-b">Exemplo</span>':''}</span>
      <span class="cgo">Abrir SGS ${ico('chev',14)}</span></div>
    </button>
-   <button class="more" type="button" data-more="${esc(p.id)}" aria-label="Opções de ${esc(p.nome)}" aria-haspopup="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+   ${canEdit?'':'<!--'}<button class="more" type="button" data-more="${esc(p.id)}" aria-label="Opções de ${esc(p.nome)}" aria-haspopup="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>${canEdit?'':'-->'}
   </article>`;
 }
 function renderHome(){
@@ -1443,7 +1535,7 @@ function renderHome(){
   const list=produtos.filter(p=>!v||norm([p.nome,p.municipio,p.base,(p.atividades||[]).join(' '),p.descricao].join(' ')).includes(v));
   let h=list.map(cardHTML).join('');
   if(!list.length&&v)h=`<p class="empty">Nenhum produto encontrado para “${esc($('#hq').value)}”.</p>`;
-  if(!v)h+=`<button class="newc" type="button" id="hNew2"><i>${ico('plus',22)}</i>Cadastrar novo produto</button>`;
+  if(!v&&canEdit)h+=`<button class="newc" type="button" id="hNew2"><i>${ico('plus',22)}</i>Cadastrar novo produto</button>`;
   $('#hgrid').innerHTML=h;
 }
 $('#hq').addEventListener('input',renderHome);
@@ -1501,10 +1593,20 @@ form.addEventListener('submit',e=>{
   if(produtos.some(p=>p!==editing&&norm(p.nome)===norm(nome))){err('Já existe um produto com esse nome.');form.nome.focus();return;}
   const data={nome,municipio:form.municipio.value.trim(),base:form.base.value.trim(),atividades:parseAts(form.atividades.value),
     responsavel:form.responsavel.value.trim(),situacao:form.situacao.value,descricao:form.descricao.value.trim()};
-  if(editing){Object.assign(editing,data);saveProdutos();hideOv();if(cur===editing)$('#pname').textContent=editing.nome;renderHome();return;}
+  const btn=$('#fSave');btn.disabled=true;
+  const fim=()=>{btn.disabled=false;};
+  if(editing){
+    const antes=Object.assign({},editing),alvo=editing;
+    Object.assign(alvo,data);
+    store.saveProduto(alvo,false).then(()=>{fim();hideOv();if(cur===alvo)$('#pname').textContent=alvo.nome;renderHome();})
+      .catch(e=>{Object.assign(alvo,antes);fim();err('Não foi possível salvar: '+(e.message||e));});
+    return;
+  }
   let id=slug(nome),i=2;while(produtos.some(p=>p.id===id))id=slug(nome)+'-'+(i++);
   const p=Object.assign({id,criadoEm:new Date().toISOString()},data);
-  produtos.push(p);saveProdutos();hideOv();location.hash='#/p/'+id;
+  produtos.push(p);
+  store.saveProduto(p,true).then(()=>{fim();doneByProd[p.id]={};hideOv();location.hash='#/p/'+p.id;})
+    .catch(e=>{produtos=produtos.filter(x=>x!==p);fim();err('Não foi possível salvar: '+(e.message||e));});
 });
 $('#fCancel').onclick=hideOv;
 ov.addEventListener('click',e=>{if(e.target===ov)hideOv();});
@@ -1512,18 +1614,22 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!ov.hidden)hideOv()
 let delTarget=null;
 function askDelete(p){
   delTarget=p;
-  $('#dtext').textContent=`O produto “${p.nome}” e o progresso dos itens de operação dele serão apagados deste navegador. Os documentos da empresa não mudam.`;
+  $('#dtext').textContent=REMOTO
+    ?`O produto “${p.nome}” sai da lista. O histórico dele fica guardado no banco e pode ser recuperado. Os documentos da empresa não mudam.`
+    :`O produto “${p.nome}” e o progresso dos itens de operação dele serão apagados deste navegador. Os documentos da empresa não mudam.`;
   showOv('del');$('#dCancel').focus();
 }
 $('#dCancel').onclick=hideOv;
 $('#dOk').onclick=()=>{
   if(!delTarget)return;
-  produtos=produtos.filter(p=>p!==delTarget);lsDel(K_PI+delTarget.id);saveProdutos();delTarget=null;hideOv();renderHome();
+  const p=delTarget;delTarget=null;
+  produtos=produtos.filter(x=>x!==p);hideOv();renderHome();
+  store.arquivar(p).catch(e=>{produtos.push(p);renderHome();falha(e,'excluir o produto');});
 };
 
 /* ---- rotas ---- */
 function openProduct(p){
-  cur=p;doneProd=prodDone(p.id);
+  cur=p;doneProd=doneByProd[p.id]=doneByProd[p.id]||{};
   $('#home').hidden=true;$('#app').hidden=false;
   $('#pname').textContent=p.nome;document.title=p.nome+' · SGS Turismo';
   if(!root){init();return;}
@@ -1539,15 +1645,71 @@ function route(){
   const p=m&&produtos.find(x=>x.id===decodeURIComponent(m[1]));
   if(p){openProduct(p);return;}
   if(m)history.replaceState(null,'','#/');
-  cur=null;doneEmp=lsGet(K_EMP,{});
+  cur=null;
   $('#app').hidden=true;$('#home').hidden=false;document.title='SGS Turismo';
   renderHome();
 }
 $('#back').onclick=()=>{location.hash='#/';};
 window.addEventListener('hashchange',route);
-window.addEventListener('storage',e=>{if(e.key===K_PROD){produtos=lsGet(K_PROD,[]);}if(!cur)route();});
+if(!REMOTO)window.addEventListener('storage',e=>{if(e.key&&e.key.startsWith('sgs-')&&!cur)local.load().then(route);});
+
+/* ---- login (modo servidor) ---- */
+function show(id){['home','app','login'].forEach(x=>{$('#'+x).hidden=x!==id;});}
+function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>no(new Error('Não foi possível carregar '+src));document.head.appendChild(s);});}
+function loginMsg(h,tipo){const m=$('#lmsg');m.hidden=!h;m.className='lmsg '+(tipo||'');m.innerHTML=h||'';}
+async function entrar(){
+  await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js');
+  sb=window.supabase.createClient(SGS_CONFIG.supabaseUrl,SGS_CONFIG.supabaseKey);
+  sb.auth.onAuthStateChange((ev)=>{if(ev==='SIGNED_OUT'){location.hash='#/';location.reload();}});
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){show('login');document.title='Entrar · SGS Turismo';return false;}
+  usuario=session.user;
+  const r=await sb.from('perfis').select('nome,papel,ativo').eq('id',usuario.id).maybeSingle();
+  const pf=r.data;
+  if(!pf||!pf.ativo){
+    show('login');$('#lform').hidden=true;
+    loginMsg(`Você entrou como <b>${esc(usuario.email||'')}</b>, mas o seu acesso ainda não foi liberado. Peça ao responsável pelo SGS para ativar o seu usuário.`,'warn');
+    $('#lout').hidden=false;return false;
+  }
+  papel=pf.papel;canEdit=['admin_sgs','aprovador','revisor','autor'].includes(papel);
+  return true;
+}
+const PAPEIS={admin_sgs:'Responsável pelo SGS',aprovador:'Aprovador',revisor:'Revisor',autor:'Autor',equipe_campo:'Equipe de campo',leitura:'Leitura',agente_ia:'Agente de IA'};
+function renderConta(){
+  const el=$('#conta');
+  if(!REMOTO){el.innerHTML='<span class="modo" title="Sem servidor: os dados ficam só neste navegador">Modo local</span>';return;}
+  el.innerHTML=`<span class="quem"><b>${esc(usuario.email||'')}</b><small>${esc(PAPEIS[papel]||papel)}</small></span><button class="btn" type="button" id="sair">Sair</button>`;
+  $('#sair').onclick=()=>sb.auth.signOut();
+}
+$('#lform').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const email=$('#lemail').value.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){loginMsg('Informe um e-mail válido.','err');return;}
+  const b=$('#lbtn');b.disabled=true;
+  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
+  b.disabled=false;
+  if(error)loginMsg('Não foi possível enviar o link: '+esc(error.message),'err');
+  else loginMsg(`Enviamos um link de acesso para <b>${esc(email)}</b>. Abra o e-mail neste aparelho e toque no link.`,'ok');
+});
+$('#lout').onclick=()=>sb.auth.signOut();
+
+async function iniciar(){
+  try{
+    if(REMOTO&&!(await entrar()))return;
+    await store.load();
+  }catch(e){
+    show('login');$('#lform').hidden=true;
+    loginMsg('Não foi possível conectar ao servidor. '+esc((e&&e.message)||'')+' Tente recarregar a página.','err');
+    return;
+  }
+  $('#hNew').hidden=!canEdit;
+  if(!canEdit)document.body.classList.add('ro');
+  renderConta();
+  if(!REMOTO)$('#hnote').textContent='Modo local: os produtos e o progresso ficam guardados só neste navegador. '+$('#hnote').textContent;
+  route();
+}
 const ready=document.fonts&&document.fonts.ready?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1400))]):Promise.resolve();
-ready.then(route);
+ready.then(iniciar);
 </script>
 
 </body>

@@ -17,3 +17,16 @@ O site é o arquivo `index.html`, publicado em sgsturismo.com.br.
   (`sgs-produtos-v1`, `sgs-itens-empresa-v1`, `sgs-itens-produto-v1:<id>`). O progresso do mapa antigo
   (`sgs-mapa-itens-v1`) é migrado na primeira abertura: itens da empresa para a empresa, itens de operação
   para o Poço de Ferro.
+
+## Servidor (Supabase)
+
+- `supabase/migrations/`: banco da plataforma (produtos, itens do mapa, progresso, documentos sem código,
+  versões 1.0 → aprovação → vigência, transições, decisões, auditoria, segurança por linha e bucket privado
+  de arquivos). `supabase/seed.sql` tem só **dados fictícios** para o ambiente de testes.
+- `supabase/tests/run.sh`: aplica tudo num PostgreSQL local temporário (simulando o Supabase) e roda os
+  testes de regras (`regras.sql`). Precisa do PostgreSQL instalado e de usuário que não seja root.
+- Para ligar o site ao banco, preencha `SGS_CONFIG` no `index.html` com a URL do projeto e a chave
+  pública (anon). A chave anon é pública por desenho; os dados são protegidos pela RLS. Nunca coloque a
+  chave `service_role` no site.
+- O primeiro usuário que entrar vira **Responsável pelo SGS**. Depois disso, desative novos cadastros
+  abertos no Supabase (Authentication › Sign In / Providers) ou libere os usuários um a um.
