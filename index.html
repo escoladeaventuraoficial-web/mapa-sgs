@@ -546,17 +546,7 @@ h1,h2,h3,p,ul,ol{margin:0}
       <input id="q" type="search" placeholder="Buscar: escopo, política, incidentes…" autocomplete="off">
       <div id="sr" class="results" hidden></div>
     </div>
-    <button id="prog" class="progress" type="button" aria-label="Itens prontos. Abrir checklist">
-      <span class="pl">Itens prontos</span><b id="pn">0/0</b><span class="bar"><i id="pb"></i></span>
-    </button>
   </header>
-
-  <div class="legend" id="legend">
-    <button class="lg" type="button" data-hl="doc" aria-pressed="false"><span class="tag" style="--solid:var(--doc-solid)">DOC</span>Documentos</button>
-    <button class="lg" type="button" data-hl="reg" aria-pressed="false"><span class="tag" style="--solid:var(--reg-solid)">REG</span>Registros</button>
-    <button class="lg" type="button" data-hl="ex" aria-pressed="false"><span class="tag" style="--solid:var(--ex-solid)">EX</span>Exemplos</button>
-    <span class="note">Etiqueta cheia: exigido pela norma · Só contorno: recomendado</span>
-  </div>
 
   <div class="work">
     <section id="stage" aria-label="Mapa mental interativo">
@@ -574,11 +564,9 @@ h1,h2,h3,p,ul,ol{margin:0}
     <aside id="panel" aria-label="Detalhes">
       <div class="tabs" role="tablist">
         <button id="tabD" role="tab" type="button" aria-selected="true">Detalhes</button>
-        <button id="tabC" role="tab" type="button" aria-selected="false">Checklist</button>
         <button class="pclose" id="pclose" type="button" aria-label="Fechar painel"></button>
       </div>
       <div class="pane" id="paneD" role="tabpanel"></div>
-      <div class="pane" id="paneC" role="tabpanel" hidden></div>
     </aside>
   </div>
 </div>
@@ -641,36 +629,6 @@ const TREE={
  id:'root',k:'root',t:'ABNT NBR ISO 21101 – Sistema de Gestão da Segurança no Turismo de Aventura',
  intro:true,
  c:[
- /* ---------- POR ONDE COMEÇAR ---------- */
- {id:'g0',k:'grp',t:'Por onde começar',pd:null,
-  d:'Seis passos para quem está começando. Quem já está implementando pode usar a aba Checklist para marcar o que já tem e ver o que falta.',
-  c:[
-   {id:'s1',k:'cl',num:'1',t:'Decidir e nomear o responsável',
-    d:'O SGS começa com uma decisão da direção e uma pessoa que cuida dele no dia a dia.',
-    how:['Reúna os sócios e registre a decisão de implantar o SGS.','Nomeie o responsável pelo SGS. Pode ser o próprio dono, desde que as funções fiquem claras.','Reserve horas por semana no calendário para o SGS.'],
-    links:[L('c5_1','Compromisso da direção.'),L('c5_3','Responsável pelo SGS.')]},
-   {id:'s2',k:'cl',num:'2',t:'Definir um escopo pequeno',
-    d:'Escolha 1 ou 2 produtos para começar: o mais vendido ou o mais arriscado. Depois amplie.',
-    how:['Liste atividades, produtos e locais.','Escolha os que entram agora.','Escreva o escopo com data e versão.'],
-    links:[L('c4_3','Escopo do SGS.')]},
-   {id:'s3',k:'cl',num:'3',t:'Escrever a política',
-    d:'Uma página, com frases diretas e só o que a empresa consegue cumprir.',
-    how:['Responda o que a empresa promete sobre segurança, meio ambiente, boas práticas e lei.','Assine, date e divulgue.'],
-    links:[L('c5_2','Política de Segurança.')]},
-   {id:'s4',k:'cl',num:'4',t:'Mapear os riscos de um produto',
-    d:'É o passo que mais ajuda a evitar acidentes. Faça para um produto e repita para os demais.',
-    how:['Escreva o Contexto da Atividade e as escalas de risco.','Divida a atividade em etapas e liste os perigos.','Dê nota de probabilidade e consequência.','Defina o tratamento do que passar do aceitável.'],
-    links:[L('c6_1_2','Gestão de riscos da atividade.'),L('c6_1_3','Requisitos legais.')]},
-   {id:'s5',k:'cl',num:'5',t:'Criar controles e plano de emergência',
-    d:'Os tratamentos de risco viram rotina: procedimentos, check-lists, briefing, Ficha do Participante e plano de emergência.',
-    how:['Escreva o passo a passo de cada atividade.','Crie check-list de equipamentos.','Escreva o PAE e a lista de contatos.','Prepare a Ficha do Participante e o termo de riscos.'],
-    links:[L('c8_1','Controle operacional.'),L('c8_2','Emergências.'),L('c7_4','Comunicação com participantes.')]},
-   {id:'s6',k:'cl',num:'6',t:'Registrar, conferir e melhorar',
-    d:'Registre incidentes, monitore, faça a primeira auditoria interna e a primeira análise crítica. Corrija o que aparecer.',
-    how:['Registre todo incidente e quase acidente.','Monitore com poucos indicadores.','Faça a auditoria interna e a análise crítica.','Trate cada não conformidade na causa.'],
-    links:[L('c8_3','Incidentes.'),L('c9_1','Monitoramento.'),L('c9_2','Auditoria interna.'),L('c9_3','Análise crítica.'),L('c10_1','Ação corretiva.')]}
-  ]},
-
  /* ---------- 4 CONTEXTO ---------- */
  {id:'g4',k:'grp',num:'4',t:'Contexto da Organização',pd:'Planejar',
   d:'Antes de escrever qualquer regra, entenda o cenário em que a empresa opera e o que o SGS vai cobrir.',
@@ -702,7 +660,6 @@ const TREE={
     c:[
      P('Limites e Aplicabilidade','Onde a gestão da segurança começa e termina em cada produto, por exemplo desde o transporte ou só a partir da base da atividade, e quais locais estão dentro.'),
      P('Atividades e Produtos Abrangidos','Atividade é o tipo de aventura (caminhada, rafting). Produto é o pacote completo para operar a atividade: informações, equipe, equipamentos, estruturas, seguro. Uma atividade pode ter vários produtos e um produto pode ter várias atividades.'),
-     X('Exemplo de escopo','A [Nome da Empresa] inclui no escopo do SGS as atividades de caminhada e cachoeirismo, nos produtos “Trilha da Cachoeira Encantada” e “Cachoeira do Véu”, localizados no [Nome do Parque]. A gestão da segurança começa no ponto de encontro e termina no retorno ao mesmo ponto. Partes interessadas: participantes, equipe, gestão do parque, proprietários da área e poder público municipal. Versão 1, [data].'),
      D('d_escopo')]},
    {id:'c4_4',k:'cl',num:'4.4',t:'Sistema de Gestão',
     d:'Estabelecer, implementar, manter e melhorar continuamente o SGS, com os processos necessários e suas interações.',
@@ -737,7 +694,6 @@ const TREE={
      P('Estrutura para os objetivos','Cada compromisso da política vira objetivo e meta em 6.2.'),
      P('Compromisso com requisitos aplicáveis','Atender leis, normas ABNT, planos de manejo e regras dos locais onde atua.'),
      P('Compromisso com melhoria contínua','Prometer revisar e melhorar o SGS. É exigência explícita da norma.'),
-     X('Exemplo de política','A [Nome da Empresa] se compromete a: identificar e controlar os riscos de cada atividade; manter equipe competente e equipamentos em bom estado; cumprir a legislação, as normas e as regras dos locais onde atua; reduzir impactos ambientais e sociais; informar o participante sobre os riscos antes da atividade; melhorar continuamente o seu sistema de gestão da segurança.'),
      D('d_politica')]},
    {id:'c5_3',k:'cl',num:'5.3',t:'Funções, Responsabilidades e Autoridades',
     d:'Cada função que afeta a segurança tem responsabilidades e autoridades definidas e comunicadas. A direção também designa quem garante que o SGS cumpre a norma e quem reporta o desempenho à direção.',
@@ -777,7 +733,6 @@ const TREE={
      P('3 · Analisar: probabilidade × consequência','Dê nota de 1 a 5 à probabilidade e à consequência e multiplique. Considere causas, fontes e os controles que você já usa. O mesmo dano pesa diferente conforme o local: uma torção dentro de um cânion, longe de socorro, pode ser mais grave que uma fratura perto da estrada.',{matrix:true}),
      P('4 · Avaliar: o risco é aceitável?','Compare o nível de risco com o critério definido no contexto. Quem define o que é aceitável é a empresa: o arvorismo, com público leigo, aceita menos risco que uma travessia de alta montanha, que exige participante preparado. Risco maior não significa gestão pior, mas exige informar o participante.',{matrix:true}),
      P('5 · Tratar o risco','Quando o risco passa do aceitável, escolha uma ou mais opções: reduzir a probabilidade (briefing, capacitação, procedimentos, manutenção), reduzir a consequência (capacete, colete, perneira), eliminar (não operar na chuva, mudar o roteiro) ou compartilhar (seguro, contrato, parceiros). Defina responsável, prazo e recursos. Depois de implantado, o tratamento vira controle operacional.'),
-     X('Exemplo: inventário de rapel','Etapa: descida. Perigo: queda de grande bloco de pedra solta sobre participantes e equipe. Controle existente: identificação de pedra solta. Probabilidade 4 × consequência 5 = nível 20, inaceitável. Tratamento: retirar o bloco, manter a verificação regular e interromper a operação sempre que houver bloco solto.\n\nOutra linha: prender o cabelo no descensor. Probabilidade 3 × consequência 2 = 6. Tratamento: melhorar o briefing explicando o porquê e definir o tamanho máximo do cabelo solto.'),
      D('d_contexto_ativ'),D('d_inventario')]},
    {id:'c6_1_3',k:'cl',num:'6.1.3',t:'Requisitos Legais',
     d:'Identificar as leis e outros requisitos aplicáveis, cumprir e comunicar às pessoas envolvidas.',
@@ -799,7 +754,6 @@ const TREE={
      P('Objetivos mensuráveis (metas)','Meta é o objetivo com número e prazo. Exemplo: 100% dos condutores com primeiros socorros em dia até [mês/ano].'),
      P('Plano de ação: o quê, quem, quando','A norma pede: o que será feito, quais recursos, quem é o responsável, quando termina e como os resultados serão avaliados.'),
      P('Tratamentos de risco entram no plano','A documentação de tratamento de riscos faz parte do planejamento para alcançar os objetivos.'),
-     X('Exemplo de objetivo e plano','Política: reduzir os riscos à vida e à integridade física de todos os envolvidos.\nObjetivo: capacitar os condutores.\nMeta: 100% dos condutores atendendo à competência mínima da norma de condutores até [mês/ano].\nAções: identificar cursos ([Responsável], [prazo], atingido); orçar os cursos ([Responsável], [prazo], atingido); definir a data ([Responsável], [prazo], em andamento); realizar o curso (orçamento de [valor], [prazo], não atingido).'),
      D('d_objetivos')]}
   ]},
 
@@ -870,7 +824,6 @@ const TREE={
     c:[
      P('Terceirizados e fornecedores','Quando outra empresa faz parte da operação, como transporte, hospedagem ou alimentação, o processo continua sendo seu. Defina critérios e confira.'),
      P('Mudanças e plano B','Controle as mudanças planejadas e analise as não planejadas. Tenha planos alternativos para cumprir os objetivos de segurança, como outro roteiro em caso de chuva.'),
-     X('Exemplo: tirolesa na plataforma de lançamento','Conectar o autosseguro do participante à linha de vida e verificar a trava do mosquetão. Conferir em voz alta: capacete, fivelas da cadeirinha, autosseguro e roldanas. Anotar o número da roldana no formulário. Orientar sobre a posição de descida e a frenagem. Confirmar por rádio que o condutor da frenagem está pronto. Se houver descontrole emocional, abortar a descida.'),
      D('d_proc_op'),D('d_equip'),D('d_comp_part'),R('r_checklist')]},
    {id:'c8_2',k:'cl',num:'8.2',t:'Preparação e Resposta à Emergência',
     d:'Identificar emergências possíveis e seus impactos, ter planos e procedimentos de resposta, recursos e pessoas competentes, testar o plano e informar os participantes.',
@@ -940,7 +893,6 @@ const TREE={
      P('Reagir e corrigir','Correção é a ação imediata para controlar o problema e lidar com as consequências.'),
      P('Investigar a causa','Analisar a não conformidade, determinar as causas e ver se existem casos parecidos ou possíveis.'),
      P('Ação corretiva e eficácia','A ação corretiva atua na causa para o problema não se repetir. Depois, verifique se funcionou, normalmente com monitoramento mais focado por um período.'),
-     X('Exemplo: mountain bike sem capacete','Correção: o líder passa a conferir pessoalmente o capacete de todos durante o percurso.\nCausa: o briefing de segurança não estava sendo passado direito e os condutores não tinham autoridade para exigir o capacete.\nAção corretiva: treinamento específico dos condutores e reforço de suas responsabilidades e autoridades.\nEficácia: monitoramento focado nas saídas seguintes e registros do treinamento, como lista de presença e fotos.'),
      R('r_nc')]},
    {id:'c10_2',k:'cl',num:'10.2',t:'Melhoria Contínua',
     d:'A empresa melhora continuamente a adequação, o cabimento e a eficácia do SGS.',
@@ -991,12 +943,11 @@ const INTRO=`
  <li>Toque na seta ao lado do nó para abrir ou fechar o ramo.</li>
  <li>Toque no nome do nó para ler o detalhe aqui.</li>
  <li>As linhas tracejadas mostram com quais outros requisitos o nó se conecta.</li>
- <li>Use DOC, REG e EX acima do mapa para destacar documentos, registros e exemplos.</li>
 </ul></div>
 <div class="sec"><h3>Documento ou registro?</h3>
 <div class="box"><b>Em uma frase</b>Documento tem versão e aprovação (política, procedimento). Registro prova que algo foi feito (ficha preenchida, ata) e não se altera.</div></div>
-<div class="sec"><h3>Já está implementando?</h3>
-<p>Abra a aba <b>Checklist</b>, marque o que a empresa já tem e veja o que falta. As marcações ficam salvas neste navegador.</p></div>
+<div class="sec"><h3>Como construir o SGS aqui</h3>
+<p>Abra um requisito no mapa. Quando ele já tem documento na plataforma, o quadro <b>No SGS da empresa</b> mostra a versão e o andamento, e o botão abre a área de preenchimento.</p></div>
 <div class="sec"><h3>Fonte</h3>
 <p style="color:var(--muted);font-size:13px">ABNT NBR ISO 21101:2014, ABNT NBR ISO 21103:2014 e Guia de Implementação ABNT/Sebrae (2016). Os exemplos usam nomes fictícios ou campos entre colchetes para você preencher.</p></div>`;
 
@@ -1411,24 +1362,11 @@ function applyHL(){
   nodes.forEach(n=>n.el.classList.toggle('dim',!!hl&&!keep.has(n)));
   document.querySelectorAll('.lg').forEach(b=>b.setAttribute('aria-pressed',b.dataset.hl===hl?'true':'false'));
 }
-$('#legend').addEventListener('click',e=>{
-  const b=e.target.closest('.lg');if(!b)return;
-  state.hl=state.hl===b.dataset.hl?null:b.dataset.hl;
-  if(state.hl){nodes.forEach(n=>{if(n.c.length)n.open=true;});relayout();requestAnimationFrame(()=>fit());}
-  applyHL();
-});
-
 /* ============================================================
    PAINEL
    ============================================================ */
-function setTab(t){
-  const d=t==='d';
-  $('#tabD').setAttribute('aria-selected',d);$('#tabC').setAttribute('aria-selected',!d);
-  $('#paneD').hidden=!d;$('#paneC').hidden=d;
-}
+function setTab(){$('#paneD').hidden=false;}
 $('#tabD').onclick=()=>setTab('d');
-$('#tabC').onclick=()=>{renderChecklist();setTab('c');};
-$('#prog').onclick=()=>{renderChecklist();setTab('c');$('#panel').classList.add('open');};
 $('#pclose').innerHTML=ico('close',16);
 $('#pclose').onclick=()=>$('#panel').classList.remove('open');
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('#panel').classList.remove('open');closeResults();}});
@@ -1442,7 +1380,7 @@ function boxes(d){
 }
 function refRow(ref){
   const d=DOCS[ref];
-  return `<div class="row"><input class="cb" type="checkbox" data-ref="${ref}" ${canEdit?'':'disabled'} aria-label="Já tenho: ${esc(d.t)}" ${isDone(ref)?'checked':''}>
+  return `<div class="row">
   <button class="nm" type="button" data-go="i_${ref}">${esc(d.t)}<small>${d.type==='doc'?'Documento':'Registro'} · ${d.norma?'exigido pela norma':'recomendado'} · ${scopeTxt(ref)}</small></button></div>`;
 }
 function linksHTML(n){
@@ -1490,7 +1428,6 @@ function renderPanel(n){
     ${TPL[n.ref]?docBoxHTML(n.ref):''}
     <div class="sec"><h3>O que não pode faltar</h3><ul>${d.inc.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
     <div class="sec"><div class="box"><b>${d.type==='doc'?'Como é um documento':'Como é um registro'}</b>${d.type==='doc'?'Tem cabeçalho com o nome (o requisito que atende), data e versão, e rodapé com quem criou e quem aprovou. Quando muda, ganha nova versão.':'Prova que algo foi feito. Não tem versão e não se altera depois de preenchido. Precisa ser fácil de achar.'} Liste na Lista Mestra de Documentos e Registros.</div></div>
-    <label class="big"><input type="checkbox" data-ref="${n.ref}" ${canEdit?'':'disabled'} ${isDone(n.ref)?'checked':''}><span>Já tenho este item<span class="scope">${isProd(n.ref)?'Vale só para '+esc(cur?cur.nome:'este produto'):'Vale para todos os produtos da empresa'}</span></span></label>
     ${c?`<div class="sec"><h3>Faz parte de</h3><div class="links"><button class="lk" type="button" data-go="${c.id}"><span class="num">${esc(c.num)}</span><span><span class="t">${esc(c.t)}</span><span class="w">Abrir o requisito</span></span></button></div></div>`:''}`;
   }else{
     const def=n.def;
@@ -1539,25 +1476,7 @@ function syncDone(){
     const on=isDone(r);if(on)n++;
     const l=leafOf[r];if(l)l.el.classList.toggle('done',on);
   });
-  $('#pn').textContent=n+'/'+REFS.length;
-  $('#pb').style.width=(REFS.length?n/REFS.length*100:0)+'%';
-  document.querySelectorAll('#panel input[data-ref]').forEach(i=>{i.checked=isDone(i.dataset.ref);});
-  if(!$('#paneC').hidden)renderChecklist();
 }
-let onlyNorma=false;
-function renderChecklist(){
-  const groups=root.c.filter(g=>g.c.some(c=>c.c.some(l=>l.ref)));
-  let h=`<label class="filt"><input type="checkbox" id="fNorma" ${onlyNorma?'checked':''}>Mostrar só os exigidos pela norma</label>`;
-  groups.forEach(g=>{
-    const items=[];g.c.forEach(c=>c.c.forEach(l=>{if(l.ref&&(!onlyNorma||DOCS[l.ref].norma))items.push(l.ref);}));
-    if(!items.length)return;
-    const dn=items.filter(isDone).length;
-    h+=`<div class="gh"><span style="font-family:var(--font-ui);font-size:14px;color:var(--ink)">${esc(g.num)} · ${esc(g.t)}</span><span>${dn}/${items.length}</span></div><div class="rows">${items.map(refRow).join('')}</div>`;
-  });
-  const pane=$('#paneC');pane.innerHTML=h;
-  const f=$('#fNorma');f.onchange=()=>{onlyNorma=f.checked;renderChecklist();};
-}
-
 /* ---- busca ---- */
 const idx=[];
 function buildIndex(){nodes.forEach(n=>{if(n===root)return;const d=n.ref?DOCS[n.ref].p+' '+DOCS[n.ref].inc.join(' '):(n.def.d||'')+' '+((n.def.how||[]).join(' '));idx.push({n,k:norm(n.t+' '+n.num+' '+d)});});}
@@ -1624,7 +1543,6 @@ function counts(pd){
 function allRefs(){if(!REFS.length)Object.keys(DOCS).forEach(r=>REFS.push(r));}
 const stCls={'Em implantação':'s-impl','Implantado':'s-ok','Em revisão':'s-rev'};
 function cardHTML(p){
-  const c=counts(prodDone(p.id)),pct=c.tot?Math.round(c.all/c.tot*100):0;
   const loc=[p.municipio,p.base].filter(Boolean).join(' · ')||'Local a definir';
   return `<article class="card" style="--pc:${pColor(p)}" data-id="${esc(p.id)}">
    <div class="stripe"></div>
@@ -1633,23 +1551,36 @@ function cardHTML(p){
      <div><h3>${esc(p.nome)}</h3><p>${esc(loc)}</p></div></div>
     ${p.descricao?`<p class="cdesc">${esc(p.descricao)}</p>`:''}
     ${p.atividades&&p.atividades.length?`<div class="acts">${p.atividades.map(a=>`<span>${esc(a)}</span>`).join('')}</div>`:''}
-    <div class="cprog"><div class="l"><span>Itens prontos</span><b>${c.all}/${c.tot} · ${pct}%</b></div><span class="bar"><i style="width:${pct}%;background:var(--pc)"></i></span>
-     <div class="l"><span>Deste produto ${c.p}/${c.pt}</span><span>Da empresa ${c.e}/${c.et}</span></div></div>
     <div class="cmeta"><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="st ${stCls[p.situacao]||''}">${esc(p.situacao||'Em implantação')}</span>${p.piloto?'<span class="st">Piloto</span>':''}${p.exemplo?'<span class="ex-b">Exemplo</span>':''}</span>
      <span class="cgo">Abrir SGS ${ico('chev',14)}</span></div>
    </button>
    ${canEdit?'':'<!--'}<button class="more" type="button" data-more="${esc(p.id)}" aria-label="Opções de ${esc(p.nome)}" aria-haspopup="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>${canEdit?'':'-->'}
   </article>`;
 }
+/* indicadores da tela inicial: documentos reais da plataforma (não mais as marcações manuais) */
+let docKpi=null,docKpiCarregando=false;
+async function carregarDocKpi(){
+  if(docKpiCarregando)return;docKpiCarregando=true;
+  try{
+    let vs=[];
+    if(REMOTO)vs=chk(await sb.from('versoes').select('documento_id,estado'));
+    else Object.values(docSum).forEach((d,i)=>{if(d&&d.estado)vs.push({documento_id:i,estado:d.estado});});
+    const por={};vs.forEach(v=>(por[v.documento_id]=por[v.documento_id]||[]).push(v.estado));
+    const docs=Object.values(por);
+    docKpi={elab:docs.filter(e=>e.some(x=>x==='rascunho'||x==='em_revisao')).length,aprov:docs.filter(e=>e.some(x=>x==='aprovado'||x==='vigente')).length};
+  }catch(e){console.error(e);docKpi={elab:'—',aprov:'—'};}
+  docKpiCarregando=false;
+  if(!$('#home').hidden)renderHome();
+}
 function renderHome(){
   allRefs();
-  const c=counts({});
-  const pe=c.et?Math.round(c.e/c.et*100):0;
-  const nImpl=produtos.filter(p=>p.situacao==='Implantado').length;
+  const nImpl=produtos.filter(p=>p.situacao==='Implantado').length,k=docKpi;
+  if(k===null)carregarDocKpi();
+  const nv=v=>k?String(v):'…';
   $('#hsum').innerHTML=`
    <div class="kpi"><small>Produtos cadastrados</small><b>${produtos.length}</b><p>${nImpl} com SGS implantado</p></div>
-   <div class="kpi"><small>Documentos da empresa prontos</small><b>${c.e}/${c.et}</b><span class="bar"><i style="width:${pe}%"></i></span><p>Valem para todos os produtos</p></div>
-   <div class="kpi"><small>Itens de operação por produto</small><b>${c.pt}</b><p>Riscos, procedimentos, PAE e registros de campo</p></div>`;
+   <div class="kpi"><small>Documentos em elaboração</small><b>${nv(k&&k.elab)}</b><p>Rascunhos e documentos em revisão</p></div>
+   <div class="kpi"><small>Documentos aprovados</small><b>${nv(k&&k.aprov)}</b><p>Com versão aprovada ou vigente</p></div>`;
   const v=norm($('#hq').value.trim());
   const list=produtos.filter(p=>!v||norm([p.nome,p.municipio,p.base,(p.atividades||[]).join(' '),p.descricao].join(' ')).includes(v));
   let h=list.map(cardHTML).join('');
@@ -2245,7 +2176,7 @@ function route(){
   if(m)history.replaceState(null,'','#/');
   cur=null;
   $('#app').hidden=true;$('#home').hidden=false;document.title='SGS Turismo';
-  renderHome();
+  docKpi=null;renderHome();
 }
 $('#back').onclick=()=>{location.hash='#/';};
 window.addEventListener('hashchange',route);
