@@ -417,6 +417,9 @@ h1,h2,h3,p,ul,ol{margin:0}
 .fld small{font-weight:400}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .prow{display:grid;grid-template-columns:44px minmax(0,2fr) 100px minmax(0,1fr) 170px;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--hair)}
+.prow.pla{grid-template-columns:44px minmax(0,1fr) minmax(0,1.3fr) 100px;align-items:start}.prow.pla:not(.phd)>b,.prow.pla:not(.phd)>span:last-child{margin-top:8px}
+.qtag{display:inline-block;font:600 10.5px/1 var(--font-mono);letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:6px;color:#fff;background:#1d8a57;margin-right:4px;vertical-align:1px}
+.qtag.W{background:#b06a00}.qtag.O{background:#2f4fc9}.qtag.T{background:#b3263f}
 .prow.phd{border-top:0;padding:4px 0;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .prow b{text-align:center}.mut{color:var(--muted)}
 .pend{margin:12px 0 0;padding:10px 12px;border-radius:8px;background:var(--doc-bg);color:var(--doc-ink)}.okp{margin:12px 0 0;padding:10px 12px;border-radius:8px;background:var(--ok-soft)}
@@ -446,6 +449,7 @@ h1,h2,h3,p,ul,ol{margin:0}
   .wrow label em,.prow label em{display:block;font-style:normal;font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:3px}
   .wrow.whd,.prow.phd{display:none}
   .prow{grid-template-columns:36px minmax(0,1fr)}.prow>*:not(b){grid-column:2}
+  .prow.pla{grid-template-columns:36px minmax(0,1fr)}
   .two{grid-template-columns:1fr}
   .wst b{font-size:14px}
   .wshd{gap:10px;padding:8px 12px}
@@ -1759,6 +1763,8 @@ function bar(lbl,a,b){const pc=b?Math.round(a*100/b):0;return `<div class="pg"><
 const QUADS=[['F','Forças','Interno · ajuda a operação segura'],['W','Fraquezas','Interno · atrapalha a operação segura'],['O','Oportunidades','Externo · ajuda a operação segura'],['T','Ameaças','Externo · atrapalha a operação segura']];
 function numF(c,idx){const it=c.itens[idx];let n=0;for(let j=0;j<=idx;j++)if(c.itens[j].fator===it.fator)n++;return ({F:'F',W:'Fr',O:'O',T:'A'}[it.fator]||'')+n;}
 const comAcao=c=>c.itens.map((it,i)=>[it,i]).filter(([it])=>(it.acao||'').trim()).sort((a,b)=>ORD[a[0].impacto||'']-ORD[b[0].impacto||'']);
+const porImpacto=c=>c.itens.map((it,i)=>[it,i]).sort((a,b)=>ORD[a[0].impacto||'']-ORD[b[0].impacto||'']||a[1]-b[1]);
+const QNOME={F:'Força',W:'Fraqueza',O:'Oportunidade',T:'Ameaça'};
 function climaCard(c,pergunta,extra){
   const k=c.clima||{};
   return `<section class="wcard"><h2>${pergunta}</h2>
@@ -1778,9 +1784,9 @@ TPL.d_contexto={
   req:'4.1',titulo:'Contexto da Organização',
   pergunta:`O que, dentro e fora da ${EMPRESA}, ajuda ou atrapalha a operação segura?`,
   novo:()=>({itens:[],clima:{}}),
-  stats(c){const v=c.itens,ac=v.filter(i=>(i.acao||'').trim());return{tot:v.length,imp:v.filter(i=>i.impacto).length,acoes:ac.length,resp:ac.filter(i=>i.responsavel&&i.prazo).length,clima:!!(c.clima&&c.clima.relevante)};},
-  progresso(c){const s=this.stats(c);return bar('Itens com grau de impacto',s.imp,s.tot)+bar('Decisão sobre mudanças climáticas',s.clima?1:0,1)+bar('Ações com responsável e prazo',s.resp,s.acoes);},
-  pendencias(c){const s=this.stats(c);return [!s.tot?'Nenhum item na análise SWOT':'',s.imp<s.tot?pl(s.tot-s.imp,'item sem grau de impacto','itens sem grau de impacto'):'',!s.clima?'Decisão sobre mudanças climáticas':'',s.resp<s.acoes?pl(s.acoes-s.resp,'ação sem responsável ou prazo','ações sem responsável ou prazo'):''].filter(Boolean);},
+  stats(c){const v=c.itens,ac=v.filter(i=>(i.acao||'').trim());return{tot:v.length,imp:v.filter(i=>i.impacto).length,acoes:ac.length,clima:!!(c.clima&&c.clima.relevante)};},
+  progresso(c){const s=this.stats(c);return bar('Itens com grau de impacto',s.imp,s.tot)+bar('Decisão sobre mudanças climáticas',s.clima?1:0,1)+bar('Itens com ação sugerida',s.acoes,s.tot);},
+  pendencias(c){const s=this.stats(c);return [!s.tot?'Nenhum item na análise SWOT':'',s.imp<s.tot?pl(s.tot-s.imp,'item sem grau de impacto','itens sem grau de impacto'):'',!s.clima?'Decisão sobre mudanças climáticas':'',s.acoes<s.tot?pl(s.tot-s.acoes,'item sem ação sugerida','itens sem ação sugerida'):''].filter(Boolean);},
   tabs:[
     ['swot','Análise SWOT',c=>{const s=TPL.d_contexto.stats(c);return `${s.imp}/${s.tot}`;},c=>{
       let h=`<p class="wsintro">Para cada item, descreva a questão, como ela afeta a segurança e a ação que a empresa vai tomar. Escolha o grau de impacto. Para descartar um item, remova-o.</p>`;
@@ -1800,12 +1806,12 @@ TPL.d_contexto={
     }],
     ['clima','Mudanças climáticas',c=>c.clima&&c.clima.relevante?'✓':'0/1',c=>
       `<p class="wsintro">A Emenda 1:2024 da norma pede que a empresa decida se as mudanças climáticas são uma questão relevante para o SGS e registre essa decisão.</p>`+climaCard(c,'As mudanças climáticas são uma questão relevante para o SGS?')],
-    ['plano','Plano de ação',c=>{const s=TPL.d_contexto.stats(c);return `${s.resp}/${s.acoes}`;},c=>{
-      const pl=comAcao(c);
-      return `<p class="wsintro">As ações vêm da análise SWOT, ordenadas pelo grau de impacto. Defina responsável e prazo de cada uma. Para mudar o texto de uma ação, edite-a na Análise SWOT.</p>
-       <section class="wcard">${pl.length?`<div class="prow phd"><span>Nº</span><span>Ação</span><span>Impacto</span><span>Responsável</span><span>Prazo</span></div>`+pl.map(([it,i])=>`<div class="prow"><b class="tg2">${numF(c,i)}</b><span>${esc(it.acao)}</span><span>${it.impacto?`<span class="tg2 i">${esc(it.impacto)}</span>`:'<span class="mut">—</span>'}</span>
-         <label><em>Responsável</em><input data-p="itens.${i}.responsavel" value="${b_(it.responsavel)}" placeholder="Nome ou função"></label>
-         <label><em>Prazo</em><input type="date" data-p="itens.${i}.prazo" value="${b_(it.prazo)}"></label></div>`).join(''):'<p>Nenhuma ação preenchida ainda.</p>'}</section>`;
+    ['plano','Plano de ação',c=>{const s=TPL.d_contexto.stats(c);return `${s.acoes}/${s.tot}`;},c=>{
+      const pl=porImpacto(c);
+      return `<p class="wsintro">Cada ação nasce de um item da análise SWOT e aparece ao lado da questão de onde veio, ordenada pelo grau de impacto. O texto da ação é o mesmo da Análise SWOT: mudar aqui muda lá. Nesta etapa o plano não tem responsável nem prazo. Isso será definido no requisito 6 (objetivos e planejamento: quem, como e quando).</p>
+       <section class="wcard">${pl.length?`<div class="prow phd pla"><span>Nº</span><span>De onde veio</span><span>Ação sugerida</span><span>Impacto</span></div>`+pl.map(([it,i])=>`<div class="prow pla"><b class="tg2">${numF(c,i)}</b><span><span class="qtag ${it.fator}">${QNOME[it.fator]||''}</span> ${b_(it.questao)||'<span class="mut">sem questão</span>'}</span>
+         <label><em>Ação sugerida</em>${wta('itens.'+i+'.acao',it.acao,'O que a empresa vai fazer')}</label>
+         <span>${it.impacto?`<span class="tg2 i">${esc(it.impacto)}</span>`:'<span class="mut">—</span>'}</span></div>`).join(''):'<p>Nenhum item na análise SWOT ainda.</p>'}</section>`;
     }]
   ],
   preview(c){
@@ -1819,8 +1825,9 @@ TPL.d_contexto={
       ${c.itens.map((it,i)=>`<tr><td><b>${numF(c,i)}</b></td><td>${b_(it.questao)}</td><td>${b_(it.efeito)}</td><td>${b_(it.impacto)||'<span class="mut">a preencher</span>'}</td></tr>`).join('')}</table>
      ${climaPreview(c,'São uma questão relevante para o SGS?')}
      <div class="dpb">Plano de ação</div>
-     <table><tr><th>Nº</th><th>Ação</th><th>Impacto</th><th>Responsável</th><th>Prazo</th></tr>
-      ${comAcao(c).map(([it,i])=>`<tr><td><b>${numF(c,i)}</b></td><td>${b_(it.acao)}</td><td>${b_(it.impacto)}</td><td>${b_(it.responsavel)}</td><td>${fmtD(it.prazo)}</td></tr>`).join('')}</table>`;
+     <table><tr><th>Nº</th><th>De onde veio</th><th>Ação sugerida</th><th style="width:90px">Impacto</th></tr>
+      ${comAcao(c).map(([it,i])=>`<tr><td><b>${numF(c,i)}</b></td><td><b>${QNOME[it.fator]||''}:</b> ${b_(it.questao)}</td><td>${b_(it.acao)}</td><td>${b_(it.impacto)}</td></tr>`).join('')}</table>
+     <p class="mut" style="margin:0 0 12px">Responsáveis, prazos e recursos das ações são definidos no planejamento do requisito 6.</p>`;
   },
   novoItem:a=>({id:novoId(),fator:a.fator,questao:'',efeito:'',acao:'',impacto:'',responsavel:'',prazo:''})
 };
