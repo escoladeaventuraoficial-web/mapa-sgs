@@ -116,10 +116,20 @@ DO $$ BEGIN
 END $$;
 SELECT pg_temp.espera_erro($$DELETE FROM versoes WHERE id = 1$$, 'permission denied');
 
+-- Nomes no rodapé: autor vê o nome do responsável, sem acesso à tabela de perfis.
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000002';
+DO $$ BEGIN
+  ASSERT (SELECT count(*) FROM perfis) = 1, 'autor só vê o próprio perfil';
+  ASSERT (SELECT nome FROM sgs_pessoas(ARRAY['00000000-0000-0000-0000-000000000001'::uuid])) = 'Responsável Teste', 'nome do responsável';
+  ASSERT (SELECT nome FROM sgs_pessoas(ARRAY['00000000-0000-0000-0000-000000000002'::uuid])) = 'autor@exemplo.invalid', 'sem nome usa e-mail';
+END $$;
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000001';
+
 -- Equipe de campo só vê a versão vigente.
 SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000003';
 DO $$ BEGIN ASSERT (SELECT count(*) FROM versoes) = 1, 'campo vê só vigente'; END $$;
 SELECT pg_temp.espera_erro($$SELECT sgs_marcar_item('d_escopo', NULL, false)$$, 'row-level security');
+DO $$ BEGIN ASSERT (SELECT count(*) FROM sgs_pessoas(ARRAY['00000000-0000-0000-0000-000000000001'::uuid])) = 1, 'campo vê nomes'; END $$;
 
 RESET ROLE;
 DO $$ BEGIN
