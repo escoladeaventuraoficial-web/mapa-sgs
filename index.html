@@ -387,6 +387,8 @@ h1,h2,h3,p,ul,ol{margin:0}
 .wsin{max-width:1280px;margin:0 auto}
 .wsin h1{font-size:22px;font-weight:700;margin:0 0 6px}
 .wsintro{color:var(--muted);max-width:75ch;margin:0 0 16px}
+.wconf{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 16px;background:var(--reg-bg);color:var(--reg-ink);font-size:13.5px}
+.wconf button{border:0;background:var(--reg-solid);color:#fff;border-radius:16px;padding:6px 12px;font:inherit;font-weight:600;cursor:pointer}
 .wlock{margin:0 0 16px;padding:10px 12px;border-radius:8px;background:var(--accent-soft);max-width:75ch}
 .wq{--qc:#1d8a57;background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:16px;margin-bottom:18px;overflow:hidden}
 .wq.W{--qc:#b06a00}.wq.O{--qc:#2f4fc9}.wq.T{--qc:#b3263f}.wq.P{--qc:#3552d6}
@@ -1943,7 +1945,7 @@ const dLocal={
     const v={id:d.versoes.reduce((m,x)=>Math.max(m,x.id),0)+1,documento_id:1,maior,menor,versao:maior+'.'+menor,estado:'rascunho',conteudo,motivo,autor_id:'local',data_criacao:null,aprovado_em:null,criado_em:agora,atualizado_em:agora};
     d.versoes.push(v);d.hist.push({versao_id:v.id,de:null,para:'rascunho',usuario_id:'local',comentario:motivo,em:agora});this.put(ref,d);return v.id;
   },
-  async salvar(ref,vid,conteudo){const d=this.get(ref),v=d&&d.versoes.find(x=>x.id===vid);if(!v||v.estado!=='rascunho')throw new Error('Esta versão não está mais em rascunho.');v.conteudo=conteudo;v.atualizado_em=new Date().toISOString();this.put(ref,d);},
+  async salvar(ref,vid,conteudo){const d=this.get(ref),v=d&&d.versoes.find(x=>x.id===vid);if(!v||v.estado!=='rascunho')throw new Error('Esta versão não está mais em rascunho.');v.conteudo=conteudo;v.atualizado_em=new Date().toISOString();this.put(ref,d);return v.atualizado_em;},
   async transicionar(ref,vid,para,coment){
     const d=this.get(ref),v=d.versoes.find(x=>x.id===vid),agora=new Date().toISOString(),hoje=agora.slice(0,10);
     if(para==='aprovado'){if(!d.versoes.some(x=>x.aprovado_em&&x.id!==v.id))v.data_criacao=hoje;v.aprovado_em=agora;v.aprovador_id='local';}
@@ -1975,9 +1977,15 @@ const dRemoto={
     const v=chk(await sb.from('versoes').insert({documento_id:r.data.id,conteudo}).select('id').single());
     return v.id;
   },
-  async salvar(ref,vid,conteudo){
-    const r=chk(await sb.from('versoes').update({conteudo}).eq('id',vid).select('id'));
-    if(!r||!r.length)throw new Error('Esta versão não está mais em rascunho. Recarregue o documento.');
+  async salvar(ref,vid,conteudo,stamp){
+    // Só grava se ninguém alterou a versão desde que ela foi carregada nesta tela.
+    let q=sb.from('versoes').update({conteudo}).eq('id',vid);
+    if(stamp)q=q.eq('atualizado_em',stamp);
+    const r=chk(await q.select('id,atualizado_em'));
+    if(r&&r.length)return r[0].atualizado_em;
+    const at=chk(await sb.from('versoes').select('estado').eq('id',vid).maybeSingle());
+    if(at&&at.estado==='rascunho'){const e=new Error('Este documento foi alterado em outro lugar (por outra pessoa ou pelo agente).');e.conflito=true;throw e;}
+    throw new Error('Esta versão não está mais em rascunho. Recarregue o documento.');
   },
   async transicionar(ref,vid,para,coment){chk(await sb.rpc('sgs_transicionar',{p_versao_id:vid,p_para:para,p_comentario:coment||null}));},
   async novaVersao(ref,base,motivo){return chk(await sb.rpc('sgs_nova_versao',{p_base_versao_id:base,p_motivo:motivo}));},
@@ -2066,11 +2074,14 @@ function wSalvar(){
 }
 function wFlush(){
   clearTimeout(wSaveT);if(!W||!wDirty)return wSaving;
+  if(W.conflito)return wSaving;
   wDirty=false;const ref=W.ref,vid=W.ver.id,c=JSON.parse(JSON.stringify(W.c));
-  wSaving=wSaving.then(()=>dstore.salvar(ref,vid,c)).then(()=>{
-    if(W&&W.ver&&W.ver.id===vid){W.ver.conteudo=c;wStatus('Salvo às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));}
+  wSaving=wSaving.then(()=>dstore.salvar(ref,vid,c,W&&W.ver&&W.ver.id===vid?W.ver.atualizado_em:null)).then(st=>{
+    if(W&&W.ver&&W.ver.id===vid){W.ver.conteudo=c;if(st)W.ver.atualizado_em=st;wStatus('Salvo às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));}
     if(docSum[ref])docSum[ref].c=c;
-  },e=>{console.error(e);wDirty=true;wStatus('Não foi possível salvar. '+((e&&e.message)||'Verifique a conexão.')+' Suas alterações ainda estão nesta tela.',true);});
+  },e=>{console.error(e);wDirty=true;
+    if(e&&e.conflito&&W){W.conflito=true;renderWS(true);return;}
+    wStatus('Não foi possível salvar. '+((e&&e.message)||'Verifique a conexão.')+' Suas alterações ainda estão nesta tela.',true);});
   return wSaving;
 }
 function wsHTML(){
@@ -2086,6 +2097,7 @@ function wsHTML(){
   }
   return `<header class="wshd"><button type="button" class="wback" data-wsclose>← Mapa</button>
    <div class="wst"><b>${esc(docNome(W.ref))}</b><span>${W.carregando?'':vstHTML(docSum[W.ref])}<span class="chip">${isProd(W.ref)?'Do produto':'Da empresa · vale para todos os produtos'}</span><span class="save${W.err?' err':''}" id="wssave">${esc(W.status)}</span></span></div></header>
+   ${W.conflito?`<div class="wconf" role="alert"><b>Este documento foi alterado em outro lugar</b> (por outra pessoa ou pelo agente) enquanto estava aberto aqui. Para não apagar essas mudanças, o salvamento automático parou. Copie o que você digitou por último, se precisar, e carregue a versão atual.<button type="button" data-recarregar>Carregar a versão atual</button></div>`:''}
    <div class="wsb"><nav class="wsn" id="wsn">${navHTML(tabs)}</nav>
    <main class="wsm" id="wsm"><div class="wsin"><h1>${esc(tab[1])}</h1>${body}</div></main></div>`;
 }
@@ -2158,7 +2170,8 @@ function wChange(e){
   if(t.tagName==='SELECT'||t.type==='radio'||t.type==='date'){setP(W.c,t.dataset.p,t.value);wSalvar();renderWS(true);}
 }
 async function wClick(e){
-  if(e.target.closest('[data-wsclose]')){fecharDoc();return;}
+  if(e.target.closest('[data-wsclose]')){if(W.conflito){wDirty=false;}fecharDoc();return;}
+  if(e.target.closest('[data-recarregar]')){W.conflito=false;wDirty=false;W.carregando=true;renderWS();try{await carregarW();}catch(err){wStatus('Não foi possível carregar. '+((err&&err.message)||''),true);}return;}
   const tb=e.target.closest('[data-tab]');if(tb){W.tab=tb.dataset.tab;renderWS();return;}
   const a=e.target.closest('[data-add]');
   if(a&&wPode()){
