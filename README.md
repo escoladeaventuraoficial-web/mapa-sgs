@@ -24,7 +24,8 @@ com o mapa interativo da ABNT NBR ISO 21101 (turismo de aventura).
   Cada documento é uma linha em `documentos` e cada versão uma linha em `versoes` (conteúdo em JSON).
   A versão nasce 1.0 Rascunho, é salva automaticamente, vai para Em revisão, Aprovado (data de criação na
   primeira aprovação) e Vigente. Para mudar um documento vigente, cria-se uma nova versão (1.1).
-  Os nomes no rodapé vêm da função `sgs_pessoas()`.
+  Os nomes no rodapé vêm da função `sgs_pessoas()`. O cabeçalho usa o logo `img/logo-trilhas-do-sul.png`;
+  a assinatura de quem revisou e aprovou vem da tabela `assinaturas` (imagem protegida por RLS, fora do site público).
 
 ## Servidor (Supabase)
 
