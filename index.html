@@ -396,6 +396,7 @@ h1,h2,h3,p,ul,ol{margin:0}
 .wq h2{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0}.wq header span{color:rgba(255,255,255,.88);font-size:13px}
 .wrow{display:grid;grid-template-columns:44px minmax(0,1.1fr) minmax(0,1.1fr) minmax(0,1.2fr) 130px 36px;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--hair)}
 .wrow.c5{grid-template-columns:44px minmax(0,1fr) 120px minmax(0,1.6fr) 130px 36px}
+.wrow.pi{grid-template-columns:44px minmax(0,.8fr) minmax(0,1.3fr) minmax(0,1.3fr) 130px 36px}
 .wrow.c4{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.4fr) 36px}
 .wrow.whd{border-top:0;padding:4px 0;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .wrow>b{margin-top:8px;text-align:center}
@@ -417,6 +418,8 @@ h1,h2,h3,p,ul,ol{margin:0}
 .fld small{font-weight:400}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .prow{display:grid;grid-template-columns:44px minmax(0,2fr) 100px minmax(0,1fr) 170px;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--hair)}
+.prow.prq{grid-template-columns:44px minmax(0,1fr) minmax(0,1.2fr) 110px minmax(0,1.2fr) 90px;align-items:start}
+.prow.pcl{grid-template-columns:44px minmax(0,1fr) 150px}
 .prow.pla{grid-template-columns:44px minmax(0,1fr) minmax(0,1.3fr) 100px;align-items:start}.prow.pla:not(.phd)>b,.prow.pla:not(.phd)>span:last-child{margin-top:8px}
 .qtag{display:inline-block;font:600 10.5px/1 var(--font-mono);letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:6px;color:#fff;background:#1d8a57;margin-right:4px;vertical-align:1px}
 .qtag.W{background:#b06a00}.qtag.O{background:#2f4fc9}.qtag.T{background:#b3263f}
@@ -443,13 +446,13 @@ h1,h2,h3,p,ul,ol{margin:0}
   .wsn{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--hair);padding:8px}
   .wsn button{flex:none;padding:8px 10px}.wsn button span{white-space:nowrap}
   .wsm{padding:16px}
-  .wrow,.wrow.c5,.wrow.c4{grid-template-columns:36px minmax(0,1fr) 36px;row-gap:8px}
+  .wrow,.wrow.c5,.wrow.c4,.wrow.pi{grid-template-columns:36px minmax(0,1fr) 36px;row-gap:8px}
   .wrow.c4>label{grid-column:1/3}
   .wrow>label{grid-column:2}.wrow>.x{grid-column:3;grid-row:1}
   .wrow label em,.prow label em{display:block;font-style:normal;font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:3px}
   .wrow.whd,.prow.phd{display:none}
   .prow{grid-template-columns:36px minmax(0,1fr)}.prow>*:not(b){grid-column:2}
-  .prow.pla{grid-template-columns:36px minmax(0,1fr)}
+  .prow.pla,.prow.prq,.prow.pcl{grid-template-columns:36px minmax(0,1fr)}
   .two{grid-template-columns:1fr}
   .wst b{font-size:14px}
   .wshd{gap:10px;padding:8px 12px}
@@ -1832,62 +1835,58 @@ TPL.d_contexto={
   novoItem:a=>({id:novoId(),fator:a.fator,questao:'',efeito:'',acao:'',impacto:'',responsavel:'',prazo:''})
 };
 
-/* 4.2: partes interessadas. A lista inicial é uma proposta do agente de IA, para revisar. */
-const PARTES_PROPOSTAS=[
-  ['Participantes (clientes)','Externa','Voltar em segurança; receber informações claras sobre riscos, regras e condições físicas exigidas; ter atendimento em caso de emergência.'],
-  ['Condutores e equipe de campo','Interna','Procedimentos claros, equipamentos em bom estado, treinamento e autoridade para suspender a atividade.'],
-  ['Direção da empresa','Interna','Operar com segurança, cumprir a lei e a norma, proteger a reputação e a continuidade do negócio.'],
-  ['Proprietário da área onde a atividade acontece','Externa','Uso responsável do local, respeito às regras de acesso e aviso em caso de incidente.'],
-  ['Órgãos ambientais e gestores de áreas protegidas','Externa','Cumprir as regras de uso público e de conservação do local.'],
-  ['Poder público (prefeitura, turismo, Cadastur)','Externa','Cadastro e licenças em dia; cumprimento da legislação de turismo de aventura.'],
-  ['Corpo de Bombeiros, SAMU e serviços de saúde','Externa','Acionamento correto, com localização e informações da vítima; acesso ao local.'],
-  ['Seguradora','Externa','Seguro dos participantes em vigor e comunicação de sinistros.'],
-  ['Parceiros e agências que vendem o produto','Externa','Informações corretas sobre o produto, requisitos do participante e política de cancelamento.'],
-  ['Comunidade local','Externa','Respeito ao local, aos moradores e às regras de convivência.']
-];
+/* 4.2: partes interessadas, no formato da tabela de referência enviada por Vagner:
+   como a parte pode influenciar a segurança, como pode ser afetada e o grau de impacto.
+   A lista inicial é uma proposta do agente de IA, para revisar. */
+const PARTES_PROPOSTAS=[["Participantes / clientes", "Seguem ou não as orientações, informam (ou omitem) condições de saúde e experiência e respeitam os procedimentos do rapel e do banho", "Acidentes no rapel ou no poço, lesões, afogamento, mal-estar, perda de pertences", "Atividade segura, informação clara sobre riscos e requisitos de participação, equipamentos em bom estado, condutores competentes; saber antes se a saída será cancelada por chuva ou cheia", "Muito alto", "Sim"], ["Condutores / instrutores da Trilhas do Sul", "Planejam, orientam e conduzem o grupo, montam e verificam o sistema de rapel, identificam riscos e decidem durante a atividade", "Podem sofrer acidentes, responsabilização e impactos emocionais ou profissionais", "Treinamento, EPI, procedimentos claros e autoridade para suspender a atividade, inclusive por condição do tempo", "Muito alto", "Sim"], ["Direção / sócios da Trilhas do Sul", "Definem procedimentos, contratam serviços, escolhem roteiros, equipamentos e profissionais e decidem os recursos", "Responsabilidade civil, prejuízos financeiros, danos à reputação e interrupção das operações", "Operação segura, viável e em conformidade legal", "Muito alto", ""], ["Colaboradores de apoio", "Apoiam logística, transporte, alimentação e preparação de equipamentos", "Acidentes, lesões e impactos profissionais decorrentes de falhas nos procedimentos", "Orientação sobre suas tarefas e condições de trabalho seguras", "Alto", ""], ["Proprietário / gestor da área do Poço de Ferro (a confirmar quem é)", "Define condições de acesso, uso da escada e das estruturas, sinalização, manutenção e regras de utilização do local", "Danos à propriedade, acidentes no local, responsabilização e conflitos com a empresa", "Respeito às regras e horários, cuidado com as estruturas, comunicação de ocorrências, acordo de uso por escrito", "Médio/alto", ""], ["Prestadores de serviço e parceiros (agências que vendem o passeio, alimentação, hospedagem)", "Vendem e informam o cliente, fornecem serviços de apoio", "Podem ser envolvidos em acidentes, reclamações, prejuízos e responsabilizações", "Informação correta sobre o produto, requisitos do participante e política de cancelamento", "Alto", ""], ["Motoristas / empresas de transporte", "Influenciam diretamente a segurança no deslocamento até o local", "Acidentes de trânsito, danos materiais e pessoais", "Roteiro, horários e condições de acesso; informação sobre estradas afetadas por chuva", "Muito alto", "Sim"], ["Visitantes não guiados no Poço de Ferro", "Usam o mesmo local sem orientação, podem interferir no rapel e no banho", "Podem ser atingidos por queda de objetos, ou se acidentar e exigir apoio da equipe", "Convivência segura no local", "Médio", ""], ["Comunidade local / vizinhos", "Podem colaborar com informações sobre condições do local, acessos, riscos e cheias", "Podem ser afetados por acidentes, impactos ambientais, tráfego ou comportamento inadequado dos grupos", "Respeito, baixo impacto e boa convivência", "Médio", "Sim"], ["Órgãos públicos e autoridades (prefeitura, órgão ambiental, Ministério do Turismo / Cadastur, Defesa Civil)", "Estabelecem e fiscalizam requisitos legais, ambientais, de trânsito e de segurança; emitem alertas meteorológicos", "Podem precisar atuar em situações de emergência ou acidentes", "Cumprimento dos requisitos legais e cadastros; atenção aos alertas da Defesa Civil", "Médio", "Sim"], ["Serviços de emergência / resgate (Bombeiros, SAMU, hospital de referência)", "Atuam na resposta a acidentes e situações críticas", "Sobrecarga operacional e resgate em local de difícil acesso", "Acionamento correto, localização e acesso bem informados, primeiro atendimento feito pela equipe", "Alto", "Sim"], ["Familiares dos participantes", "Fornecem informações relevantes (saúde, autorização de menores) e podem auxiliar em situações de emergência", "Sofrimento, preocupação e impactos financeiros ou emocionais em caso de acidente", "Comunicação rápida e clara em caso de ocorrência", "Alto", ""], ["Seguradoras", "Definem requisitos, coberturas e condições para o gerenciamento de riscos", "Podem ter que indenizar sinistros e avaliar falhas nos procedimentos", "Registros, procedimentos seguidos e comunicação de sinistros; condições para eventos climáticos", "Médio/alto", "Sim"], ["Fornecedores de equipamentos (cordas, cadeirinhas, capacetes, coletes)", "Influenciam a segurança pela qualidade dos produtos e pelas orientações de uso e manutenção", "Podem responder por falhas de equipamentos ou problemas de qualidade", "Uso conforme o fabricante, inspeção, armazenamento e respeito à vida útil", "Alto", ""], ["Meio ambiente / patrimônio natural (rio, poço, rochas, mata)", "Condições climáticas, nível e correnteza da água, rochas e trilhas influenciam diretamente o risco", "Pode sofrer impactos de acidentes, descarte inadequado ou excesso de visitantes", "Requisitos ambientais do local; chuva e cheias mudam as condições do poço", "Alto", "Sim"], ["Imagem e reputação da Trilhas do Sul", "A cultura de segurança e a comunicação influenciam a percepção dos clientes", "Um acidente ou falha pode gerar avaliações negativas, perda de confiança e de clientes", "—", "Muito alto", ""]];
+const IMPACTOS_P=['','Muito alto','Alto','Médio/alto','Médio','Baixo'];
+const ORDP={'Muito alto':0,'Alto':1,'Médio/alto':2,'Médio':3,'Baixo':4,'':5};
 TPL.d_partes={
   req:'4.2',titulo:'Partes Interessadas',
-  novo:()=>({partes:PARTES_PROPOSTAS.map(([parte,tipo,necessidades])=>({id:novoId(),parte,tipo,necessidades,relevante:'',sgs:'',como:'',legal:''})),clima:{relevante:'',quais:'',justificativa:'',decididoPor:'',data:''},origem:'Lista inicial proposta pelo agente de IA, para revisar.'}),
-  stats(c){const v=c.partes,rel=v.filter(p=>p.relevante==='Sim'),at=rel.filter(p=>p.sgs==='Sim');return{tot:v.length,dec:v.filter(p=>p.relevante).length,rel:rel.length,sgsDec:rel.filter(p=>p.sgs).length,at:at.length,como:at.filter(p=>(p.como||'').trim()).length,clima:!!(c.clima&&c.clima.relevante)};},
-  progresso(c){const s=this.stats(c);return bar('Partes com relevância decidida',s.dec,s.tot)+bar('Requisitos com “como atendemos”',s.como,s.at)+bar('Decisão sobre mudanças climáticas',s.clima?1:0,1);},
-  pendencias(c){const s=this.stats(c);return [!s.tot?'Nenhuma parte interessada':'',s.dec<s.tot?pl(s.tot-s.dec,'parte sem decisão de relevância','partes sem decisão de relevância'):'',s.sgsDec<s.rel?pl(s.rel-s.sgsDec,'parte relevante sem decisão se o SGS atende','partes relevantes sem decisão se o SGS atende'):'',s.como<s.at?pl(s.at-s.como,'requisito sem “como atendemos”','requisitos sem “como atendemos”'):'',!s.clima?'Decisão sobre mudanças climáticas':''].filter(Boolean);},
+  novo:()=>({partes:PARTES_PROPOSTAS.map(([parte,influencia,afetada,requisitos,impacto,clima])=>({id:novoId(),parte,influencia,afetada,requisitos,impacto,clima,sgs:'',como:'',legal:''})),clima:{relevante:'',quais:'',justificativa:'',decididoPor:'',data:''},origem:'Lista inicial proposta pelo agente de IA a partir da tabela de referência de outra empresa, adaptada ao Poço de Ferro. Revise e ajuste.'}),
+  stats(c){const v=c.partes,at=v.filter(p=>p.sgs==='Sim');return{tot:v.length,imp:v.filter(p=>p.impacto).length,sgsDec:v.filter(p=>p.sgs).length,at:at.length,como:at.filter(p=>(p.como||'').trim()).length,clima:!!(c.clima&&c.clima.relevante)};},
+  progresso(c){const s=this.stats(c);return bar('Partes com grau de impacto',s.imp,s.tot)+bar('Partes com decisão se o SGS atende',s.sgsDec,s.tot)+bar('Requisitos com “como atendemos”',s.como,s.at)+bar('Decisão sobre mudanças climáticas',s.clima?1:0,1);},
+  pendencias(c){const s=this.stats(c);return [!s.tot?'Nenhuma parte interessada':'',s.imp<s.tot?pl(s.tot-s.imp,'parte sem grau de impacto','partes sem grau de impacto'):'',s.sgsDec<s.tot?pl(s.tot-s.sgsDec,'parte sem decisão se o SGS atende','partes sem decisão se o SGS atende'):'',s.como<s.at?pl(s.at-s.como,'requisito sem “como atendemos”','requisitos sem “como atendemos”'):'',!s.clima?'Decisão sobre mudanças climáticas':''].filter(Boolean);},
   tabs:[
-    ['partes','Partes interessadas',c=>{const s=TPL.d_partes.stats(c);return `${s.dec}/${s.tot}`;},c=>{
+    ['partes','Partes interessadas',c=>{const s=TPL.d_partes.stats(c);return `${s.imp}/${s.tot}`;},c=>{
       const n=c.partes.length;
-      return `<p class="wsintro">Liste quem é afetado pela operação ou pode afetá-la, e o que cada um precisa ou espera em relação à segurança. Marque se a parte é relevante para o SGS. ${c.origem?'<b>'+esc(c.origem)+'</b>':''}</p>
+      return `<p class="wsintro">Liste quem pode influenciar a segurança da operação ou ser afetado por ela, como isso acontece e o grau de impacto. ${c.origem?'<b>'+esc(c.origem)+'</b>':''}</p>
        <section class="wq P"><header><h2>Partes interessadas</h2><span>${n} ${n===1?'parte':'partes'}</span></header>
-       <div class="wrow c5 whd"><span>Nº</span><span>Parte interessada</span><span>Tipo</span><span>Necessidades e expectativas</span><span>Relevante?</span><span></span></div>
-       ${c.partes.map((p,i)=>`<div class="wrow c5" data-id="${esc(p.id)}"><b class="tg2">P${i+1}</b>
+       <div class="wrow pi whd"><span>Nº</span><span>Parte interessada</span><span>Como pode influenciar?</span><span>Como pode ser afetada?</span><span>Grau de impacto</span><span></span></div>
+       ${c.partes.map((p,i)=>`<div class="wrow pi" data-id="${esc(p.id)}"><b class="tg2">P${i+1}</b>
          <label><em>Parte interessada</em>${wta('partes.'+i+'.parte',p.parte,'Quem é')}</label>
-         <label><em>Tipo</em><select data-p="partes.${i}.tipo" class="${p.tipo?'':'empty'}">${opts(['','Interna','Externa'],p.tipo)}</select></label>
-         <label><em>Necessidades e expectativas</em>${wta('partes.'+i+'.necessidades',p.necessidades,'O que precisa ou espera')}</label>
-         <label><em>Relevante para o SGS?</em><select data-p="partes.${i}.relevante" class="${p.relevante?'':'empty'}">${opts(SIMNAO,p.relevante)}</select></label>
+         <label><em>Como pode influenciar?</em>${wta('partes.'+i+'.influencia',p.influencia,'Como pode influenciar a segurança')}</label>
+         <label><em>Como pode ser afetada?</em>${wta('partes.'+i+'.afetada',p.afetada,'Como pode ser afetada pela operação')}</label>
+         <label><em>Grau de impacto</em><select data-p="partes.${i}.impacto" class="${p.impacto?'':'empty'}">${opts(IMPACTOS_P,p.impacto)}</select></label>
          ${wrm('partes.'+i)}</div>`).join('')}
        ${wadd('partes',{},'+ Adicionar parte interessada')}</section>`;
     }],
-    ['reqs','Requisitos e como atendemos',c=>{const s=TPL.d_partes.stats(c);return `${s.como}/${s.at}`;},c=>{
-      const rel=c.partes.map((p,i)=>[p,i]).filter(([p])=>p.relevante==='Sim');
-      return `<p class="wsintro">Para cada parte relevante, decida quais necessidades viram requisitos que o SGS vai atender e diga como. Se for exigência de lei, marque “legal”: ela entra na Lista de Requisitos Legais (6.1.3).</p>
-       <section class="wcard">${rel.length?`<div class="prow phd" style="grid-template-columns:44px minmax(0,1fr) 120px minmax(0,1.4fr) 100px"><span>Nº</span><span>Parte e necessidade</span><span>O SGS atende?</span><span>Como atendemos</span><span>Legal?</span></div>`+rel.map(([p,i])=>`<div class="prow" style="grid-template-columns:44px minmax(0,1fr) 120px minmax(0,1.4fr) 100px;align-items:start"><b class="tg2" style="margin-top:8px">P${i+1}</b><span><b>${b_(p.parte)}</b><br><span class="mut">${b_(p.necessidades)}</span></span>
+    ['reqs','Requisitos e como atendemos',c=>{const s=TPL.d_partes.stats(c);return `${s.sgsDec}/${s.tot}`;},c=>{
+      const ls=c.partes.map((p,i)=>[p,i]).sort((a,b)=>ORDP[a[0].impacto||'']-ORDP[b[0].impacto||'']||a[1]-b[1]);
+      return `<p class="wsintro">Para cada parte, registre o que ela espera ou exige (os requisitos), decida se o SGS vai atender e diga como. Se for exigência de lei, marque “legal”: ela entra na Lista de Requisitos Legais (6.1.3). As partes aparecem da maior para a menor influência.</p>
+       <section class="wcard">${ls.length?`<div class="prow phd prq"><span>Nº</span><span>Parte</span><span>O que espera ou exige</span><span>O SGS atende?</span><span>Como atendemos</span><span>Legal?</span></div>`+ls.map(([p,i])=>`<div class="prow prq"><b class="tg2" style="margin-top:8px">P${i+1}</b><span style="margin-top:8px"><b>${b_(p.parte)}</b>${p.impacto?`<br><span class="tg2 i">${esc(p.impacto)}</span>`:''}</span>
+         <label><em>O que espera ou exige</em>${wta('partes.'+i+'.requisitos',p.requisitos,'Requisitos desta parte')}</label>
          <label><em>O SGS atende?</em><select data-p="partes.${i}.sgs" class="${p.sgs?'':'empty'}">${opts(SIMNAO,p.sgs)}</select></label>
          <label><em>Como atendemos</em>${wta('partes.'+i+'.como',p.como,p.sgs==='Não'?'Por que fica fora do SGS':'Processo, documento ou registro que atende')}</label>
-         <label><em>É requisito legal?</em><select data-p="partes.${i}.legal">${opts(SIMNAO,p.legal,'—')}</select></label></div>`).join(''):'<p>Nenhuma parte marcada como relevante ainda. Comece pela etapa 1.</p>'}</section>`;
+         <label><em>É requisito legal?</em><select data-p="partes.${i}.legal">${opts(SIMNAO,p.legal,'—')}</select></label></div>`).join(''):'<p>Nenhuma parte interessada ainda. Comece pela etapa 1.</p>'}</section>`;
     }],
-    ['clima','Mudanças climáticas',c=>c.clima&&c.clima.relevante?'✓':'0/1',c=>
-      `<p class="wsintro">A Emenda 1:2024 lembra que as partes interessadas podem ter requisitos ligados às mudanças climáticas. Registre a decisão.</p>`+
-      climaCard(c,'Alguma parte interessada tem requisitos ligados às mudanças climáticas?',`<label class="fld">Quais requisitos e de quem<textarea rows="2" data-p="clima.quais">${b_((c.clima||{}).quais)}</textarea></label>`)]
+    ['clima','Mudanças climáticas',c=>c.clima&&c.clima.relevante?'✓':'0/1',c=>{
+      return `<p class="wsintro">A Emenda 1:2024 lembra que as partes interessadas podem ter requisitos ligados às mudanças climáticas. Marque quais partes têm e registre a decisão.</p>`+
+      climaCard(c,'Alguma parte interessada tem requisitos ligados às mudanças climáticas?',`<label class="fld">Quais requisitos e de quem<textarea rows="2" data-p="clima.quais">${b_((c.clima||{}).quais)}</textarea></label>`)+
+      `<section class="wcard"><h2>Partes com requisitos ligados ao clima</h2>${c.partes.map((p,i)=>`<div class="prow pcl"><b class="tg2">P${i+1}</b><span>${b_(p.parte)}</span><label><em>Ligado ao clima?</em><select data-p="partes.${i}.clima">${opts(SIMNAO,p.clima,'—')}</select></label></div>`).join('')}</section>`;
+    }]
   ],
   preview(c){
-    const at=c.partes.map((p,i)=>[p,i]).filter(([p])=>p.relevante==='Sim');
-    return `<div class="dpb">Quem é afetado pela operação da ${EMPRESA} ou pode afetá-la, e o que espera em relação à segurança?</div>
-     <table><tr><th>Nº</th><th>Parte interessada</th><th>Tipo</th><th>Necessidades e expectativas</th><th style="width:80px">Relevante</th></tr>
-      ${c.partes.map((p,i)=>`<tr><td><b>P${i+1}</b></td><td>${b_(p.parte)}</td><td>${b_(p.tipo)}</td><td>${b_(p.necessidades)}</td><td>${b_(p.relevante)||'<span class="mut">a decidir</span>'}</td></tr>`).join('')}</table>
-     <div class="dpb">Requisitos das partes relevantes e como o SGS atende</div>
-     <table><tr><th>Nº</th><th>Parte</th><th style="width:90px">O SGS atende?</th><th>Como atendemos</th><th style="width:70px">Legal</th></tr>
-      ${at.map(([p,i])=>`<tr><td><b>P${i+1}</b></td><td>${b_(p.parte)}</td><td>${b_(p.sgs)}</td><td>${b_(p.como)}</td><td>${b_(p.legal)}</td></tr>`).join('')||'<tr><td colspan="5" class="mut">—</td></tr>'}</table>
+    const ls=c.partes.map((p,i)=>[p,i]);
+    return `<div class="dpb">Quem pode influenciar a segurança da operação da ${EMPRESA} ou ser afetado por ela?</div>
+     <table><tr><th>Nº</th><th>Parte interessada</th><th>Como pode influenciar?</th><th>Como pode ser afetada?</th><th style="width:90px">Grau de impacto</th><th style="width:60px">Clima</th></tr>
+      ${ls.map(([p,i])=>`<tr><td><b>P${i+1}</b></td><td>${b_(p.parte)}</td><td>${b_(p.influencia)}</td><td>${b_(p.afetada)}</td><td>${b_(p.impacto)||'<span class="mut">a definir</span>'}</td><td>${p.clima==='Sim'?'Sim':''}</td></tr>`).join('')}</table>
+     <div class="dpb">Requisitos das partes interessadas e como o SGS atende</div>
+     <table><tr><th>Nº</th><th>Parte</th><th>O que espera ou exige</th><th style="width:80px">O SGS atende?</th><th>Como atendemos</th><th style="width:60px">Legal</th></tr>
+      ${ls.map(([p,i])=>`<tr><td><b>P${i+1}</b></td><td>${b_(p.parte)}</td><td>${b_(p.requisitos)}</td><td>${b_(p.sgs)||'<span class="mut">a decidir</span>'}</td><td>${b_(p.como)}</td><td>${b_(p.legal)}</td></tr>`).join('')||'<tr><td colspan="6" class="mut">—</td></tr>'}</table>
      ${climaPreview(c,'Alguma parte tem requisitos ligados às mudanças climáticas?')}`;
   },
-  novoItem:()=>({id:novoId(),parte:'',tipo:'',necessidades:'',relevante:'',sgs:'',como:'',legal:''})
+  novoItem:()=>({id:novoId(),parte:'',influencia:'',afetada:'',requisitos:'',impacto:'',clima:'',sgs:'',como:'',legal:''})
 };
 
 /* 4.3: escopo. Os produtos vêm do cadastro da plataforma. */
