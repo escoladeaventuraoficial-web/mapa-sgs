@@ -346,6 +346,107 @@ h1,h2,h3,p,ul,ol{margin:0}
 @media (prefers-reduced-motion:reduce){
   .tg svg,.progress .bar i,#panel{transition:none!important}
 }
+/* ---- documentos: caixa no painel e área de preenchimento (#ws) ---- */
+.org{margin-top:18px;border:1.5px solid var(--accent);border-radius:14px;padding:14px;background:var(--canvas)}
+.org h3{color:var(--accent)!important}
+.org .dname{font-weight:700;font-size:15px;line-height:1.3}
+.orow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.vst{flex:none;font:600 11px/1 var(--font-mono);padding:4px 7px;border-radius:10px;background:var(--surface);color:var(--doc-solid);border:1px solid var(--doc-solid);white-space:nowrap}
+.vst.rev{color:var(--accent);border-color:var(--accent)}
+.vst.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.vst.none{color:var(--muted);border-color:var(--hair)}
+.save{font-size:12px;color:var(--muted);margin-top:6px;min-height:18px}
+.save.err{color:var(--reg-solid)}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.acts button{border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);border-radius:18px;padding:7px 14px;font:inherit;font-weight:600;cursor:pointer}
+.acts button.sec2{background:transparent;color:var(--accent)}
+.acts button:disabled{opacity:.6;cursor:wait}
+.acts small{flex-basis:100%;color:var(--muted);font-size:11.5px}
+.pg{margin-top:8px}.pgl{display:flex;justify-content:space-between;font-size:12.5px}.pgl b{font-family:var(--font-mono);font-weight:600}
+.pgb{height:6px;border-radius:3px;background:var(--hair);overflow:hidden;margin-top:3px}.pgb i{display:block;height:100%;background:var(--ok)}
+.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-bottom:12px}
+.flow span{font-size:12px;text-align:center;padding:7px 2px;border-radius:6px;background:var(--hair);color:var(--muted)}
+.flow span.on{background:var(--accent);color:var(--on-accent);font-weight:600}
+.flow span.past{background:var(--accent-soft);color:var(--ink)}
+.tg2{font:600 11px/1 var(--font-mono);padding:4px 6px;border-radius:8px;background:var(--hair);color:var(--ink);white-space:nowrap}
+.tg2.i{background:var(--doc-bg);color:var(--doc-ink)}
+#ws{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;flex-direction:column;color:var(--ink)}
+.wshd{display:flex;align-items:center;gap:14px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--hair)}
+.wshd .wback{border:1px solid var(--hair);background:var(--canvas);color:var(--ink);border-radius:18px;padding:7px 14px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+.wshd .wback:hover{background:var(--accent-soft)}
+.wst{display:flex;flex-direction:column;min-width:0}.wst b{font-size:16px;line-height:1.3}.wst>span{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.wst .save{margin:0;min-height:0}
+.wsb{flex:1;min-height:0;display:grid;grid-template-columns:230px minmax(0,1fr)}
+.wsn{border-right:1px solid var(--hair);background:var(--surface);padding:12px;display:flex;flex-direction:column;gap:4px}
+.wsn button{display:flex;align-items:center;gap:10px;text-align:left;border:0;background:none;color:var(--ink);border-radius:10px;padding:10px;cursor:pointer;font:inherit;font-weight:500}
+.wsn button:hover{background:var(--canvas)}
+.wsn button i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--hair);font:600 12px var(--font-mono);flex:none}
+.wsn button span{flex:1}.wsn button small{font:600 11px var(--font-mono);color:var(--muted)}
+.wsn button.on{background:var(--accent-soft);font-weight:700}.wsn button.on i{background:var(--accent);color:var(--on-accent)}
+.wsm{overflow:auto;padding:24px}
+.wsin{max-width:1280px;margin:0 auto}
+.wsin h1{font-size:22px;font-weight:700;margin:0 0 6px}
+.wsintro{color:var(--muted);max-width:75ch;margin:0 0 16px}
+.wlock{margin:0 0 16px;padding:10px 12px;border-radius:8px;background:var(--accent-soft);max-width:75ch}
+.wq{--qc:#1d8a57;background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:16px;margin-bottom:18px;overflow:hidden}
+.wq.W{--qc:#b06a00}.wq.O{--qc:#2f4fc9}.wq.T{--qc:#b3263f}.wq.P{--qc:#3552d6}
+.wq header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:-16px -16px 12px;padding:12px 18px;background:var(--qc);color:#fff}
+.wq h2{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0}.wq header span{color:rgba(255,255,255,.88);font-size:13px}
+.wrow{display:grid;grid-template-columns:44px minmax(0,1.1fr) minmax(0,1.1fr) minmax(0,1.2fr) 130px 36px;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--hair)}
+.wrow.c5{grid-template-columns:44px minmax(0,1fr) 120px minmax(0,1.6fr) 130px 36px}
+.wrow.c4{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.4fr) 36px}
+.wrow.whd{border-top:0;padding:4px 0;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.wrow>b{margin-top:8px;text-align:center}
+.wrow label em,.prow label em{display:none}
+#ws textarea,#ws input:not([type=radio]):not([type=checkbox]),#ws select{font:inherit;font-size:14px;color:var(--ink);background:var(--canvas);border:1px solid var(--hair);border-radius:8px;padding:8px 10px;width:100%;box-sizing:border-box}
+#ws textarea{resize:vertical;overflow:hidden;line-height:1.45;min-height:44px}
+#ws textarea:focus,#ws input:focus,#ws select:focus{outline:2px solid var(--accent);outline-offset:0;background:var(--surface)}
+#ws textarea:disabled,#ws input:disabled,#ws select:disabled{background:transparent;border-color:transparent;color:var(--ink);opacity:1;padding-left:0}
+#ws select:disabled{appearance:none}
+#ws select.empty{color:var(--doc-solid);border-color:var(--doc-solid)}
+.wrow .x{margin-top:6px;border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer;border-radius:8px;padding:2px 6px}
+.wrow .x:hover{color:var(--reg-solid);background:var(--reg-bg)}.wrow .x.sure{font-size:11px;color:var(--reg-solid);font-weight:700}
+.wadd{margin-top:10px;border:1px dashed var(--hair);background:var(--canvas);color:var(--accent);border-radius:10px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}
+.wadd:hover{border-color:var(--accent);background:var(--accent-soft)}
+.wcard{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:18px;margin-bottom:18px}
+.wcard h2{font-size:17px;margin:0 0 12px}
+.big2{display:flex;gap:24px;margin-bottom:14px}.big2 label{display:flex;gap:8px;align-items:center;font-size:16px;font-weight:600}
+.fld{display:grid;gap:4px;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:12px}
+.fld small{font-weight:400}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prow{display:grid;grid-template-columns:44px minmax(0,2fr) 100px minmax(0,1fr) 170px;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--hair)}
+.prow.phd{border-top:0;padding:4px 0;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.prow b{text-align:center}.mut{color:var(--muted)}
+.pend{margin:12px 0 0;padding:10px 12px;border-radius:8px;background:var(--doc-bg);color:var(--doc-ink)}.okp{margin:12px 0 0;padding:10px 12px;border-radius:8px;background:var(--ok-soft)}
+.wsh2{font-size:17px;margin:8px 0 10px}
+.hist{list-style:none;margin:0;padding:0;font-size:13px}.hist li{padding:6px 0;border-top:1px solid var(--hair)}.hist li:first-child{border-top:0}
+.hist time{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.dp{background:#fff;color:#111;border:1px solid var(--hair);border-radius:6px;padding:22px;box-shadow:var(--shadow);font-size:12.5px;overflow-x:auto}
+.dp table{width:100%;border-collapse:collapse;margin-bottom:12px}.dp td,.dp th{border:1px solid #000;padding:5px 7px;vertical-align:top;text-align:left}
+.dp th{background:#000;color:#fff;font-weight:600}
+.dph td{text-align:center;vertical-align:middle}.dph .dlogo{width:16%}.dph .w{width:16%}.dph small{color:#b00020}
+.dpr{text-align:center;color:#b00020;font-weight:700;font-size:11px;margin-bottom:6px}
+.dpb{border:1px solid #000;text-align:center;font-weight:700;padding:5px;margin:4px 0 10px;font-size:13.5px}
+.dpx{border:1px solid #000;padding:8px 10px;margin:4px 0 12px;line-height:1.5}
+.dps th{text-align:center;vertical-align:middle}.dps tr>th:first-child{background:#e7e6e6;color:#111;width:14%}
+.dps td.F{background:#eaf4ea}.dps td.W{background:#fdf0e6}.dps td.O{background:#e8f0fa}.dps td.T{background:#fbe9e9}
+.dps h4{font-size:12px;margin:0 0 4px}.dps ul{margin:0;padding-left:16px}.dp .mut{color:#888}
+.dp .dpctl th{background:#e7e6e6;color:#111;text-align:center}.dp .dpctl td{text-align:center}
+@media (max-width:860px){
+  .wsb{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+  .wsn{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--hair);padding:8px}
+  .wsn button{flex:none;padding:8px 10px}.wsn button span{white-space:nowrap}
+  .wsm{padding:16px}
+  .wrow,.wrow.c5,.wrow.c4{grid-template-columns:36px minmax(0,1fr) 36px;row-gap:8px}
+  .wrow.c4>label{grid-column:1/3}
+  .wrow>label{grid-column:2}.wrow>.x{grid-column:3;grid-row:1}
+  .wrow label em,.prow label em{display:block;font-style:normal;font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:3px}
+  .wrow.whd,.prow.phd{display:none}
+  .prow{grid-template-columns:36px minmax(0,1fr)}.prow>*:not(b){grid-column:2}
+  .two{grid-template-columns:1fr}
+  .wst b{font-size:14px}
+  .wshd{gap:10px;padding:8px 12px}
+}
 </style>
 
 <div id="login" hidden>
@@ -1372,6 +1473,7 @@ function renderPanel(n){
     h=crumbHTML(n)+`<h2>${esc(d.t)}</h2>
     <div class="chips"><span class="chip ${d.type==='doc'?'must':'reg'}">${d.type==='doc'?'Documento':'Registro'}</span><span class="chip ${d.norma?'must':''}">${d.norma?'Exigido pela norma':'Recomendado'}</span>${c?`<span class="chip">Requisito ${esc(c.num)}</span>`:''}<span class="chip ${isProd(n.ref)?'prd':'emp'}">${isProd(n.ref)?'Do produto':'Da empresa'}</span></div>
     <p class="lead">${esc(d.p)}</p>
+    ${TPL[n.ref]?docBoxHTML(n.ref):''}
     <div class="sec"><h3>O que não pode faltar</h3><ul>${d.inc.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
     <div class="sec"><div class="box"><b>${d.type==='doc'?'Como é um documento':'Como é um registro'}</b>${d.type==='doc'?'Tem cabeçalho com o nome (o requisito que atende), data e versão, e rodapé com quem criou e quem aprovou. Quando muda, ganha nova versão.':'Prova que algo foi feito. Não tem versão e não se altera depois de preenchido. Precisa ser fácil de achar.'} Liste na Lista Mestra de Documentos e Registros.</div></div>
     <label class="big"><input type="checkbox" data-ref="${n.ref}" ${canEdit?'':'disabled'} ${isDone(n.ref)?'checked':''}><span>Já tenho este item<span class="scope">${isProd(n.ref)?'Vale só para '+esc(cur?cur.nome:'este produto'):'Vale para todos os produtos da empresa'}</span></span></label>
@@ -1386,6 +1488,7 @@ function renderPanel(n){
     if(n.k==='ex')h=h.replace('<p class="lead">','<div class="sec"><div class="box ex">').replace(/<\/p>$/,'</div></div>');
     h+=ol(def.how);
     h+=boxes(def);
+    const dref=refDoReq(n.id);if(dref)h+=docBoxHTML(dref);
     if(def.matrix)h+=matrixHTML();
     if(refs.length)h+=`<div class="sec"><h3>Documentos e registros desta etapa</h3><div class="rows">${refs.map(refRow).join('')}</div></div>`;
     h+=linksHTML(n);
@@ -1398,6 +1501,8 @@ function renderPanel(n){
   }
 }
 $('#panel').addEventListener('click',e=>{
+  const w=e.target.closest('[data-ws]');
+  if(w){abrirDoc(w.dataset.ws,w.dataset.wtab);return;}
   const g=e.target.closest('[data-go]');
   if(g){focusNode(g.dataset.go);}
 });
@@ -1627,9 +1732,475 @@ $('#dOk').onclick=()=>{
   store.arquivar(p).catch(e=>{produtos.push(p);renderHome();falha(e,'excluir o produto');});
 };
 
+/* ============================================================
+   DOCUMENTOS: preenchimento em etapas, salvo no banco com versões.
+   O mapa mostra o resumo; o preenchimento acontece na área de
+   tela cheia (#ws). Cada versão nasce 1.0 Rascunho, vai para
+   revisão, é aprovada (data de criação) e entra em vigor.
+   ============================================================ */
+const EMPRESA='Trilhas do Sul';
+const ESTADOS={rascunho:'Rascunho',em_revisao:'Em revisão',aprovado:'Aprovado',vigente:'Vigente',substituido:'Substituída',arquivado:'Arquivada'};
+const FLUXO=['rascunho','em_revisao','aprovado','vigente'];
+const fmtD=d=>d?String(d).slice(0,10).split('-').reverse().join('/'):'';
+const fmtDH=d=>d?new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+const novoId=()=>'n'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const IMPACTOS=['','Muito alto','Alto','Médio','Baixo'];
+const ORD={'Muito alto':0,'Alto':1,'Médio':2,'Baixo':3,'':4};
+const SIMNAO=['','Sim','Não'];
+const b_=s=>esc(s||'');
+const pl=(n,um,varios)=>n+' '+(n===1?um:varios);
+function opts(list,v,vazio){return list.map(x=>`<option value="${esc(x)}"${x===(v||'')?' selected':''}>${x?esc(x):vazio||'Escolher'}</option>`).join('');}
+function bar(lbl,a,b){const pc=b?Math.round(a*100/b):0;return `<div class="pg"><div class="pgl"><span>${lbl}</span><b>${a}/${b}</b></div><div class="pgb"><i style="width:${pc}%"></i></div></div>`;}
+
+/* ---- modelos de documento (um por requisito) ---- */
+const QUADS=[['F','Forças','Interno · ajuda a operação segura'],['W','Fraquezas','Interno · atrapalha a operação segura'],['O','Oportunidades','Externo · ajuda a operação segura'],['T','Ameaças','Externo · atrapalha a operação segura']];
+function numF(c,idx){const it=c.itens[idx];let n=0;for(let j=0;j<=idx;j++)if(c.itens[j].fator===it.fator)n++;return ({F:'F',W:'Fr',O:'O',T:'A'}[it.fator]||'')+n;}
+const comAcao=c=>c.itens.map((it,i)=>[it,i]).filter(([it])=>(it.acao||'').trim()).sort((a,b)=>ORD[a[0].impacto||'']-ORD[b[0].impacto||'']);
+function climaCard(c,pergunta,extra){
+  const k=c.clima||{};
+  return `<section class="wcard"><h2>${pergunta}</h2>
+   <div class="big2"><label><input type="radio" name="crel" value="Sim" data-p="clima.relevante"${k.relevante==='Sim'?' checked':''}>Sim</label><label><input type="radio" name="crel" value="Não" data-p="clima.relevante"${k.relevante==='Não'?' checked':''}>Não</label></div>
+   ${extra||''}
+   <label class="fld">Justificativa<textarea rows="3" data-p="clima.justificativa">${b_(k.justificativa)}</textarea></label>
+   <div class="two"><label class="fld">Decidido por<input data-p="clima.decididoPor" value="${b_(k.decididoPor)}"></label><label class="fld">Data<input type="date" data-p="clima.data" value="${b_(k.data)}"></label></div></section>`;
+}
+function climaPreview(c,pergunta){
+  const k=c.clima||{};
+  return `<div class="dpb">Mudanças climáticas</div>
+   <table><tr><th style="width:38%">${pergunta}</th><td>${b_(k.relevante)||'<span class="mut">a decidir</span>'}</td></tr>${k.quais!==undefined?`<tr><th>Quais requisitos</th><td>${b_(k.quais)}</td></tr>`:''}<tr><th>Justificativa</th><td>${b_(k.justificativa)}</td></tr><tr><th>Decidido por / data</th><td>${b_(k.decididoPor)} ${fmtD(k.data)}</td></tr></table>`;
+}
+
+const TPL={};
+TPL.d_contexto={
+  req:'4.1',titulo:'Contexto da Organização',
+  pergunta:`O que, dentro e fora da ${EMPRESA}, ajuda ou atrapalha a operação segura?`,
+  novo:()=>({itens:[],clima:{}}),
+  stats(c){const v=c.itens,ac=v.filter(i=>(i.acao||'').trim());return{tot:v.length,imp:v.filter(i=>i.impacto).length,acoes:ac.length,resp:ac.filter(i=>i.responsavel&&i.prazo).length,clima:!!(c.clima&&c.clima.relevante)};},
+  progresso(c){const s=this.stats(c);return bar('Itens com grau de impacto',s.imp,s.tot)+bar('Decisão sobre mudanças climáticas',s.clima?1:0,1)+bar('Ações com responsável e prazo',s.resp,s.acoes);},
+  pendencias(c){const s=this.stats(c);return [!s.tot?'Nenhum item na análise SWOT':'',s.imp<s.tot?pl(s.tot-s.imp,'item sem grau de impacto','itens sem grau de impacto'):'',!s.clima?'Decisão sobre mudanças climáticas':'',s.resp<s.acoes?pl(s.acoes-s.resp,'ação sem responsável ou prazo','ações sem responsável ou prazo'):''].filter(Boolean);},
+  tabs:[
+    ['swot','Análise SWOT',c=>{const s=TPL.d_contexto.stats(c);return `${s.imp}/${s.tot}`;},c=>{
+      let h=`<p class="wsintro">Para cada item, descreva a questão, como ela afeta a segurança e a ação que a empresa vai tomar. Escolha o grau de impacto. Para descartar um item, remova-o.</p>`;
+      QUADS.forEach(([q,nome,sub])=>{
+        const items=c.itens.map((it,i)=>[it,i]).filter(([it])=>it.fator===q);
+        h+=`<section class="wq ${q}"><header><h2>${nome}</h2><span>${sub} · ${items.length} ${items.length===1?'item':'itens'}</span></header>
+         <div class="wrow whd"><span>Nº</span><span>Questão</span><span>Como afeta a segurança</span><span>Ação</span><span>Impacto</span><span></span></div>
+         ${items.map(([it,i])=>`<div class="wrow" data-id="${esc(it.id)}"><b class="tg2">${numF(c,i)}</b>
+           <label><em>Questão</em>${wta('itens.'+i+'.questao',it.questao,'Descreva a questão')}</label>
+           <label><em>Como afeta a segurança</em>${wta('itens.'+i+'.efeito',it.efeito,'Efeito na segurança')}</label>
+           <label><em>Ação</em>${wta('itens.'+i+'.acao',it.acao,'O que a empresa vai fazer')}</label>
+           <label><em>Impacto</em><select data-p="itens.${i}.impacto" class="${it.impacto?'':'empty'}">${opts(IMPACTOS,it.impacto)}</select></label>
+           ${wrm('itens.'+i)}</div>`).join('')}
+         ${wadd('itens',{fator:q},'+ Adicionar em '+nome)}</section>`;
+      });
+      return h;
+    }],
+    ['clima','Mudanças climáticas',c=>c.clima&&c.clima.relevante?'✓':'0/1',c=>
+      `<p class="wsintro">A Emenda 1:2024 da norma pede que a empresa decida se as mudanças climáticas são uma questão relevante para o SGS e registre essa decisão.</p>`+climaCard(c,'As mudanças climáticas são uma questão relevante para o SGS?')],
+    ['plano','Plano de ação',c=>{const s=TPL.d_contexto.stats(c);return `${s.resp}/${s.acoes}`;},c=>{
+      const pl=comAcao(c);
+      return `<p class="wsintro">As ações vêm da análise SWOT, ordenadas pelo grau de impacto. Defina responsável e prazo de cada uma. Para mudar o texto de uma ação, edite-a na Análise SWOT.</p>
+       <section class="wcard">${pl.length?`<div class="prow phd"><span>Nº</span><span>Ação</span><span>Impacto</span><span>Responsável</span><span>Prazo</span></div>`+pl.map(([it,i])=>`<div class="prow"><b class="tg2">${numF(c,i)}</b><span>${esc(it.acao)}</span><span>${it.impacto?`<span class="tg2 i">${esc(it.impacto)}</span>`:'<span class="mut">—</span>'}</span>
+         <label><em>Responsável</em><input data-p="itens.${i}.responsavel" value="${b_(it.responsavel)}" placeholder="Nome ou função"></label>
+         <label><em>Prazo</em><input type="date" data-p="itens.${i}.prazo" value="${b_(it.prazo)}"></label></div>`).join(''):'<p>Nenhuma ação preenchida ainda.</p>'}</section>`;
+    }]
+  ],
+  preview(c){
+    const q=f=>c.itens.map((it,i)=>[it,i]).filter(([it])=>it.fator===f).map(([it,i])=>`<li><b>${numF(c,i)}</b> ${b_(it.questao)}</li>`).join('')||'<li class="mut">—</li>';
+    return `<div class="dpb">${esc(this.pergunta)}</div>
+     <table class="dps"><tr><th></th><th>Ajuda a operação segura</th><th>Atrapalha a operação segura</th></tr>
+      <tr><th>Fatores internos</th><td class="F"><h4>Forças</h4><ul>${q('F')}</ul></td><td class="W"><h4>Fraquezas</h4><ul>${q('W')}</ul></td></tr>
+      <tr><th>Fatores externos</th><td class="O"><h4>Oportunidades</h4><ul>${q('O')}</ul></td><td class="T"><h4>Ameaças</h4><ul>${q('T')}</ul></td></tr></table>
+     <div class="dpb">Como cada questão afeta a segurança</div>
+     <table><tr><th>Nº</th><th>Questão</th><th>Como afeta a segurança</th><th style="width:110px">Impacto</th></tr>
+      ${c.itens.map((it,i)=>`<tr><td><b>${numF(c,i)}</b></td><td>${b_(it.questao)}</td><td>${b_(it.efeito)}</td><td>${b_(it.impacto)||'<span class="mut">a preencher</span>'}</td></tr>`).join('')}</table>
+     ${climaPreview(c,'São uma questão relevante para o SGS?')}
+     <div class="dpb">Plano de ação</div>
+     <table><tr><th>Nº</th><th>Ação</th><th>Impacto</th><th>Responsável</th><th>Prazo</th></tr>
+      ${comAcao(c).map(([it,i])=>`<tr><td><b>${numF(c,i)}</b></td><td>${b_(it.acao)}</td><td>${b_(it.impacto)}</td><td>${b_(it.responsavel)}</td><td>${fmtD(it.prazo)}</td></tr>`).join('')}</table>`;
+  },
+  novoItem:a=>({id:novoId(),fator:a.fator,questao:'',efeito:'',acao:'',impacto:'',responsavel:'',prazo:''})
+};
+
+/* 4.2: partes interessadas. A lista inicial é uma proposta do agente de IA, para revisar. */
+const PARTES_PROPOSTAS=[
+  ['Participantes (clientes)','Externa','Voltar em segurança; receber informações claras sobre riscos, regras e condições físicas exigidas; ter atendimento em caso de emergência.'],
+  ['Condutores e equipe de campo','Interna','Procedimentos claros, equipamentos em bom estado, treinamento e autoridade para suspender a atividade.'],
+  ['Direção da empresa','Interna','Operar com segurança, cumprir a lei e a norma, proteger a reputação e a continuidade do negócio.'],
+  ['Proprietário da área onde a atividade acontece','Externa','Uso responsável do local, respeito às regras de acesso e aviso em caso de incidente.'],
+  ['Órgãos ambientais e gestores de áreas protegidas','Externa','Cumprir as regras de uso público e de conservação do local.'],
+  ['Poder público (prefeitura, turismo, Cadastur)','Externa','Cadastro e licenças em dia; cumprimento da legislação de turismo de aventura.'],
+  ['Corpo de Bombeiros, SAMU e serviços de saúde','Externa','Acionamento correto, com localização e informações da vítima; acesso ao local.'],
+  ['Seguradora','Externa','Seguro dos participantes em vigor e comunicação de sinistros.'],
+  ['Parceiros e agências que vendem o produto','Externa','Informações corretas sobre o produto, requisitos do participante e política de cancelamento.'],
+  ['Comunidade local','Externa','Respeito ao local, aos moradores e às regras de convivência.']
+];
+TPL.d_partes={
+  req:'4.2',titulo:'Partes Interessadas',
+  novo:()=>({partes:PARTES_PROPOSTAS.map(([parte,tipo,necessidades])=>({id:novoId(),parte,tipo,necessidades,relevante:'',sgs:'',como:'',legal:''})),clima:{relevante:'',quais:'',justificativa:'',decididoPor:'',data:''},origem:'Lista inicial proposta pelo agente de IA, para revisar.'}),
+  stats(c){const v=c.partes,rel=v.filter(p=>p.relevante==='Sim'),at=rel.filter(p=>p.sgs==='Sim');return{tot:v.length,dec:v.filter(p=>p.relevante).length,rel:rel.length,sgsDec:rel.filter(p=>p.sgs).length,at:at.length,como:at.filter(p=>(p.como||'').trim()).length,clima:!!(c.clima&&c.clima.relevante)};},
+  progresso(c){const s=this.stats(c);return bar('Partes com relevância decidida',s.dec,s.tot)+bar('Requisitos com “como atendemos”',s.como,s.at)+bar('Decisão sobre mudanças climáticas',s.clima?1:0,1);},
+  pendencias(c){const s=this.stats(c);return [!s.tot?'Nenhuma parte interessada':'',s.dec<s.tot?pl(s.tot-s.dec,'parte sem decisão de relevância','partes sem decisão de relevância'):'',s.sgsDec<s.rel?pl(s.rel-s.sgsDec,'parte relevante sem decisão se o SGS atende','partes relevantes sem decisão se o SGS atende'):'',s.como<s.at?pl(s.at-s.como,'requisito sem “como atendemos”','requisitos sem “como atendemos”'):'',!s.clima?'Decisão sobre mudanças climáticas':''].filter(Boolean);},
+  tabs:[
+    ['partes','Partes interessadas',c=>{const s=TPL.d_partes.stats(c);return `${s.dec}/${s.tot}`;},c=>{
+      const n=c.partes.length;
+      return `<p class="wsintro">Liste quem é afetado pela operação ou pode afetá-la, e o que cada um precisa ou espera em relação à segurança. Marque se a parte é relevante para o SGS. ${c.origem?'<b>'+esc(c.origem)+'</b>':''}</p>
+       <section class="wq P"><header><h2>Partes interessadas</h2><span>${n} ${n===1?'parte':'partes'}</span></header>
+       <div class="wrow c5 whd"><span>Nº</span><span>Parte interessada</span><span>Tipo</span><span>Necessidades e expectativas</span><span>Relevante?</span><span></span></div>
+       ${c.partes.map((p,i)=>`<div class="wrow c5" data-id="${esc(p.id)}"><b class="tg2">P${i+1}</b>
+         <label><em>Parte interessada</em>${wta('partes.'+i+'.parte',p.parte,'Quem é')}</label>
+         <label><em>Tipo</em><select data-p="partes.${i}.tipo" class="${p.tipo?'':'empty'}">${opts(['','Interna','Externa'],p.tipo)}</select></label>
+         <label><em>Necessidades e expectativas</em>${wta('partes.'+i+'.necessidades',p.necessidades,'O que precisa ou espera')}</label>
+         <label><em>Relevante para o SGS?</em><select data-p="partes.${i}.relevante" class="${p.relevante?'':'empty'}">${opts(SIMNAO,p.relevante)}</select></label>
+         ${wrm('partes.'+i)}</div>`).join('')}
+       ${wadd('partes',{},'+ Adicionar parte interessada')}</section>`;
+    }],
+    ['reqs','Requisitos e como atendemos',c=>{const s=TPL.d_partes.stats(c);return `${s.como}/${s.at}`;},c=>{
+      const rel=c.partes.map((p,i)=>[p,i]).filter(([p])=>p.relevante==='Sim');
+      return `<p class="wsintro">Para cada parte relevante, decida quais necessidades viram requisitos que o SGS vai atender e diga como. Se for exigência de lei, marque “legal”: ela entra na Lista de Requisitos Legais (6.1.3).</p>
+       <section class="wcard">${rel.length?`<div class="prow phd" style="grid-template-columns:44px minmax(0,1fr) 120px minmax(0,1.4fr) 100px"><span>Nº</span><span>Parte e necessidade</span><span>O SGS atende?</span><span>Como atendemos</span><span>Legal?</span></div>`+rel.map(([p,i])=>`<div class="prow" style="grid-template-columns:44px minmax(0,1fr) 120px minmax(0,1.4fr) 100px;align-items:start"><b class="tg2" style="margin-top:8px">P${i+1}</b><span><b>${b_(p.parte)}</b><br><span class="mut">${b_(p.necessidades)}</span></span>
+         <label><em>O SGS atende?</em><select data-p="partes.${i}.sgs" class="${p.sgs?'':'empty'}">${opts(SIMNAO,p.sgs)}</select></label>
+         <label><em>Como atendemos</em>${wta('partes.'+i+'.como',p.como,p.sgs==='Não'?'Por que fica fora do SGS':'Processo, documento ou registro que atende')}</label>
+         <label><em>É requisito legal?</em><select data-p="partes.${i}.legal">${opts(SIMNAO,p.legal,'—')}</select></label></div>`).join(''):'<p>Nenhuma parte marcada como relevante ainda. Comece pela etapa 1.</p>'}</section>`;
+    }],
+    ['clima','Mudanças climáticas',c=>c.clima&&c.clima.relevante?'✓':'0/1',c=>
+      `<p class="wsintro">A Emenda 1:2024 lembra que as partes interessadas podem ter requisitos ligados às mudanças climáticas. Registre a decisão.</p>`+
+      climaCard(c,'Alguma parte interessada tem requisitos ligados às mudanças climáticas?',`<label class="fld">Quais requisitos e de quem<textarea rows="2" data-p="clima.quais">${b_((c.clima||{}).quais)}</textarea></label>`)]
+  ],
+  preview(c){
+    const at=c.partes.map((p,i)=>[p,i]).filter(([p])=>p.relevante==='Sim');
+    return `<div class="dpb">Quem é afetado pela operação da ${EMPRESA} ou pode afetá-la, e o que espera em relação à segurança?</div>
+     <table><tr><th>Nº</th><th>Parte interessada</th><th>Tipo</th><th>Necessidades e expectativas</th><th style="width:80px">Relevante</th></tr>
+      ${c.partes.map((p,i)=>`<tr><td><b>P${i+1}</b></td><td>${b_(p.parte)}</td><td>${b_(p.tipo)}</td><td>${b_(p.necessidades)}</td><td>${b_(p.relevante)||'<span class="mut">a decidir</span>'}</td></tr>`).join('')}</table>
+     <div class="dpb">Requisitos das partes relevantes e como o SGS atende</div>
+     <table><tr><th>Nº</th><th>Parte</th><th style="width:90px">O SGS atende?</th><th>Como atendemos</th><th style="width:70px">Legal</th></tr>
+      ${at.map(([p,i])=>`<tr><td><b>P${i+1}</b></td><td>${b_(p.parte)}</td><td>${b_(p.sgs)}</td><td>${b_(p.como)}</td><td>${b_(p.legal)}</td></tr>`).join('')||'<tr><td colspan="5" class="mut">—</td></tr>'}</table>
+     ${climaPreview(c,'Alguma parte tem requisitos ligados às mudanças climáticas?')}`;
+  },
+  novoItem:()=>({id:novoId(),parte:'',tipo:'',necessidades:'',relevante:'',sgs:'',como:'',legal:''})
+};
+
+/* 4.3: escopo. Os produtos vêm do cadastro da plataforma. */
+TPL.d_escopo={
+  req:'4.3',titulo:'Escopo do SGS',
+  novo:()=>({produtos:produtos.filter(p=>!p.exemplo).map(p=>({id:novoId(),produto:p.nome,local:[p.municipio,p.base].filter(Boolean).join(' · '),atividades:(p.atividades||[]).join(', ')})),inicio:'',fim:'',fora:'',consideracoes:'',obs:''}),
+  stats(c){const v=c.produtos;return{tot:v.length,ok:v.filter(p=>(p.produto||'').trim()&&(p.local||'').trim()&&(p.atividades||'').trim()).length,lim:!!((c.inicio||'').trim()&&(c.fim||'').trim()),cons:!!(c.consideracoes||'').trim()};},
+  progresso(c){const s=this.stats(c);return bar('Produtos com local e atividades',s.ok,s.tot)+bar('Início e fim da responsabilidade',s.lim?1:0,1)+bar('Contexto e partes consideradas',s.cons?1:0,1);},
+  pendencias(c){const s=this.stats(c);return [!s.tot?'Nenhum produto no escopo':'',s.ok<s.tot?pl(s.tot-s.ok,'produto sem local ou atividades','produtos sem local ou atividades'):'',!s.lim?'Início e fim da responsabilidade de segurança':'',!s.cons?'Como o contexto (4.1) e as partes interessadas (4.2) foram considerados':''].filter(Boolean);},
+  tabs:[
+    ['prod','Produtos e atividades',c=>{const s=TPL.d_escopo.stats(c);return `${s.ok}/${s.tot}`;},c=>{
+      const fora=produtos.filter(p=>!p.exemplo&&!c.produtos.some(x=>norm(x.produto||'')===norm(p.nome)));
+      return `<p class="wsintro">Liste os produtos que estão dentro do SGS, onde acontecem e quais atividades incluem. A lista começou com os produtos cadastrados na plataforma.</p>
+       <section class="wq P"><header><h2>Produtos no escopo</h2><span>${c.produtos.length} ${c.produtos.length===1?'produto':'produtos'}</span></header>
+       <div class="wrow c4 whd"><span>Produto</span><span>Local</span><span>Atividades</span><span></span></div>
+       ${c.produtos.map((p,i)=>`<div class="wrow c4" data-id="${esc(p.id)}">
+         <label><em>Produto</em>${wta('produtos.'+i+'.produto',p.produto,'Nome do produto')}</label>
+         <label><em>Local</em>${wta('produtos.'+i+'.local',p.local,'Município e local')}</label>
+         <label><em>Atividades</em>${wta('produtos.'+i+'.atividades',p.atividades,'Ex.: rapel, banho no poço')}</label>
+         ${wrm('produtos.'+i)}</div>`).join('')}
+       ${wadd('produtos',{},'+ Adicionar produto')}
+       ${fora.length&&wPode()?`<p class="mut" style="margin:10px 0 0">Cadastrados na plataforma e fora desta lista: ${fora.map(p=>`<button type="button" class="wadd" style="margin:4px 4px 0 0" data-addprod="${esc(p.id)}">+ ${esc(p.nome)}</button>`).join('')}</p>`:''}</section>`;
+    }],
+    ['lim','Limites',c=>{const s=TPL.d_escopo.stats(c);return (s.lim?1:0)+(s.cons?1:0)+'/2';},c=>
+      `<p class="wsintro">Diga onde começa e onde termina a responsabilidade da empresa pela segurança, o que fica de fora e como o contexto e as partes interessadas foram considerados.</p>
+       <section class="wcard">
+        <div class="two"><label class="fld">A responsabilidade pela segurança começa…<textarea rows="3" data-p="inicio" placeholder="Ex.: no encontro com o participante no ponto de partida">${b_(c.inicio)}</textarea></label>
+        <label class="fld">… e termina<textarea rows="3" data-p="fim" placeholder="Ex.: no retorno ao ponto de partida, ao fim da atividade">${b_(c.fim)}</textarea></label></div>
+        <label class="fld">O que fica fora do SGS <small>(por exemplo, transporte feito por terceiros, hospedagem)</small><textarea rows="2" data-p="fora">${b_(c.fora)}</textarea></label>
+        <label class="fld">Como o contexto (4.1) e as partes interessadas (4.2) foram considerados<textarea rows="3" data-p="consideracoes">${b_(c.consideracoes)}</textarea></label>
+        <label class="fld">Observações<textarea rows="2" data-p="obs">${b_(c.obs)}</textarea></label></section>`]
+  ],
+  declaracao(c){
+    const ps=c.produtos.filter(p=>(p.produto||'').trim());
+    return `O Sistema de Gestão da Segurança da ${EMPRESA} abrange ${ps.length?'os produtos de turismo de aventura '+ps.map(p=>`<b>${b_(p.produto)}</b>${p.local?' ('+b_(p.local)+')':''}`).join(', '):'<span class="mut">os produtos a definir</span>'}, incluindo as atividades neles realizadas.${c.inicio?' A responsabilidade pela segurança começa '+b_(c.inicio).replace(/^[A-ZÀ-Ú]/,m=>m.toLowerCase()).replace(/\.$/,''):''}${c.fim?(c.inicio?' e termina ':' A responsabilidade termina ')+b_(c.fim).replace(/^[A-ZÀ-Ú]/,m=>m.toLowerCase()).replace(/\.$/,'')+'.':(c.inicio?'.':'')}`;
+  },
+  preview(c){
+    return `<div class="dpb">Declaração de escopo</div><div class="dpx">${this.declaracao(c)}</div>
+     <div class="dpb">Produtos e atividades incluídos</div>
+     <table><tr><th>Produto</th><th>Local</th><th>Atividades</th></tr>${c.produtos.map(p=>`<tr><td>${b_(p.produto)}</td><td>${b_(p.local)}</td><td>${b_(p.atividades)}</td></tr>`).join('')||'<tr><td colspan="3" class="mut">—</td></tr>'}</table>
+     <div class="dpb">Limites</div>
+     <table><tr><th style="width:38%">Início da responsabilidade</th><td>${b_(c.inicio)}</td></tr><tr><th>Fim da responsabilidade</th><td>${b_(c.fim)}</td></tr><tr><th>Fora do SGS</th><td>${b_(c.fora)}</td></tr><tr><th>Contexto e partes interessadas considerados</th><td>${b_(c.consideracoes)}</td></tr>${c.obs?`<tr><th>Observações</th><td>${b_(c.obs)}</td></tr>`:''}</table>`;
+  },
+  novoItem:()=>({id:novoId(),produto:'',local:'',atividades:''})
+};
+const docNome=ref=>'Documento '+TPL[ref].req+' – '+TPL[ref].titulo;
+const docPid=ref=>isProd(ref)?(cur&&cur.id):null;
+
+/* ---- onde os documentos ficam: navegador (modo local) ou Supabase ---- */
+const VCOLS='id,documento_id,versao,maior,menor,estado,conteudo,motivo,autor_id,revisor_id,aprovador_id,aprovado_em,data_criacao,vigencia_inicio,proxima_revisao,atualizado_em,criado_em';
+const dLocal={
+  key:ref=>'sgs-doc-v1:'+ref+(docPid(ref)?':'+docPid(ref):''),
+  get(ref){return lsGet(this.key(ref),null);},
+  put(ref,d){lsSet(this.key(ref),d);},
+  async load(ref){const d=this.get(ref);if(!d)return{doc:null,versoes:[],hist:[]};return{doc:d.doc,versoes:d.versoes,hist:d.hist};},
+  async criar(ref,conteudo){
+    const d={doc:{id:1},versoes:[],hist:[]};this.put(ref,d);
+    return this._nova(ref,d,1,0,null,'Primeira versão',conteudo);
+  },
+  _nova(ref,d,maior,menor,base,motivo,conteudo){
+    const agora=new Date().toISOString();
+    const v={id:d.versoes.reduce((m,x)=>Math.max(m,x.id),0)+1,documento_id:1,maior,menor,versao:maior+'.'+menor,estado:'rascunho',conteudo,motivo,autor_id:'local',data_criacao:null,aprovado_em:null,criado_em:agora,atualizado_em:agora};
+    d.versoes.push(v);d.hist.push({versao_id:v.id,de:null,para:'rascunho',usuario_id:'local',comentario:motivo,em:agora});this.put(ref,d);return v.id;
+  },
+  async salvar(ref,vid,conteudo){const d=this.get(ref),v=d&&d.versoes.find(x=>x.id===vid);if(!v||v.estado!=='rascunho')throw new Error('Esta versão não está mais em rascunho.');v.conteudo=conteudo;v.atualizado_em=new Date().toISOString();this.put(ref,d);},
+  async transicionar(ref,vid,para,coment){
+    const d=this.get(ref),v=d.versoes.find(x=>x.id===vid),agora=new Date().toISOString(),hoje=agora.slice(0,10);
+    if(para==='aprovado'){if(!d.versoes.some(x=>x.aprovado_em&&x.id!==v.id))v.data_criacao=hoje;v.aprovado_em=agora;v.aprovador_id='local';}
+    if(para==='em_revisao')v.revisor_id=v.revisor_id||'local';
+    if(para==='vigente'){const a=d.versoes.find(x=>x.estado==='vigente');if(a){a.estado='substituido';d.hist.push({versao_id:a.id,de:'vigente',para:'substituido',usuario_id:'local',comentario:'Substituída pela versão '+v.versao,em:agora});}
+      v.vigencia_inicio=hoje;const p=new Date();p.setFullYear(p.getFullYear()+1);v.proxima_revisao=p.toISOString().slice(0,10);}
+    d.hist.push({versao_id:v.id,de:v.estado,para,usuario_id:'local',comentario:coment||null,em:agora});v.estado=para;this.put(ref,d);
+  },
+  async novaVersao(ref,base,motivo){const d=this.get(ref),b=d.versoes.find(x=>x.id===base);const mx=Math.max(...d.versoes.map(x=>x.maior));const mn=Math.max(...d.versoes.filter(x=>x.maior===mx).map(x=>x.menor))+1;return this._nova(ref,d,mx,mn,base,motivo,JSON.parse(JSON.stringify(b.conteudo)));},
+  async pessoas(){return {local:'Você (modo local)'};}
+};
+const dRemoto={
+  async load(ref){
+    const t=TPL[ref],pid=docPid(ref);
+    let q=sb.from('documentos').select('id,requisito,titulo,assunto').eq('requisito',t.req);
+    q=pid?q.eq('produto_id',pid):q.is('produto_id',null);
+    const ds=chk(await q).filter(d=>!d.assunto);
+    const doc=ds[0]||null;if(!doc)return{doc:null,versoes:[],hist:[]};
+    const versoes=chk(await sb.from('versoes').select(VCOLS).eq('documento_id',doc.id).order('id'));
+    const ids=versoes.map(v=>v.id);
+    const hist=ids.length?chk(await sb.from('transicoes_versao').select('versao_id,de,para,usuario_id,comentario,em').in('versao_id',ids).order('em')):[];
+    return{doc,versoes,hist};
+  },
+  async criar(ref,conteudo){
+    const t=TPL[ref],pid=docPid(ref);
+    let r=await sb.from('documentos').insert({requisito:t.req,titulo:t.titulo,item:ref,produto_id:pid}).select('id').single();
+    if(r.error){if(r.error.code==='23505')return null;throw r.error;}  // outra pessoa criou ao mesmo tempo: recarrega
+    const v=chk(await sb.from('versoes').insert({documento_id:r.data.id,conteudo}).select('id').single());
+    return v.id;
+  },
+  async salvar(ref,vid,conteudo){
+    const r=chk(await sb.from('versoes').update({conteudo}).eq('id',vid).select('id'));
+    if(!r||!r.length)throw new Error('Esta versão não está mais em rascunho. Recarregue o documento.');
+  },
+  async transicionar(ref,vid,para,coment){chk(await sb.rpc('sgs_transicionar',{p_versao_id:vid,p_para:para,p_comentario:coment||null}));},
+  async novaVersao(ref,base,motivo){return chk(await sb.rpc('sgs_nova_versao',{p_base_versao_id:base,p_motivo:motivo}));},
+  async pessoas(ids){
+    if(!ids.length)return {};
+    const r=chk(await sb.rpc('sgs_pessoas',{p_ids:ids}));const m={};(r||[]).forEach(x=>{m[x.id]=x.nome;});return m;
+  }
+};
+const dstore=REMOTO?dRemoto:dLocal;
+const pp=()=>REMOTO?papel:'admin_sgs';
+const pode={
+  enviar:()=>['autor','revisor','aprovador','admin_sgs'].includes(pp()),
+  devolver:()=>['revisor','aprovador','admin_sgs'].includes(pp()),
+  aprovar:()=>['aprovador','admin_sgs'].includes(pp())
+};
+
+/* ---- estado do documento aberto e resumos para o mapa ---- */
+const docSum={};   // ref -> {estado, versao, dataCriacao, vigente} (resumo para o painel)
+let W=null;        // {ref, doc, versoes, hist, ver, vig, c, tab, pessoas, status, err}
+let wSaveT=null,wSaving=Promise.resolve(),wDirty=false;
+function resumo(ref,r){
+  const ver=r.versoes.filter(v=>['rascunho','em_revisao','aprovado'].includes(v.estado)).pop()||null;
+  const vig=r.versoes.find(v=>v.estado==='vigente')||null;
+  const atual=ver||vig;
+  const dc=(r.versoes.find(v=>v.data_criacao)||{}).data_criacao||null;
+  docSum[ref]={estado:atual?atual.estado:null,versao:atual?atual.versao:null,vigente:vig?vig.versao:null,dataCriacao:dc,c:atual?atual.conteudo:null};
+  return{ver,vig,atual};
+}
+async function docResumo(ref){
+  try{resumo(ref,await dstore.load(ref));}catch(e){docSum[ref]={erro:true};console.error(e);}
+  const box=document.getElementById('docbox-'+ref);if(box)box.outerHTML=docBoxHTML(ref);
+}
+function vstHTML(s){
+  if(!s||!s.estado)return '<span class="vst none">Ainda não iniciado</span>';
+  const c=s.estado==='rascunho'?'':s.estado==='em_revisao'?' rev':' ok';
+  return `<span class="vst${c}">v${esc(s.versao)} · ${esc(ESTADOS[s.estado])}</span>${s.vigente&&s.estado!=='vigente'?`<span class="vst ok">v${esc(s.vigente)} vigente</span>`:''}`;
+}
+function docBoxHTML(ref){
+  const t=TPL[ref],s=docSum[ref];
+  if(s===undefined){setTimeout(()=>docResumo(ref),0);}
+  const nao=!s||!s.estado;
+  return `<div class="org" id="docbox-${ref}"><div class="sec" style="margin-top:0"><h3>No SGS da ${EMPRESA}</h3>
+   <div class="dname">${esc(docNome(ref))}</div>
+   <div class="orow">${s===undefined?'<span class="vst none">Carregando…</span>':s.erro?'<span class="vst none">Não foi possível carregar</span>':vstHTML(s)}<span class="chip">Data de criação: ${s&&s.dataCriacao?fmtD(s.dataCriacao):'após aprovação'}</span></div>
+   ${s&&s.c?`<div style="margin-top:10px">${t.progresso(s.c)}</div>`:''}
+   <div class="acts">${nao&&!canEdit?'<small>O documento ainda não foi iniciado.</small>':`<button type="button" data-ws="${ref}">${nao?'Começar o documento':s&&s.estado==='rascunho'&&canEdit?'Abrir área de preenchimento':'Abrir o documento'}</button>`}${!nao?`<button type="button" class="sec2" data-ws="${ref}" data-wtab="rev">Ler o documento</button>`:''}</div></div></div>`;
+}
+const refDoReq=id=>Object.keys(TPL).find(r=>DOCS[r]&&DOCS[r].cl===id);
+
+/* ---- área de preenchimento ---- */
+const wPode=()=>!!(W&&W.ver&&W.ver.estado==='rascunho'&&canEdit);
+const wta=(p,v,ph)=>`<textarea rows="2" data-p="${p}" placeholder="${wPode()?ph:''}">${b_(v)}</textarea>`;
+const wrm=p=>wPode()?`<button type="button" class="x" data-rm="${p}" title="Remover" aria-label="Remover">×</button>`:'';
+const wadd=(lista,attrs,txt)=>wPode()?`<button type="button" class="wadd" data-add="${lista}" data-attrs="${esc(JSON.stringify(attrs))}">${esc(txt)}</button>`:'';
+function getP(o,p){return p.split('.').reduce((a,k)=>a==null?a:a[k],o);}
+function setP(o,p,v){const ks=p.split('.'),l=ks.pop();const t=ks.reduce((a,k)=>(a[k]=a[k]==null?{}:a[k]),o);t[l]=v;}
+async function abrirDoc(ref,tab){
+  const t=TPL[ref];
+  W={ref,tab:tab||t.tabs[0][0],c:null,status:'Carregando…',err:false,carregando:true,pessoas:{}};
+  renderWS();
+  try{await carregarW();}
+  catch(e){console.error(e);W.status='Não foi possível carregar o documento. '+((e&&e.message)||'');W.err=true;W.carregando=false;renderWS();}
+}
+async function carregarW(){
+  const ref=W.ref,t=TPL[ref];
+  let r=await dstore.load(ref);
+  if(!r.doc&&canEdit){await dstore.criar(ref,t.novo());r=await dstore.load(ref);}
+  const {ver,vig,atual}=resumo(ref,r);
+  Object.assign(W,{doc:r.doc,versoes:r.versoes,hist:r.hist,ver,vig,atual,c:atual?JSON.parse(JSON.stringify(atual.conteudo||{})):null,carregando:false,err:false});
+  if(W.c){const n=t.novo();Object.keys(n).forEach(k=>{if(W.c[k]===undefined)W.c[k]=n[k];});}
+  W.status=!r.doc?'Este documento ainda não foi iniciado.':wPode()?'Rascunho: as alterações são salvas automaticamente.':atual&&atual.estado==='em_revisao'?'Em revisão: para editar, volte para rascunho.':'Somente leitura.';
+  const ids=[...new Set([].concat(r.versoes.flatMap(v=>[v.autor_id,v.revisor_id,v.aprovador_id]),r.hist.map(h=>h.usuario_id)).filter(Boolean))];
+  try{W.pessoas=await dstore.pessoas(ids);}catch(e){W.pessoas={};}
+  renderWS();
+}
+function wStatus(t,err){if(!W)return;W.status=t;W.err=!!err;const el=document.getElementById('wssave');if(el){el.textContent=t;el.classList.toggle('err',!!err);}}
+function wSalvar(){
+  if(!wPode())return;
+  wDirty=true;wStatus('Salvando…');clearTimeout(wSaveT);wSaveT=setTimeout(wFlush,700);
+}
+function wFlush(){
+  clearTimeout(wSaveT);if(!W||!wDirty)return wSaving;
+  wDirty=false;const ref=W.ref,vid=W.ver.id,c=JSON.parse(JSON.stringify(W.c));
+  wSaving=wSaving.then(()=>dstore.salvar(ref,vid,c)).then(()=>{
+    if(W&&W.ver&&W.ver.id===vid){W.ver.conteudo=c;wStatus('Salvo às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));}
+    if(docSum[ref])docSum[ref].c=c;
+  },e=>{console.error(e);wDirty=true;wStatus('Não foi possível salvar. '+((e&&e.message)||'Verifique a conexão.')+' Suas alterações ainda estão nesta tela.',true);});
+  return wSaving;
+}
+function wsHTML(){
+  const t=TPL[W.ref];
+  const tabs=t.tabs.concat([['rev','Revisar e aprovar',()=>'',revTab]]);
+  const tab=tabs.find(x=>x[0]===W.tab)||tabs[0];
+  let body;
+  if(W.carregando)body='<p class="wsintro">Carregando o documento…</p>';
+  else if(!W.c)body=`<p class="wsintro">${W.err?esc(W.status):'Este documento ainda não foi iniciado. Peça a quem edita o SGS para começá-lo.'}</p>`;
+  else{
+    const trava=!wPode()&&tab[0]!=='rev'?`<p class="wlock">${!canEdit?'Você pode ler este documento, mas não editar.':'Esta versão está '+esc(ESTADOS[W.atual.estado].toLowerCase())+' e não pode ser editada. '+(W.atual.estado==='em_revisao'?'Para corrigir, volte-a para rascunho em “Revisar e aprovar”.':'Para mudar, crie uma nova versão em “Revisar e aprovar”.')}</p>`:'';
+    body=trava+tab[3](W.c);
+  }
+  return `<header class="wshd"><button type="button" class="wback" data-wsclose>← Mapa</button>
+   <div class="wst"><b>${esc(docNome(W.ref))}</b><span>${W.carregando?'':vstHTML(docSum[W.ref])}<span class="chip">${isProd(W.ref)?'Do produto':'Da empresa · vale para todos os produtos'}</span><span class="save${W.err?' err':''}" id="wssave">${esc(W.status)}</span></span></div></header>
+   <div class="wsb"><nav class="wsn" id="wsn">${navHTML(tabs)}</nav>
+   <main class="wsm" id="wsm"><div class="wsin"><h1>${esc(tab[1])}</h1>${body}</div></main></div>`;
+}
+function navHTML(tabs){
+  tabs=tabs||TPL[W.ref].tabs.concat([['rev','Revisar e aprovar',()=>'']]);
+  return tabs.map(([id,nome,cnt],i)=>{const k=W.c?cnt(W.c):'';return `<button type="button" data-tab="${id}" class="${id===W.tab?'on':''}"${id===W.tab?' aria-current="step"':''}><i>${i+1}</i><span>${esc(nome)}</span>${k?`<small>${esc(k)}</small>`:''}</button>`;}).join('');
+}
+function revTab(c){
+  const t=TPL[W.ref],a=W.atual,pend=t.pendencias(c);
+  const at=FLUXO.indexOf(a.estado);
+  const btn=(para,txt,cls)=>`<button type="button" class="${cls||''}" data-trans="${para}">${txt}</button>`;
+  let acts='';
+  if(a.estado==='rascunho'&&pode.enviar())acts+=btn('em_revisao','Enviar para revisão');
+  if(a.estado==='em_revisao'&&pode.aprovar())acts+=btn('aprovado','Aprovar versão '+esc(a.versao));
+  if(a.estado==='em_revisao'&&pode.devolver())acts+=btn('rascunho','Voltar para rascunho','sec2');
+  if(a.estado==='aprovado'&&pode.aprovar())acts+=btn('vigente','Colocar em vigor');
+  const novaV=a.estado==='vigente'&&canEdit;
+  const nota={rascunho:'Ao enviar para revisão, o conteúdo fica travado até ser aprovado ou voltar para rascunho.',em_revisao:'Ao aprovar, a data de criação é preenchida com a data de hoje (só na primeira aprovação do documento).',aprovado:'Ao colocar em vigor, esta versão passa a valer para a equipe e a anterior, se houver, fica como substituída.',vigente:'A versão vigente não se altera. Para mudar o documento, crie uma nova versão: ela nasce como rascunho e passa pelo mesmo caminho.'}[a.estado]||'';
+  const hist=W.hist.slice().reverse().map(h=>{const v=W.versoes.find(x=>x.id===h.versao_id);return `<li><time>${fmtDH(h.em)}</time> · v${esc(v?v.versao:'?')} ${h.de?esc(ESTADOS[h.de])+' → ':''}<b>${esc(ESTADOS[h.para])}</b> · ${esc(W.pessoas[h.usuario_id]||'—')}${h.comentario?` · “${esc(h.comentario)}”`:''}</li>`;}).join('');
+  return `<section class="wcard"><div class="flow">${FLUXO.map((x,i)=>`<span class="${i===at?'on':i<at?'past':''}">${ESTADOS[x]}</span>`).join('')}</div>
+   ${a.estado!=='vigente'?(pend.length?`<p class="pend"><b>Falta preencher:</b> ${pend.map(esc).join(' · ')}</p>`:'<p class="okp">Tudo preenchido.</p>'):''}
+   ${acts||novaV?`<label class="fld" style="margin-top:14px">${novaV?'Motivo da nova versão (obrigatório)':'Comentário (opcional, fica no histórico)'}<textarea rows="2" id="wcoment" data-nosave></textarea></label>`:''}
+   <div class="acts">${acts}${novaV?btn('nova','Criar nova versão'):''}<small>${nota}</small></div></section>
+   ${hist?`<details class="wcard"><summary><b>Histórico de versões</b></summary><ul class="hist" style="margin-top:10px">${hist}</ul></details>`:''}
+   <h2 class="wsh2">Como o documento vai ficar</h2>${docPreview()}`;
+}
+function docPreview(){
+  const t=TPL[W.ref],a=W.atual,c=W.c;
+  const rasc=['rascunho','em_revisao'].includes(a.estado);
+  const dc=docSum[W.ref].dataCriacao;
+  const nome=id=>esc(W.pessoas[id]||'');
+  return `<div class="dp">
+   ${rasc?'<div class="dpr">RASCUNHO – EM REVISÃO – NÃO USAR EM CAMPO</div>':''}
+   <table class="dph"><tr><td rowspan="2" class="dlogo"><b>${esc(EMPRESA.toUpperCase()).replace(' ','<br>')}</b></td><td>Sistema de Gestão da Segurança (SGS)<br>${esc(EMPRESA)}</td><td class="w">Versão ${esc(a.versao)}${rasc?'<br><small>(rascunho)</small>':''}</td></tr>
+   <tr><td><b>${esc(docNome(W.ref))}</b></td><td class="w">Data de criação<br><small>${dc?fmtD(dc):'após aprovação'}</small></td></tr></table>
+   ${t.preview(c)}
+   <table class="dpctl"><tr><th>Criado por</th><th>Revisado por</th><th>Aprovado por</th><th>Atualização</th></tr><tr><td>${nome(a.autor_id)}</td><td>${nome(a.revisor_id)}</td><td>${nome(a.aprovador_id)}${a.aprovado_em?'<br>'+fmtD(a.aprovado_em):''}</td><td>${a.atualizado_em?fmtD(a.atualizado_em):''}</td></tr></table>
+  </div>`;
+}
+function grow(el){el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';}
+function renderWS(keep){
+  let ws=document.getElementById('ws');
+  if(!W){if(ws)ws.remove();return;}
+  if(!ws){
+    ws=document.createElement('div');ws.id='ws';ws.setAttribute('role','dialog');ws.setAttribute('aria-modal','true');ws.setAttribute('aria-label','Área de preenchimento');document.body.appendChild(ws);
+    ws.addEventListener('input',wInput);ws.addEventListener('change',wChange);ws.addEventListener('click',wClick);
+  }
+  const m=document.getElementById('wsm'),y=keep&&m?m.scrollTop:0;
+  ws.innerHTML=wsHTML();
+  ws.querySelectorAll('textarea').forEach(grow);
+  if(!wPode())ws.querySelectorAll('.wsm textarea:not([data-nosave]),.wsm input:not([data-nosave]),.wsm select').forEach(el=>{el.disabled=true;});
+  document.getElementById('wsm').scrollTop=y;
+}
+function renderNav(){const n=document.getElementById('wsn');if(n&&W)n.innerHTML=navHTML();}
+function fecharDoc(){
+  if(!W)return;const ref=W.ref;
+  wFlush().then(()=>{const box=document.getElementById('docbox-'+ref);if(box)box.outerHTML=docBoxHTML(ref);});
+  W=null;renderWS();
+}
+function wInput(e){
+  const t=e.target;if(t.tagName==='TEXTAREA')grow(t);
+  if(!t.dataset.p||!wPode())return;
+  if(t.tagName==='SELECT'||t.type==='radio'||t.type==='date')return;
+  setP(W.c,t.dataset.p,t.value);wSalvar();renderNav();
+}
+function wChange(e){
+  const t=e.target;if(!t.dataset.p||!wPode())return;
+  if(t.tagName==='SELECT'||t.type==='radio'||t.type==='date'){setP(W.c,t.dataset.p,t.value);wSalvar();renderWS(true);}
+}
+async function wClick(e){
+  if(e.target.closest('[data-wsclose]')){fecharDoc();return;}
+  const tb=e.target.closest('[data-tab]');if(tb){W.tab=tb.dataset.tab;renderWS();return;}
+  const a=e.target.closest('[data-add]');
+  if(a&&wPode()){
+    const it=TPL[W.ref].novoItem(JSON.parse(a.dataset.attrs||'{}'));
+    (W.c[a.dataset.add]=W.c[a.dataset.add]||[]).push(it);wSalvar();renderWS(true);
+    const inp=document.querySelector(`#ws [data-id="${it.id}"] textarea`);if(inp){inp.focus();inp.scrollIntoView({block:'center'});}
+    return;
+  }
+  const ap=e.target.closest('[data-addprod]');
+  if(ap&&wPode()){const p=produtos.find(x=>x.id===ap.dataset.addprod);if(p){W.c.produtos.push({id:novoId(),produto:p.nome,local:[p.municipio,p.base].filter(Boolean).join(' · '),atividades:(p.atividades||[]).join(', ')});wSalvar();renderWS(true);}return;}
+  const r=e.target.closest('[data-rm]');
+  if(r&&wPode()){
+    const ks=r.dataset.rm.split('.'),i=+ks.pop(),lista=getP(W.c,ks.join('.'));const it=lista&&lista[i];
+    if(it&&Object.keys(it).some(k=>k!=='id'&&k!=='fator'&&k!=='tipo'&&String(it[k]||'').trim())&&!r.dataset.sure){
+      r.dataset.sure='1';r.textContent='Remover?';r.classList.add('sure');
+      setTimeout(()=>{if(r.isConnected){delete r.dataset.sure;r.textContent='×';r.classList.remove('sure');}},3000);return;
+    }
+    lista.splice(i,1);wSalvar();renderWS(true);return;
+  }
+  const tr=e.target.closest('[data-trans]');
+  if(tr){
+    const para=tr.dataset.trans,cm=document.getElementById('wcoment'),coment=cm?cm.value.trim():'';
+    if(para==='nova'&&!coment){wStatus('Escreva o motivo da nova versão.',true);cm&&cm.focus();return;}
+    document.querySelectorAll('#ws [data-trans]').forEach(b=>b.disabled=true);
+    wStatus('Registrando…');
+    try{
+      await wFlush();
+      if(wDirty)throw new Error('Há alterações que não foram salvas.');
+      if(para==='nova'){await dstore.novaVersao(W.ref,W.atual.id,coment);W.tab=TPL[W.ref].tabs[0][0];}
+      else await dstore.transicionar(W.ref,W.atual.id,para,coment);
+      const ref=W.ref;
+      await carregarW();
+      if(para==='vigente'&&!isDone(ref))setDone(ref,true);
+      wStatus({em_revisao:'Enviado para revisão.',rascunho:'Voltou para rascunho.',aprovado:'Versão aprovada.',vigente:'Versão em vigor.',nova:'Nova versão criada como rascunho.'}[para]);
+      if(para==='nova')renderWS();
+    }catch(err){
+      console.error(err);document.querySelectorAll('#ws [data-trans]').forEach(b=>b.disabled=false);
+      wStatus('Não foi possível concluir. '+((err&&err.message)||''),true);
+    }
+  }
+}
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape'||!W)return;
+  const a=document.activeElement;if(a&&a.closest&&a.closest('#ws')&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)){a.blur();return;}
+  fecharDoc();
+});
+window.addEventListener('beforeunload',e=>{if(wDirty){wFlush();e.preventDefault();e.returnValue='';}});
+
 /* ---- rotas ---- */
 function openProduct(p){
   cur=p;doneProd=doneByProd[p.id]=doneByProd[p.id]||{};
+  Object.keys(docSum).forEach(r=>{if(isProd(r))delete docSum[r];});
   $('#home').hidden=true;$('#app').hidden=false;
   $('#pname').textContent=p.nome;document.title=p.nome+' · SGS Turismo';
   if(!root){init();return;}
@@ -1640,6 +2211,7 @@ function openProduct(p){
   $('#panel').classList.remove('open');
 }
 function route(){
+  if(W)fecharDoc();
   closeMenu();if(!ov.hidden)ov.hidden=true;
   const m=location.hash.match(/^#\/p\/([^/?#]+)/);
   const p=m&&produtos.find(x=>x.id===decodeURIComponent(m[1]));

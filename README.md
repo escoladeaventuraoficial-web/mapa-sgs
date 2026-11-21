@@ -18,6 +18,13 @@ com o mapa interativo da ABNT NBR ISO 21101 (turismo de aventura).
   (`sgs-produtos-v1`, `sgs-itens-empresa-v1`, `sgs-itens-produto-v1:<id>`). O progresso do mapa antigo
   (`sgs-mapa-itens-v1`) é migrado na primeira abertura: itens da empresa para a empresa, itens de operação
   para o Poço de Ferro.
+- **Preenchimento de documentos** (requisito 4): no painel dos itens 4.1, 4.2 e 4.3 aparece a caixa
+  “No SGS da Trilhas do Sul”, que abre a área de preenchimento em tela cheia, com etapas e a etapa
+  **Revisar e aprovar** (pré-visualização no layout do documento). Os modelos ficam em `TPL` no código.
+  Cada documento é uma linha em `documentos` e cada versão uma linha em `versoes` (conteúdo em JSON).
+  A versão nasce 1.0 Rascunho, é salva automaticamente, vai para Em revisão, Aprovado (data de criação na
+  primeira aprovação) e Vigente. Para mudar um documento vigente, cria-se uma nova versão (1.1).
+  Os nomes no rodapé vêm da função `sgs_pessoas()`.
 
 ## Servidor (Supabase)
 
