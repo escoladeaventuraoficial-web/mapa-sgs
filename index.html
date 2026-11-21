@@ -424,7 +424,8 @@ h1,h2,h3,p,ul,ol{margin:0}
 .dp{background:#fff;color:#111;border:1px solid var(--hair);border-radius:6px;padding:22px;box-shadow:var(--shadow);font-size:12.5px;overflow-x:auto}
 .dp table{width:100%;border-collapse:collapse;margin-bottom:12px}.dp td,.dp th{border:1px solid #000;padding:5px 7px;vertical-align:top;text-align:left}
 .dp th{background:#000;color:#fff;font-weight:600}
-.dph td{text-align:center;vertical-align:middle}.dph .dlogo{width:16%}.dph .w{width:16%}.dph small{color:#b00020}
+.dph td{text-align:center;vertical-align:middle}.dph .dlogo{width:16%}.dph .dlogo img{display:block;margin:0 auto;width:78px;height:auto}
+.dp .ass{display:block;margin:4px auto 0;max-width:150px;max-height:56px}.dph .w{width:16%}.dph small{color:#b00020}
 .dpr{text-align:center;color:#b00020;font-weight:700;font-size:11px;margin-bottom:6px}
 .dpb{border:1px solid #000;text-align:center;font-weight:700;padding:5px;margin:4px 0 10px;font-size:13.5px}
 .dpx{border:1px solid #000;padding:8px 10px;margin:4px 0 12px;line-height:1.5}
@@ -1952,7 +1953,8 @@ const dLocal={
     d.hist.push({versao_id:v.id,de:v.estado,para,usuario_id:'local',comentario:coment||null,em:agora});v.estado=para;this.put(ref,d);
   },
   async novaVersao(ref,base,motivo){const d=this.get(ref),b=d.versoes.find(x=>x.id===base);const mx=Math.max(...d.versoes.map(x=>x.maior));const mn=Math.max(...d.versoes.filter(x=>x.maior===mx).map(x=>x.menor))+1;return this._nova(ref,d,mx,mn,base,motivo,JSON.parse(JSON.stringify(b.conteudo)));},
-  async pessoas(){return {local:'Você (modo local)'};}
+  async pessoas(){return {local:'Você (modo local)'};},
+  async assinaturas(){return {};}
 };
 const dRemoto={
   async load(ref){
@@ -1982,6 +1984,10 @@ const dRemoto={
   async pessoas(ids){
     if(!ids.length)return {};
     const r=chk(await sb.rpc('sgs_pessoas',{p_ids:ids}));const m={};(r||[]).forEach(x=>{m[x.id]=x.nome;});return m;
+  },
+  async assinaturas(ids){
+    if(!ids.length)return {};
+    const r=chk(await sb.from('assinaturas').select('perfil_id,imagem').in('perfil_id',ids));const m={};(r||[]).forEach(x=>{m[x.perfil_id]=x.imagem;});return m;
   }
 };
 const dstore=REMOTO?dRemoto:dLocal;
@@ -2049,6 +2055,8 @@ async function carregarW(){
   W.status=!r.doc?'Este documento ainda não foi iniciado.':wPode()?'Rascunho: as alterações são salvas automaticamente.':atual&&atual.estado==='em_revisao'?'Em revisão: para editar, volte para rascunho.':'Somente leitura.';
   const ids=[...new Set([].concat(r.versoes.flatMap(v=>[v.autor_id,v.revisor_id,v.aprovador_id]),r.hist.map(h=>h.usuario_id)).filter(Boolean))];
   try{W.pessoas=await dstore.pessoas(ids);}catch(e){W.pessoas={};}
+  const quem=[...new Set(r.versoes.flatMap(v=>[v.revisor_id,v.aprovador_id]).filter(Boolean))];
+  try{W.assin=await dstore.assinaturas(quem);}catch(e){W.assin={};}
   renderWS();
 }
 function wStatus(t,err){if(!W)return;W.status=t;W.err=!!err;const el=document.getElementById('wssave');if(el){el.textContent=t;el.classList.toggle('err',!!err);}}
@@ -2109,12 +2117,14 @@ function docPreview(){
   const rasc=['rascunho','em_revisao'].includes(a.estado);
   const dc=docSum[W.ref].dataCriacao;
   const nome=id=>esc(W.pessoas[id]||'');
+  const ass=(id,ok)=>ok&&id&&W.assin&&/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(W.assin[id]||'')?`<img class="ass" src="${W.assin[id]}" alt="Assinatura de ${nome(id)}">`:'';
+  const revisada=['aprovado','vigente','substituido'].includes(a.estado);
   return `<div class="dp">
    ${rasc?'<div class="dpr">RASCUNHO – EM REVISÃO – NÃO USAR EM CAMPO</div>':''}
-   <table class="dph"><tr><td rowspan="2" class="dlogo"><b>${esc(EMPRESA.toUpperCase()).replace(' ','<br>')}</b></td><td>Sistema de Gestão da Segurança (SGS)<br>${esc(EMPRESA)}</td><td class="w">Versão ${esc(a.versao)}${rasc?'<br><small>(rascunho)</small>':''}</td></tr>
+   <table class="dph"><tr><td rowspan="2" class="dlogo"><img src="img/logo-trilhas-do-sul.png" alt="${esc(EMPRESA)}" width="78" height="80"></td><td>Sistema de Gestão da Segurança (SGS)<br>${esc(EMPRESA)}</td><td class="w">Versão ${esc(a.versao)}${rasc?'<br><small>(rascunho)</small>':''}</td></tr>
    <tr><td><b>${esc(docNome(W.ref))}</b></td><td class="w">Data de criação<br><small>${dc?fmtD(dc):'após aprovação'}</small></td></tr></table>
    ${t.preview(c)}
-   <table class="dpctl"><tr><th>Criado por</th><th>Revisado por</th><th>Aprovado por</th><th>Atualização</th></tr><tr><td>${nome(a.autor_id)}</td><td>${nome(a.revisor_id)}</td><td>${nome(a.aprovador_id)}${a.aprovado_em?'<br>'+fmtD(a.aprovado_em):''}</td><td>${a.atualizado_em?fmtD(a.atualizado_em):''}</td></tr></table>
+   <table class="dpctl"><tr><th>Criado por</th><th>Revisado por</th><th>Aprovado por</th><th>Atualização</th></tr><tr><td>${nome(a.autor_id)}</td><td>${ass(a.revisor_id,revisada)}${nome(a.revisor_id)}</td><td>${ass(a.aprovador_id,!!a.aprovado_em)}${nome(a.aprovador_id)}${a.aprovado_em?'<br>'+fmtD(a.aprovado_em):''}</td><td>${a.atualizado_em?fmtD(a.atualizado_em):''}</td></tr></table>
   </div>`;
 }
 function grow(el){el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';}

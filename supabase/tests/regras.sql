@@ -130,6 +130,16 @@ SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000003';
 DO $$ BEGIN ASSERT (SELECT count(*) FROM versoes) = 1, 'campo vê só vigente'; END $$;
 SELECT pg_temp.espera_erro($$SELECT sgs_marcar_item('d_escopo', NULL, false)$$, 'row-level security');
 DO $$ BEGIN ASSERT (SELECT count(*) FROM sgs_pessoas(ARRAY['00000000-0000-0000-0000-000000000001'::uuid])) = 1, 'campo vê nomes'; END $$;
+SELECT pg_temp.espera_erro($$INSERT INTO assinaturas VALUES ('00000000-0000-0000-0000-000000000001', 'data:image/png;base64,AA')$$, 'row-level security');
+INSERT INTO assinaturas (perfil_id, imagem) VALUES ('00000000-0000-0000-0000-000000000003', 'data:image/png;base64,AA');
+SELECT pg_temp.espera_erro($$INSERT INTO assinaturas VALUES ('00000000-0000-0000-0000-000000000003', 'x')$$, 'assinaturas_imagem_check');
+SELECT pg_temp.espera_erro($$DELETE FROM assinaturas$$, 'permission denied');
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000001';
+UPDATE assinaturas SET imagem = 'data:image/png;base64,BB';   -- de outra pessoa: a política ignora
+DO $$ BEGIN
+  ASSERT (SELECT imagem FROM assinaturas) = 'data:image/png;base64,AA', 'não altera assinatura alheia';
+END $$;
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000003';
 
 RESET ROLE;
 DO $$ BEGIN
