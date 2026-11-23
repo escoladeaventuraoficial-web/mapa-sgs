@@ -14,6 +14,7 @@ com o mapa interativo da ABNT NBR ISO 21101 (turismo de aventura).
   cliente vive para conhecer, comprar e fazer o passeio. Cada ponto de contato mostra os requisitos da ISO 21101 que toca
   e abre o requisito ou documento no mapa do SGS. Só visualização (sem preenchimento nem banco). O conteúdo fica em
   `JORNADA` no código: rascunho proposto em 23/11/2026 para o piloto Poço de Ferro, aguardando revisão de Vagner.
+  A jornada cobre todos os requisitos de 4.1 a 10.2 (o ramo "Por trás de toda a jornada" traz os que o cliente não vê).
 - **Separação dos dados** (decisão de 20/11/2026): documentos da empresa (contexto, política, funções,
   auditoria etc.) são únicos e valem para todos os produtos; documentos e registros de operação
   (contexto da atividade, inventário de perigos, procedimentos, competência do participante, termo, PAE,
