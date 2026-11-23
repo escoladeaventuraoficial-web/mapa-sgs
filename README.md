@@ -10,6 +10,10 @@ com o mapa interativo da ABNT NBR ISO 21101 (turismo de aventura).
 - **Tela inicial (`#/`)**: lista os produtos (roteiros) em cartões, com progresso, busca e o botão **Novo produto**.
   O Poço de Ferro é o piloto; os demais produtos de exemplo são fictícios e podem ser excluídos.
 - **SGS do produto (`#/p/<id>`)**: abre o mapa da norma daquele produto, com o botão **Produtos** para voltar.
+- **Jornada do cliente (`#/p/<id>/jornada`)**: aba ao lado de **Mapa do SGS**, com o mapa mental das etapas que o
+  cliente vive para conhecer, comprar e fazer o passeio. Cada ponto de contato mostra os requisitos da ISO 21101 que toca
+  e abre o requisito ou documento no mapa do SGS. Só visualização (sem preenchimento nem banco). O conteúdo fica em
+  `JORNADA` no código: rascunho proposto em 23/11/2026 para o piloto Poço de Ferro, aguardando revisão de Vagner.
 - **Separação dos dados** (decisão de 20/11/2026): documentos da empresa (contexto, política, funções,
   auditoria etc.) são únicos e valem para todos os produtos; documentos e registros de operação
   (contexto da atividade, inventário de perigos, procedimentos, competência do participante, termo, PAE,
