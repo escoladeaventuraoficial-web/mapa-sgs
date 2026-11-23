@@ -2213,7 +2213,8 @@ const JORNADA={
  versao:'Rascunho 1.0 · proposto em 23/11/2026',
  c:[
   {t:'Conhece o passeio',d:'O cliente descobre o Poço de Ferro e forma a primeira ideia do que vai viver.',c:[
-   {t:'Vê o passeio nas redes, no site ou por indicação',d:'Fotos e vídeos do rapel, do banho no poço e da escada de ferro.',sgs:'A divulgação mostra a atividade como ela é: esforço, riscos e requisitos para participar, sem prometer o que não pode cumprir.',req:['c7_4','n21103','i_d_com_part']},
+   {t:'Vê o passeio nas redes, no site ou por indicação',d:'Fotos e vídeos do rapel, do banho no poço e da escada de ferro.',sgs:'O passeio divulgado está dentro do escopo do SGS (atividades e local). A divulgação mostra a atividade como ela é: esforço, riscos e requisitos para participar, sem prometer o que não pode cumprir.',req:['i_d_escopo','c7_4','n21103','i_d_com_part']},
+   {t:'Conhece a política de segurança',d:'No site ou nas redes, vê o compromisso da empresa com a segurança.',sgs:'A política de segurança está documentada, assinada pela direção e disponível às partes interessadas, incluindo o cliente.',req:['i_d_politica','c5_1','c5_2']},
    {t:'Agência ou parceiro oferece o passeio',d:'Agências e hospedagens da região indicam ou vendem o passeio.',sgs:'O parceiro recebe e repassa a informação correta do produto, dos requisitos do participante e da política de cancelamento.',req:['c4_2','i_d_partes','c7_4']}
   ]},
   {t:'Tira dúvidas e vê se pode participar',d:'Antes de comprar, o cliente pergunta e confere se o passeio é para ele.',c:[
@@ -2228,7 +2229,7 @@ const JORNADA={
   {t:'Prepara-se para o dia',d:'Entre a compra e o passeio: confirmação, clima e deslocamento.',c:[
    {t:'Recebe a confirmação e as orientações',d:'Horário, ponto de encontro no Recanto SOBRAGI, o que levar e o que vestir.',sgs:'Mensagem padrão de confirmação com as orientações de segurança.',req:['c7_4','i_d_com_part']},
    {t:'A saída é confirmada ou cancelada pelo tempo',d:'Chuva forte ou cheia mudam as condições do poço.',sgs:'Critérios claros para manter, adiar ou cancelar; quem decide tem autoridade definida; o cliente é avisado a tempo. Considera as mudanças climáticas do contexto.',req:['i_d_proc_op','c5_3','c6_1_2','c4_1']},
-   {t:'Vai até o local',d:'Transporte próprio ou contratado até o ponto de apoio.',sgs:'Acesso e rota conhecidos; transporte contratado avaliado como serviço terceirizado.',req:['c8_1','c6_1_2','c4_2']}
+   {t:'Vai até o local',d:'Transporte próprio ou contratado até o ponto de apoio.',sgs:'O escopo diz onde começa a responsabilidade da empresa (no ponto de encontro ou já no transporte). Acesso e rota conhecidos; transporte contratado avaliado como serviço terceirizado.',req:['i_d_escopo','c8_1','c6_1_2','c4_2']}
   ]},
   {t:'Chega e recebe o briefing',d:'Recepção no ponto de apoio, antes de iniciar a atividade.',c:[
    {t:'Recepção e conferência',d:'Conferência da ficha, da aptidão e das condições do dia.',sgs:'Quem não atende aos requisitos não segue; as condições de saúde informadas chegam ao condutor.',req:['i_d_comp_part','i_r_ficha','c8_1']},
@@ -2246,8 +2247,13 @@ const JORNADA={
   ]},
   {t:'Volta e avalia',d:'Depois do passeio: fim da atividade e opinião do cliente.',c:[
    {t:'Devolve os equipamentos',d:'Entrega da cadeirinha, do capacete e do colete.',sgs:'Inspeção depois do uso e registro de danos.',req:['i_r_checklist','i_d_equip']},
-   {t:'Dá sua opinião',d:'Pesquisa curta, avaliação online e comentários.',sgs:'O retorno sobre segurança entra no monitoramento do SGS.',req:['i_r_feedback','c9_1']},
-   {t:'Reclamação ou sugestão vira melhoria',d:'O que o cliente aponta é tratado.',sgs:'Tratada como não conformidade ou oportunidade de melhoria e levada à análise crítica.',req:['c10_1','c10_2','c9_3']}
+   {t:'Dá sua opinião',d:'Pesquisa curta, avaliação online e comentários.',sgs:'O retorno sobre segurança entra no monitoramento do SGS e alimenta os indicadores dos objetivos de segurança.',req:['i_r_feedback','c9_1','i_d_objetivos']},
+   {t:'Reclamação ou sugestão vira melhoria',d:'O que o cliente aponta é tratado.',sgs:'Tratada como não conformidade ou oportunidade de melhoria, considerada nos riscos e oportunidades do SGS e levada à análise crítica.',req:['c10_1','c10_2','c6_1_1']}
+  ]},
+  {t:'Por trás de toda a jornada',base:true,d:'O cliente não vê estes passos, mas eles garantem que cada ponto da jornada funcione sempre do mesmo jeito.',c:[
+   {t:'O SGS organiza toda a jornada',d:'Processos ligados entre si, do primeiro contato ao pós-passeio.',sgs:'A jornada faz parte do sistema de gestão: cada ponto de contato tem dono, documento e registro na lista mestra.',req:['c4_4','c5_3','i_d_lista_mestra']},
+   {t:'Auditoria interna da jornada',d:'Alguém imparcial confere a jornada de ponta a ponta.',sgs:'A auditoria verifica se cada ponto da jornada acontece como planejado e registra não conformidades e oportunidades de melhoria.',req:['c9_2','i_d_prog_aud','i_r_rel_aud']},
+   {t:'Análise crítica e melhoria',d:'A direção revisa o que aconteceu e decide mudanças.',sgs:'Feedback, incidentes, auditorias e objetivos entram na análise crítica; as decisões viram melhorias na jornada.',req:['c9_3','i_r_ata','c6_2','c10_2']}
   ]}
  ]
 };
@@ -2263,7 +2269,8 @@ function jBuild(){
   JORNADA.c.forEach((e,i)=>{
     const s={id:'j'+i,depth:1,t:e.t,num:String(i+1),def:e,parent:r,c:[],em:!!e.em};
     if(e.em)s.num='!';
-    else s.num=String(JORNADA.c.slice(0,i).filter(x=>!x.em).length+1);
+    else if(e.base)s.num='+';
+    else s.num=String(JORNADA.c.slice(0,i).filter(x=>!x.em&&!x.base).length+1);
     jbyId[s.id]=s;r.c.push(s);
     e.c.forEach((t,k)=>{const n={id:s.id+'_'+k,depth:2,t:t.t,def:t,parent:s,c:[],em:s.em};jbyId[n.id]=n;s.c.push(n);});
   });
@@ -2374,12 +2381,12 @@ function jPanel(n){
     <p class="lead">O caminho que o cliente percorre para conhecer, comprar e fazer o passeio, com os pontos de contato e os requisitos do SGS que cada um toca.</p>
     ${cur&&!cur.piloto?'<div class="sec"><div class="box tip"><b>Modelo</b>Este produto ainda não tem jornada própria. O mapa mostra a jornada do piloto Poço de Ferro como modelo.</div></div>':''}
     <div class="sec"><div class="box"><b>Origem</b>${esc(JORNADA.versao)} pelo agente de IA, para Vagner revisar: etapas, pontos de contato e vínculos com a norma podem ser ajustados.</div></div>
-    <div class="sec"><h3>Como ler</h3><ul><li>Cada ramo é uma etapa da jornada, na ordem em que o cliente vive. Toque na seta ao lado da etapa (ou no nome dela) para abrir os pontos de contato.</li><li>Os números pequenos em cada ponto de contato são os requisitos da ISO 21101 que ele toca.</li><li>Toque num ponto de contato para ver o que o SGS precisa garantir e abrir o requisito no mapa do SGS.</li><li>O ramo rosa vale para qualquer etapa: emergências e incidentes.</li></ul></div>
+    <div class="sec"><h3>Como ler</h3><ul><li>Cada ramo é uma etapa da jornada, na ordem em que o cliente vive. Toque na seta ao lado da etapa (ou no nome dela) para abrir os pontos de contato.</li><li>Os números pequenos em cada ponto de contato são os requisitos da ISO 21101 que ele toca.</li><li>Toque num ponto de contato para ver o que o SGS precisa garantir e abrir o requisito no mapa do SGS.</li><li>O ramo rosa vale para qualquer etapa: emergências e incidentes.</li><li>O último ramo, <b>Por trás de toda a jornada</b>, mostra o que o cliente não vê: sistema, auditoria e análise crítica.</li></ul></div>
     <div class="sec"><h3>Requisitos tocados pela jornada</h3><div class="jcov">${jCobertura()}</div></div>`;
   }else if(n.depth===1){
     const ids=[...new Set(n.c.flatMap(t=>t.def.req||[]))];
     h=`<h2><span class="num">${esc(n.num)}</span>${esc(n.t)}</h2>
-    <div class="chips"><span class="chip">Etapa da jornada</span>${n.em?'<span class="chip reg">Qualquer etapa</span>':''}</div>
+    <div class="chips"><span class="chip">Etapa da jornada</span>${n.em?'<span class="chip reg">Qualquer etapa</span>':''}${n.def.base?'<span class="chip">Gestão do SGS</span>':''}</div>
     <p class="lead">${esc(n.def.d||'')}</p>
     <div class="sec"><h3>Pontos de contato</h3><div class="links">${n.c.map(t=>`<button class="lk" type="button" data-jsel="${t.id}"><span><span class="t">${esc(t.t)}</span><span class="w">${esc(t.def.d||'')}</span></span></button>`).join('')}</div></div>
     <div class="sec"><h3>Requisitos do SGS nesta etapa</h3><div class="jreq">${ids.map(reqRow).join('')}</div></div>`;
