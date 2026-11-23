@@ -598,6 +598,9 @@ h1,h2,h3,p,ul,ol{margin:0}
       <div id="jscroll"><div id="jsizer"><div id="jworld"><svg id="jedges" aria-hidden="true"></svg></div></div></div>
       <div class="jdraft">Rascunho para revisão</div>
       <div class="ctl" role="group" aria-label="Controles da jornada">
+        <button id="jExp" type="button" title="Expandir tudo" aria-label="Expandir tudo"></button>
+        <button id="jCol" type="button" title="Recolher tudo" aria-label="Recolher tudo"></button>
+        <hr>
         <button id="jIn" type="button" title="Ampliar" aria-label="Ampliar"></button>
         <button id="jOut" type="button" title="Reduzir" aria-label="Reduzir"></button>
         <button id="jFit" type="button" title="Ajustar à tela" aria-label="Ajustar à tela"></button>
@@ -2255,7 +2258,7 @@ const jbyId={};
 function reqCl(id){const n=byId[id];if(!n)return null;if(n.ref){const c=byId[DOCS[n.ref].cl];return c||null;}return n;}
 function reqNum(id){const c=reqCl(id);if(!c)return '';return c.num.replace('ISO ','');}
 function jBuild(){
-  const r={id:'j',depth:0,t:JORNADA.t,c:[],def:JORNADA};
+  const r={id:'j',depth:0,t:JORNADA.t,c:[],def:JORNADA,open:true};
   jbyId.j=r;
   JORNADA.c.forEach((e,i)=>{
     const s={id:'j'+i,depth:1,t:e.t,num:String(i+1),def:e,parent:r,c:[],em:!!e.em};
@@ -2285,8 +2288,8 @@ function jRender(){
       const nums=[...new Set((n.def.req||[]).map(reqNum).filter(Boolean))];
       inner=`<span class="jt"><span class="lbl">${esc(n.t)}</span></span><span class="jbs" aria-label="Requisitos ${esc(nums.join(', '))}">${nums.map(x=>`<i>${esc(x)}</i>`).join('')}</span>`;
     }else inner=(n.num?`<span class="num">${esc(n.num)}</span>`:'')+`<span class="lbl">${esc(n.t)}</span>`;
-    w.innerHTML=`<button class="node${n.depth===2?' jnode':''}${n===jsel?' sel':''}" type="button">${inner}</button>`;
-    jworld.appendChild(w);n.el=w;n.btn=w.firstChild;
+    w.innerHTML=`<button class="node${n.depth===2?' jnode':''}${n===jsel?' sel':''}" type="button">${inner}</button>`+(n.c.length?`<button class="tg" type="button" aria-expanded="false" aria-label="Abrir ou fechar ${esc(n.t)}">${ico('chev',13)}</button>`:'');
+    jworld.appendChild(w);n.el=w;n.btn=w.firstChild;n.tg=w.querySelector('.tg');
   });
   jLayout();
 }
@@ -2294,24 +2297,31 @@ function jLayout(){
   const GX=56,GY=10,GS=22,PAD=24;
   jworld.style.width='4000px';jworld.style.height='4000px'; // largura livre para medir sem quebrar linhas
   const colW=[0,0,0];
-  jAll(n=>{n.w=n.btn.offsetWidth;n.h=n.btn.offsetHeight;colW[n.depth]=Math.max(colW[n.depth],n.w);});
+  // ramos abrem e fecham pela seta, como no mapa do SGS (a raiz começa aberta e as etapas fechadas)
+  const vis=n=>!n.parent||(n.parent.open&&vis(n.parent));
+  jAll(n=>{n.el.style.display='';n.w=n.btn.offsetWidth;n.ww=n.el.offsetWidth;n.h=n.btn.offsetHeight;colW[n.depth]=Math.max(colW[n.depth],n.ww);});
+  jAll(n=>{n.shown=vis(n);n.el.style.display=n.shown?'':'none';if(n.tg)n.tg.setAttribute('aria-expanded',!!n.open);});
   const colX=[PAD,PAD+colW[0]+GX,PAD+colW[0]+GX+colW[1]+GX];
   let y=PAD+34; // espaço para o selo de rascunho
-  jroot.c.forEach((s,i)=>{
-    if(i)y+=GS;
-    const top=y;
+  if(jroot.open)jroot.c.forEach((s,i)=>{
+    if(i)y+=s.open||jroot.c[i-1].open?GS:GY;
+    const top=y;s.x=colX[1];
+    if(!s.open){s.y=y;y+=s.h;return;}
     s.c.forEach((t,k)=>{if(k)y+=GY;t.x=colX[2];t.y=y;y+=t.h;});
-    const mid=(top+y)/2;s.x=colX[1];
+    const mid=(top+y)/2;
     s.y=Math.max(top,mid-s.h/2);
     if(s.y+s.h>y)y=s.y+s.h;
   });
-  const H=y+PAD,Wd=colX[2]+colW[2]+PAD;
-  jroot.x=colX[0];jroot.y=jroot.c[0].y+jroot.c[0].h/2-jroot.h/2; // raiz no alto, alinhada à 1ª etapa: a jornada se lê de cima para baixo
+  else y+=jroot.h;
+  const algum=jroot.open&&jroot.c.some(s=>s.open);
+  const H=y+PAD,Wd=(algum?colX[2]+colW[2]:jroot.open?colX[1]+colW[1]:colX[0]+colW[0])+PAD;
+  jroot.x=colX[0];jroot.y=jroot.open?jroot.c[0].y+jroot.c[0].h/2-jroot.h/2:PAD+34; // raiz no alto, alinhada à 1ª etapa: a jornada se lê de cima para baixo
   let paths='';
   jAll(n=>{
+    if(!n.shown)return;
     n.el.style.transform=`translate(${n.x}px,${n.y}px)`;
     if(n.parent){
-      const p=n.parent,sx=p.x+p.w,sy=p.y+p.h/2,ex=n.x,ey=n.y+n.h/2,dx=Math.max(20,(ex-sx)*.5);
+      const p=n.parent,sx=p.x+p.ww,sy=p.y+p.h/2,ex=n.x,ey=n.y+n.h/2,dx=Math.max(20,(ex-sx)*.5);
       paths+=`<path class="edge e${n.depth}${n.em?' em':''}" d="M${sx},${sy} C${sx+dx},${sy} ${ex-dx},${ey} ${ex},${ey}"/>`;
     }
   });
@@ -2364,7 +2374,7 @@ function jPanel(n){
     <p class="lead">O caminho que o cliente percorre para conhecer, comprar e fazer o passeio, com os pontos de contato e os requisitos do SGS que cada um toca.</p>
     ${cur&&!cur.piloto?'<div class="sec"><div class="box tip"><b>Modelo</b>Este produto ainda não tem jornada própria. O mapa mostra a jornada do piloto Poço de Ferro como modelo.</div></div>':''}
     <div class="sec"><div class="box"><b>Origem</b>${esc(JORNADA.versao)} pelo agente de IA, para Vagner revisar: etapas, pontos de contato e vínculos com a norma podem ser ajustados.</div></div>
-    <div class="sec"><h3>Como ler</h3><ul><li>Cada ramo é uma etapa da jornada, na ordem em que o cliente vive.</li><li>Os números pequenos em cada ponto de contato são os requisitos da ISO 21101 que ele toca.</li><li>Toque num ponto de contato para ver o que o SGS precisa garantir e abrir o requisito no mapa do SGS.</li><li>O ramo rosa vale para qualquer etapa: emergências e incidentes.</li></ul></div>
+    <div class="sec"><h3>Como ler</h3><ul><li>Cada ramo é uma etapa da jornada, na ordem em que o cliente vive. Toque na seta ao lado da etapa (ou no nome dela) para abrir os pontos de contato.</li><li>Os números pequenos em cada ponto de contato são os requisitos da ISO 21101 que ele toca.</li><li>Toque num ponto de contato para ver o que o SGS precisa garantir e abrir o requisito no mapa do SGS.</li><li>O ramo rosa vale para qualquer etapa: emergências e incidentes.</li></ul></div>
     <div class="sec"><h3>Requisitos tocados pela jornada</h3><div class="jcov">${jCobertura()}</div></div>`;
   }else if(n.depth===1){
     const ids=[...new Set(n.c.flatMap(t=>t.def.req||[]))];
@@ -2387,6 +2397,8 @@ function jPanel(n){
 function jSelect(id,abrir){
   const n=jbyId[id];if(!n)return;
   jsel=n;
+  let fechado=false;for(let a=n.parent;a;a=a.parent)if(!a.open){a.open=true;fechado=true;}
+  if(fechado){jLayout();requestAnimationFrame(()=>jMostrar(n.parent));}
   jAll(m=>m.btn&&m.btn.classList.toggle('sel',m===n));
   jPanel(n);
   if(abrir&&window.matchMedia('(max-width:860px)').matches)$('#panel').classList.add('open');
@@ -2413,12 +2425,37 @@ function setModo(m){
 }
 $('#mMapa').onclick=()=>{if(cur&&modo!=='mapa')location.hash='#/p/'+encodeURIComponent(cur.id);};
 $('#mJorn').onclick=()=>{if(cur&&modo!=='jornada')location.hash='#/p/'+encodeURIComponent(cur.id)+'/jornada';};
-jworld.addEventListener('click',e=>{if(jdragged)return;const w=e.target.closest('.nw');if(w)jSelect(w.dataset.j,true);});
+jworld.addEventListener('click',e=>{
+  if(jdragged)return;const w=e.target.closest('.nw');if(!w)return;
+  const n=jbyId[w.dataset.j];
+  if(e.target.closest('.tg')){jToggle(n);return;}
+  jSelect(n.id,true);
+  if(n.c.length&&!n.open)jToggle(n,true);
+});
+function jToggle(n,force){
+  n.open=force==null?!n.open:force;
+  if(!n.open)n.c.forEach(c=>{c.open=false;});
+  jLayout();
+  if(n.open)requestAnimationFrame(()=>jMostrar(n));
+}
+/* rola a vista para mostrar o ramo que acabou de abrir */
+function jMostrar(n){
+  let y1=n.y,y2=n.y+n.h,x2=n.x+n.ww;
+  n.c.forEach(c=>{if(c.shown){y1=Math.min(y1,c.y);y2=Math.max(y2,c.y+c.h);x2=Math.max(x2,c.x+c.ww);}});
+  const m=16,sh=jscroll.clientHeight,sw=jscroll.clientWidth;
+  let t=jscroll.scrollTop,l=jscroll.scrollLeft;
+  if(y2*jk-t>sh-m)t=y2*jk-sh+m;
+  if(y1*jk-t<m)t=y1*jk-m;
+  if(x2*jk-l>sw-m)l=x2*jk-sw+m;
+  jscroll.scrollTo({top:t,left:l,behavior:RM?'auto':'smooth'});
+}
+function jTodos(v){jAll(n=>{if(n.c.length&&n!==jroot)n.open=v;});jroot.open=true;jLayout();}
 $('#panel').addEventListener('click',e=>{
   if(modo!=='jornada')return;
   const s=e.target.closest('[data-jsel]');if(s){jSelect(s.dataset.jsel,false);return;}
   const g=e.target.closest('[data-jgo]');if(g)irParaMapa(g.dataset.jgo);
 });
+$('#jExp').innerHTML=ico('expand');$('#jCol').innerHTML=ico('collapse');$('#jExp').onclick=()=>jTodos(true);$('#jCol').onclick=()=>{jTodos(false);jscroll.scrollTo({top:0,left:0});};
 $('#jIn').innerHTML=ico('plus');$('#jOut').innerHTML=ico('minus');$('#jFit').innerHTML=ico('fit');
 $('#jIn').onclick=()=>jZoom(jk*1.2);$('#jOut').onclick=()=>jZoom(jk/1.2);$('#jFit').onclick=jFit;
 jscroll.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();const r=jscroll.getBoundingClientRect();jZoom(jk*(e.deltaY<0?1.1:1/1.1),e.clientX-r.left,e.clientY-r.top);},{passive:false});
