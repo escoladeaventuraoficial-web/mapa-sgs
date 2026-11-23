@@ -78,7 +78,7 @@ h1,h2,h3,p,ul,ol{margin:0}
 #app{height:100%;display:flex;flex-direction:column;gap:10px;min-height:0}
 
 /* cabeçalho */
-.top{display:grid;grid-template-columns:auto minmax(220px,420px) auto;align-items:center;justify-content:space-between;gap:12px 20px}
+.top{display:grid;grid-template-columns:auto 1fr minmax(220px,420px);align-items:center;gap:12px 20px}
 .ttl{min-width:0}
 .ttl h1{font-size:19px;line-height:1.2;font-weight:700;letter-spacing:-.01em}
 .ttl p{color:var(--muted);font-size:12.5px;margin-top:2px}
@@ -146,6 +146,32 @@ h1,h2,h3,p,ul,ol{margin:0}
 .ctl hr{border:0;height:1px;background:var(--hair);margin:2px 4px}
 .hint{position:absolute;left:14px;bottom:12px;z-index:5;background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:6px 10px;font-size:12.5px;color:var(--muted);max-width:calc(100% - 80px);transition:opacity .3s}
 .hint.off{opacity:0;pointer-events:none}
+/* abas do produto: Mapa do SGS | Jornada do cliente */
+.seg{justify-self:start;display:inline-flex;gap:2px;padding:3px;border-radius:20px;border:1px solid var(--hair);background:var(--surface)}
+.seg button{border:0;background:none;height:32px;padding:0 14px;border-radius:16px;font-weight:600;font-size:13px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-selected="true"]{background:var(--accent);color:var(--on-accent)}
+/* jornada do cliente: mapa só para visualizar, rolável */
+#jstage{position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--hair);background-color:var(--canvas);background-image:radial-gradient(var(--dot) 1px,transparent 1.2px);background-size:22px 22px;min-height:0}
+#jscroll{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;cursor:grab}
+#jscroll.grabbing{cursor:grabbing}
+#jsizer{position:relative}
+#jworld{position:absolute;left:0;top:0;transform-origin:0 0}
+#jedges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+#jworld .nw{visibility:visible}
+.jnode{flex-direction:column;align-items:flex-start;gap:6px}
+.jnode .jt{display:flex;align-items:center;gap:8px}
+.jbs{display:flex;flex-wrap:wrap;gap:4px}
+.jbs i{font:600 10.5px/1 var(--font-mono);font-style:normal;padding:3px 5px;border-radius:5px;background:var(--surface);color:var(--ink)}
+.nw.jem{--nbg:var(--reg-bg);--nink:var(--reg-ink)}
+.edge.em{stroke:var(--reg-solid);stroke-dasharray:5 5}
+.jdraft{position:absolute;left:14px;top:12px;z-index:5;background:var(--doc-bg);color:var(--doc-ink);border-radius:10px;padding:5px 10px;font-size:12.5px;font-weight:600;pointer-events:none}
+.jreq{display:grid;gap:6px}
+.jcov{display:grid;gap:4px;font-size:13px}
+.jcov div{display:grid;grid-template-columns:56px minmax(0,1fr);gap:8px;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--hair)}
+.jcov .num{font-size:12px}
+.jcov small{display:block;color:var(--muted);font-size:12px}
+.jcov .no{color:var(--muted)}
 
 /* painel */
 #panel{min-width:0;background:var(--surface);border:1px solid var(--hair);border-radius:16px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
@@ -328,6 +354,9 @@ h1,h2,h3,p,ul,ol{margin:0}
   .fr{grid-template-columns:1fr}
   .brand h1{font-size:19px}
   .back .bl{display:none}
+  .seg .sl{display:none}
+  .ttl p{display:none}
+  .seg button{padding:0 11px}
   .back{padding:0 10px}
 }
 @media (max-width:860px){
@@ -540,6 +569,10 @@ h1,h2,h3,p,ul,ol{margin:0}
       <div class="tt"><h1 id="pname">SGS</h1>
       <p>SGS Turismo · ABNT NBR ISO 21101 · v1.2</p></div>
     </div>
+    <div class="seg" role="tablist" aria-label="Visão do produto">
+      <button type="button" role="tab" id="mMapa" aria-selected="true">Mapa<span class="sl"> do SGS</span></button>
+      <button type="button" role="tab" id="mJorn" aria-selected="false">Jornada<span class="sl"> do cliente</span></button>
+    </div>
     <div class="srch">
       <label for="q" class="sr-only">Buscar no mapa</label>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg>
@@ -559,6 +592,18 @@ h1,h2,h3,p,ul,ol{margin:0}
         <button id="bIn" type="button" title="Ampliar" aria-label="Ampliar"></button>
         <button id="bOut" type="button" title="Reduzir" aria-label="Reduzir"></button>
         <button id="bFit" type="button" title="Ajustar à tela" aria-label="Ajustar à tela"></button>
+      </div>
+    </section>
+    <section id="jstage" aria-label="Mapa mental da jornada do cliente" hidden>
+      <div id="jscroll"><div id="jsizer"><div id="jworld"><svg id="jedges" aria-hidden="true"></svg></div></div></div>
+      <div class="jdraft">Rascunho para revisão</div>
+      <div class="ctl" role="group" aria-label="Controles da jornada">
+        <button id="jExp" type="button" title="Expandir tudo" aria-label="Expandir tudo"></button>
+        <button id="jCol" type="button" title="Recolher tudo" aria-label="Recolher tudo"></button>
+        <hr>
+        <button id="jIn" type="button" title="Ampliar" aria-label="Ampliar"></button>
+        <button id="jOut" type="button" title="Reduzir" aria-label="Reduzir"></button>
+        <button id="jFit" type="button" title="Ajustar à tela" aria-label="Ajustar à tela"></button>
       </div>
     </section>
     <aside id="panel" aria-label="Detalhes">
@@ -1492,7 +1537,7 @@ q.addEventListener('input',()=>{
   sr.hidden=false;
 });
 q.addEventListener('keydown',e=>{if(e.key==='Enter'){const b=sr.querySelector('button');if(b)b.click();}});
-sr.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){focusNode(b.dataset.go);closeResults();q.blur();}});
+sr.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){irParaMapa(b.dataset.go);closeResults();q.blur();}});
 document.addEventListener('click',e=>{if(!e.target.closest('.srch'))closeResults();});
 
 /* ---- controles ---- */
@@ -1523,7 +1568,7 @@ function init(){
   fit(0);
   select(root);
   syncDone();
-  if(window.ResizeObserver)new ResizeObserver(()=>{if(!moved&&!$('#app').hidden)fit(0);}).observe(stage);
+  if(window.ResizeObserver)new ResizeObserver(()=>{if(!moved&&!$('#app').hidden&&stage.clientWidth)fit(0);}).observe(stage);
   $('#panel').classList.remove('open');
 }
 
@@ -2154,6 +2199,273 @@ document.addEventListener('keydown',e=>{
 });
 window.addEventListener('beforeunload',e=>{if(wDirty){wFlush();e.preventDefault();e.returnValue='';}});
 
+/* ============================================================
+   JORNADA DO CLIENTE (aba "Jornada do cliente" do produto)
+   Mapa mental só para visualizar: etapas que o cliente vive para conhecer,
+   comprar e fazer o passeio, cada ponto de contato ligado aos requisitos do
+   SGS (ISO 21101, cap. 4 a 10) e aos documentos do mapa.
+   Rascunho proposto pelo agente de IA em 23/11/2026 para o piloto Poço de Ferro,
+   aguardando revisão de Vagner. Sem preenchimento e sem banco por enquanto.
+   req: ids de nós do mapa do SGS (cláusulas 'c7_4' ou documentos 'i_d_pae').
+   ============================================================ */
+const JORNADA={
+ t:'Jornada do cliente',
+ versao:'Rascunho 1.0 · proposto em 23/11/2026',
+ c:[
+  {t:'Conhece o passeio',d:'O cliente descobre o Poço de Ferro e forma a primeira ideia do que vai viver.',c:[
+   {t:'Vê o passeio nas redes, no site ou por indicação',d:'Fotos e vídeos do rapel, do banho no poço e da escada de ferro.',sgs:'A divulgação mostra a atividade como ela é: esforço, riscos e requisitos para participar, sem prometer o que não pode cumprir.',req:['c7_4','n21103','i_d_com_part']},
+   {t:'Agência ou parceiro oferece o passeio',d:'Agências e hospedagens da região indicam ou vendem o passeio.',sgs:'O parceiro recebe e repassa a informação correta do produto, dos requisitos do participante e da política de cancelamento.',req:['c4_2','i_d_partes','c7_4']}
+  ]},
+  {t:'Tira dúvidas e vê se pode participar',d:'Antes de comprar, o cliente pergunta e confere se o passeio é para ele.',c:[
+   {t:'Conversa pelo WhatsApp ou telefone',d:'Pergunta sobre o roteiro, o nível de esforço, o que está incluso e o preço.',sgs:'Quem atende conhece os riscos e os requisitos e dá a mesma informação a todos.',req:['i_d_com_part','c7_2','c7_3']},
+   {t:'Confere se atende aos requisitos',d:'Idade, condição física e de saúde, saber nadar e outros limites (a definir no documento de competência do participante).',sgs:'Os requisitos mínimos estão definidos e são informados antes da compra.',req:['i_d_comp_part','c8_1','c6_1_2']}
+  ]},
+  {t:'Reserva e paga',d:'O momento da compra: o cliente fecha a data e passa os seus dados.',c:[
+   {t:'Escolhe a data e reserva',d:'Recebe as condições da compra por escrito.',sgs:'Informação antes da contratação: o que inclui, o que levar e a política de cancelamento por chuva ou cheia. Requisitos legais de venda (consumidor, Cadastur) conferidos na lista de requisitos legais.',req:['i_d_com_part','n21103','i_d_legal']},
+   {t:'Preenche a ficha do participante',d:'Nome, documento, contato de emergência e condições de saúde.',sgs:'Coleta só os dados necessários, guarda com segurança (LGPD) e a equipe usa essas informações no dia.',req:['i_r_ficha','c8_2','i_d_legal']},
+   {t:'Lê e aceita o termo de riscos',d:'Termo de conhecimento de riscos e corresponsabilidade.',sgs:'O termo é assinado e arquivado, ligado à versão vigente do documento.',req:['i_d_termo','c7_4','c7_5']}
+  ]},
+  {t:'Prepara-se para o dia',d:'Entre a compra e o passeio: confirmação, clima e deslocamento.',c:[
+   {t:'Recebe a confirmação e as orientações',d:'Horário, ponto de encontro no Recanto SOBRAGI, o que levar e o que vestir.',sgs:'Mensagem padrão de confirmação com as orientações de segurança.',req:['c7_4','i_d_com_part']},
+   {t:'A saída é confirmada ou cancelada pelo tempo',d:'Chuva forte ou cheia mudam as condições do poço.',sgs:'Critérios claros para manter, adiar ou cancelar; quem decide tem autoridade definida; o cliente é avisado a tempo. Considera as mudanças climáticas do contexto.',req:['i_d_proc_op','c5_3','c6_1_2','c4_1']},
+   {t:'Vai até o local',d:'Transporte próprio ou contratado até o ponto de apoio.',sgs:'Acesso e rota conhecidos; transporte contratado avaliado como serviço terceirizado.',req:['c8_1','c6_1_2','c4_2']}
+  ]},
+  {t:'Chega e recebe o briefing',d:'Recepção no ponto de apoio, antes de iniciar a atividade.',c:[
+   {t:'Recepção e conferência',d:'Conferência da ficha, da aptidão e das condições do dia.',sgs:'Quem não atende aos requisitos não segue; as condições de saúde informadas chegam ao condutor.',req:['i_d_comp_part','i_r_ficha','c8_1']},
+   {t:'Briefing de segurança',d:'Riscos, regras, sinais combinados e o que fazer numa emergência.',sgs:'Briefing seguindo o procedimento, com o conteúdo mínimo ao participante.',req:['i_d_proc_op','n21103','c8_2']},
+   {t:'Recebe e ajusta os equipamentos',d:'Cadeirinha, capacete e colete conferidos e ajustados.',sgs:'Equipamentos inspecionados antes do uso, com check-list.',req:['i_d_equip','i_r_checklist','c7_1']}
+  ]},
+  {t:'Vive a atividade',d:'O passeio em si, conduzido pela equipe.',c:[
+   {t:'Rapel',d:'Descida com corda até o poço.',sgs:'Sistema montado e verificado por condutor competente, seguindo o procedimento e os controles do inventário de riscos.',req:['i_d_proc_op','i_d_inventario','c7_2','n21102']},
+   {t:'Banho no poço',d:'Tempo livre na água.',sgs:'Área e limites definidos, colete quando indicado e vigilância durante o banho.',req:['i_d_proc_op','i_d_inventario']},
+   {t:'Subida pela escada de ferro',d:'Retorno pela escada fixa.',sgs:'Escada inspecionada e regras de uso combinadas com o gestor da área.',req:['i_d_inventario','i_r_checklist','c4_2']}
+  ]},
+  {t:'Se algo der errado',em:true,d:'Pode acontecer em qualquer etapa do dia. Não é uma etapa que o cliente escolhe, mas o SGS precisa estar pronto.',c:[
+   {t:'Emergência',d:'Lesão, mal-estar, afogamento ou queda.',sgs:'PAE do Poço de Ferro: primeiros socorros, quem chamar, remoção e contato com a família. Testado em simulados.',req:['i_d_pae','c8_2','i_r_teste']},
+   {t:'Incidente ou quase acidente',d:'Algo que deu ou quase deu errado.',sgs:'Registrado, investigado e com ação para não repetir.',req:['i_d_proc_inc','i_r_incidente','c10_1']}
+  ]},
+  {t:'Volta e avalia',d:'Depois do passeio: fim da atividade e opinião do cliente.',c:[
+   {t:'Devolve os equipamentos',d:'Entrega da cadeirinha, do capacete e do colete.',sgs:'Inspeção depois do uso e registro de danos.',req:['i_r_checklist','i_d_equip']},
+   {t:'Dá sua opinião',d:'Pesquisa curta, avaliação online e comentários.',sgs:'O retorno sobre segurança entra no monitoramento do SGS.',req:['i_r_feedback','c9_1']},
+   {t:'Reclamação ou sugestão vira melhoria',d:'O que o cliente aponta é tratado.',sgs:'Tratada como não conformidade ou oportunidade de melhoria e levada à análise crítica.',req:['c10_1','c10_2','c9_3']}
+  ]}
+ ]
+};
+let modo='mapa',jroot=null,jsel=null,jk=1,jfitted=false,pendingFocus=null;
+const jstage=$('#jstage'),jscroll=$('#jscroll'),jsizer=$('#jsizer'),jworld=$('#jworld'),jedges=$('#jedges');
+const jbyId={};
+/* requisito de um nó do mapa: cláusula do próprio nó ou da cláusula do documento */
+function reqCl(id){const n=byId[id];if(!n)return null;if(n.ref){const c=byId[DOCS[n.ref].cl];return c||null;}return n;}
+function reqNum(id){const c=reqCl(id);if(!c)return '';return c.num.replace('ISO ','');}
+function jBuild(){
+  const r={id:'j',depth:0,t:JORNADA.t,c:[],def:JORNADA,open:true};
+  jbyId.j=r;
+  JORNADA.c.forEach((e,i)=>{
+    const s={id:'j'+i,depth:1,t:e.t,num:String(i+1),def:e,parent:r,c:[],em:!!e.em};
+    if(e.em)s.num='!';
+    else s.num=String(JORNADA.c.slice(0,i).filter(x=>!x.em).length+1);
+    jbyId[s.id]=s;r.c.push(s);
+    e.c.forEach((t,k)=>{const n={id:s.id+'_'+k,depth:2,t:t.t,def:t,parent:s,c:[],em:s.em};jbyId[n.id]=n;s.c.push(n);});
+  });
+  return r;
+}
+function jAll(f){(function w(n){f(n);n.c.forEach(w);})(jroot);}
+function jRender(){
+  if(!jroot){
+    jroot=jBuild();
+    // confere se todos os vínculos existem no mapa do SGS
+    jAll(n=>{(n.def.req||[]).forEach(id=>{if(!byId[id])console.warn('Jornada: requisito não encontrado no mapa',id);});});
+  }
+  jworld.querySelectorAll('.nw').forEach(e=>e.remove());
+  jedges.innerHTML='';
+  const nome=cur?cur.nome:'Produto';
+  jroot.t=JORNADA.t+(cur&&!cur.piloto?' (modelo do piloto)':' · '+nome);
+  jAll(n=>{
+    const w=document.createElement('div');
+    w.className='nw d'+n.depth+(n.em?' jem':'');w.dataset.j=n.id;
+    let inner='';
+    if(n.depth===2){
+      const nums=[...new Set((n.def.req||[]).map(reqNum).filter(Boolean))];
+      inner=`<span class="jt"><span class="lbl">${esc(n.t)}</span></span><span class="jbs" aria-label="Requisitos ${esc(nums.join(', '))}">${nums.map(x=>`<i>${esc(x)}</i>`).join('')}</span>`;
+    }else inner=(n.num?`<span class="num">${esc(n.num)}</span>`:'')+`<span class="lbl">${esc(n.t)}</span>`;
+    w.innerHTML=`<button class="node${n.depth===2?' jnode':''}${n===jsel?' sel':''}" type="button">${inner}</button>`+(n.c.length?`<button class="tg" type="button" aria-expanded="false" aria-label="Abrir ou fechar ${esc(n.t)}">${ico('chev',13)}</button>`:'');
+    jworld.appendChild(w);n.el=w;n.btn=w.firstChild;n.tg=w.querySelector('.tg');
+  });
+  jLayout();
+}
+function jLayout(){
+  const GX=56,GY=10,GS=22,PAD=24;
+  jworld.style.width='4000px';jworld.style.height='4000px'; // largura livre para medir sem quebrar linhas
+  const colW=[0,0,0];
+  // ramos abrem e fecham pela seta, como no mapa do SGS (a raiz começa aberta e as etapas fechadas)
+  const vis=n=>!n.parent||(n.parent.open&&vis(n.parent));
+  jAll(n=>{n.el.style.display='';n.w=n.btn.offsetWidth;n.ww=n.el.offsetWidth;n.h=n.btn.offsetHeight;colW[n.depth]=Math.max(colW[n.depth],n.ww);});
+  jAll(n=>{n.shown=vis(n);n.el.style.display=n.shown?'':'none';if(n.tg)n.tg.setAttribute('aria-expanded',!!n.open);});
+  const colX=[PAD,PAD+colW[0]+GX,PAD+colW[0]+GX+colW[1]+GX];
+  let y=PAD+34; // espaço para o selo de rascunho
+  if(jroot.open)jroot.c.forEach((s,i)=>{
+    if(i)y+=s.open||jroot.c[i-1].open?GS:GY;
+    const top=y;s.x=colX[1];
+    if(!s.open){s.y=y;y+=s.h;return;}
+    s.c.forEach((t,k)=>{if(k)y+=GY;t.x=colX[2];t.y=y;y+=t.h;});
+    const mid=(top+y)/2;
+    s.y=Math.max(top,mid-s.h/2);
+    if(s.y+s.h>y)y=s.y+s.h;
+  });
+  else y+=jroot.h;
+  const algum=jroot.open&&jroot.c.some(s=>s.open);
+  const H=y+PAD,Wd=(algum?colX[2]+colW[2]:jroot.open?colX[1]+colW[1]:colX[0]+colW[0])+PAD;
+  jroot.x=colX[0];jroot.y=jroot.open?jroot.c[0].y+jroot.c[0].h/2-jroot.h/2:PAD+34; // raiz no alto, alinhada à 1ª etapa: a jornada se lê de cima para baixo
+  let paths='';
+  jAll(n=>{
+    if(!n.shown)return;
+    n.el.style.transform=`translate(${n.x}px,${n.y}px)`;
+    if(n.parent){
+      const p=n.parent,sx=p.x+p.ww,sy=p.y+p.h/2,ex=n.x,ey=n.y+n.h/2,dx=Math.max(20,(ex-sx)*.5);
+      paths+=`<path class="edge e${n.depth}${n.em?' em':''}" d="M${sx},${sy} C${sx+dx},${sy} ${ex-dx},${ey} ${ex},${ey}"/>`;
+    }
+  });
+  jedges.innerHTML=paths;
+  jworld.style.width=Wd+'px';jworld.style.height=H+'px';
+  jroot.W=Wd;jroot.H=H;
+  jZoom(jk);
+}
+function jZoom(k,cx,cy){
+  const sw=jscroll.clientWidth,sh=jscroll.clientHeight;
+  if(cx==null){cx=sw/2;cy=sh/2;}
+  const ox=(jscroll.scrollLeft+cx)/jk,oy=(jscroll.scrollTop+cy)/jk;
+  jk=clamp(k,.3,1.6);
+  jworld.style.transform=`scale(${jk})`;
+  jsizer.style.width=Math.ceil(jroot.W*jk)+'px';jsizer.style.height=Math.ceil(jroot.H*jk)+'px';
+  jscroll.scrollLeft=ox*jk-cx;jscroll.scrollTop=oy*jk-cy;
+}
+function jFit(){
+  if(!jroot||!jscroll.clientWidth)return;
+  const k=Math.min(1,Math.max((jscroll.clientWidth-8)/jroot.W,.5)); // cabe na largura; a altura rola
+  jworld.style.transform='';jk=clamp(k,.3,1);
+  jZoom(jk);jscroll.scrollLeft=0;jscroll.scrollTop=0;
+  jfitted=true;
+}
+function reqRow(id){
+  const n=byId[id];if(!n)return '';
+  if(n.ref){const d=DOCS[n.ref],c=byId[d.cl];
+    return `<button class="lk" type="button" data-jgo="${n.id}"><span class="num">${esc(c?c.num:'')}</span><span><span class="t">${esc(d.t)}</span><span class="w">${d.type==='doc'?'Documento':'Registro'}${c?' · '+esc(c.t):''} · abrir no mapa do SGS</span></span></button>`;}
+  return `<button class="lk" type="button" data-jgo="${n.id}"><span class="num">${esc(n.num)}</span><span><span class="t">${esc(n.t)}</span><span class="w">Requisito · abrir no mapa do SGS</span></span></button>`;
+}
+function jCobertura(){
+  // para cada requisito dos capítulos 4 a 10, as etapas da jornada que o tocam
+  const toca={};
+  jroot.c.forEach(s=>s.c.forEach(t=>(t.def.req||[]).forEach(id=>{const c=reqCl(id);if(!c)return;(toca[c.id]=toca[c.id]||new Set()).add(s);})));
+  let h='';
+  ['g4','g5','g6','g7','g8','g9','g10'].forEach(g=>{
+    const G=byId[g];if(!G)return;
+    G.c.filter(c=>c.k==='cl').forEach(c=>{
+      const st=toca[c.id];
+      h+=`<div><span class="num">${esc(c.num)}</span><span>${st?`<b>${esc(c.t)}</b><small>${[...st].map(s=>esc(s.num+' '+s.t)).join(' · ')}</small>`:`<span class="no">${esc(c.t)}</span><small>Não aparece diretamente para o cliente</small>`}</span></div>`;
+    });
+  });
+  return h;
+}
+function jPanel(n){
+  const el=$('#paneD');let h='';
+  if(n===jroot){
+    h=`<h2>${esc(n.t)}</h2>
+    <div class="chips"><span class="chip must">Rascunho para revisão</span><span class="chip">Só visualização</span></div>
+    <p class="lead">O caminho que o cliente percorre para conhecer, comprar e fazer o passeio, com os pontos de contato e os requisitos do SGS que cada um toca.</p>
+    ${cur&&!cur.piloto?'<div class="sec"><div class="box tip"><b>Modelo</b>Este produto ainda não tem jornada própria. O mapa mostra a jornada do piloto Poço de Ferro como modelo.</div></div>':''}
+    <div class="sec"><div class="box"><b>Origem</b>${esc(JORNADA.versao)} pelo agente de IA, para Vagner revisar: etapas, pontos de contato e vínculos com a norma podem ser ajustados.</div></div>
+    <div class="sec"><h3>Como ler</h3><ul><li>Cada ramo é uma etapa da jornada, na ordem em que o cliente vive. Toque na seta ao lado da etapa (ou no nome dela) para abrir os pontos de contato.</li><li>Os números pequenos em cada ponto de contato são os requisitos da ISO 21101 que ele toca.</li><li>Toque num ponto de contato para ver o que o SGS precisa garantir e abrir o requisito no mapa do SGS.</li><li>O ramo rosa vale para qualquer etapa: emergências e incidentes.</li></ul></div>
+    <div class="sec"><h3>Requisitos tocados pela jornada</h3><div class="jcov">${jCobertura()}</div></div>`;
+  }else if(n.depth===1){
+    const ids=[...new Set(n.c.flatMap(t=>t.def.req||[]))];
+    h=`<h2><span class="num">${esc(n.num)}</span>${esc(n.t)}</h2>
+    <div class="chips"><span class="chip">Etapa da jornada</span>${n.em?'<span class="chip reg">Qualquer etapa</span>':''}</div>
+    <p class="lead">${esc(n.def.d||'')}</p>
+    <div class="sec"><h3>Pontos de contato</h3><div class="links">${n.c.map(t=>`<button class="lk" type="button" data-jsel="${t.id}"><span><span class="t">${esc(t.t)}</span><span class="w">${esc(t.def.d||'')}</span></span></button>`).join('')}</div></div>
+    <div class="sec"><h3>Requisitos do SGS nesta etapa</h3><div class="jreq">${ids.map(reqRow).join('')}</div></div>`;
+  }else{
+    const s=n.parent;
+    h=`<div class="crumb"><button type="button" data-jsel="j">Jornada</button><span aria-hidden="true">›</span><button type="button" data-jsel="${s.id}">${esc(s.num+' '+s.t)}</button></div>
+    <h2>${esc(n.t)}</h2>
+    <div class="chips"><span class="chip">Ponto de contato</span></div>
+    <p class="lead">${esc(n.def.d||'')}</p>
+    <div class="sec"><div class="box"><b>O que o SGS precisa garantir</b>${esc(n.def.sgs||'')}</div></div>
+    <div class="sec"><h3>Requisitos do SGS</h3><div class="jreq">${(n.def.req||[]).map(reqRow).join('')}</div></div>`;
+  }
+  el.innerHTML=h;el.scrollTop=0;
+}
+function jSelect(id,abrir){
+  const n=jbyId[id];if(!n)return;
+  jsel=n;
+  let fechado=false;for(let a=n.parent;a;a=a.parent)if(!a.open){a.open=true;fechado=true;}
+  if(fechado){jLayout();requestAnimationFrame(()=>jMostrar(n.parent));}
+  jAll(m=>m.btn&&m.btn.classList.toggle('sel',m===n));
+  jPanel(n);
+  if(abrir&&window.matchMedia('(max-width:860px)').matches)$('#panel').classList.add('open');
+}
+function irParaMapa(id){
+  if(modo==='jornada'&&cur){pendingFocus=id;location.hash='#/p/'+encodeURIComponent(cur.id);}
+  else focusNode(id);
+}
+function setModo(m){
+  modo=m;
+  $('#mMapa').setAttribute('aria-selected',m==='mapa');$('#mJorn').setAttribute('aria-selected',m==='jornada');
+  stage.hidden=m!=='mapa';jstage.hidden=m!=='jornada';
+  $('#panel').classList.remove('open');
+  if(m==='jornada'){
+    if(cur)document.title='Jornada do cliente · '+cur.nome+' · SGS Turismo';
+    jRender();
+    if(!jfitted)jFit();
+    jSelect((jsel&&jsel.id)||'j');
+  }else{
+    if(cur)document.title=cur.nome+' · SGS Turismo';
+    if(state.sel)renderPanel(state.sel);
+    if(pendingFocus){const id=pendingFocus;pendingFocus=null;requestAnimationFrame(()=>focusNode(id));}
+  }
+}
+$('#mMapa').onclick=()=>{if(cur&&modo!=='mapa')location.hash='#/p/'+encodeURIComponent(cur.id);};
+$('#mJorn').onclick=()=>{if(cur&&modo!=='jornada')location.hash='#/p/'+encodeURIComponent(cur.id)+'/jornada';};
+jworld.addEventListener('click',e=>{
+  if(jdragged)return;const w=e.target.closest('.nw');if(!w)return;
+  const n=jbyId[w.dataset.j];
+  if(e.target.closest('.tg')){jToggle(n);return;}
+  jSelect(n.id,true);
+  if(n.c.length&&!n.open)jToggle(n,true);
+});
+function jToggle(n,force){
+  n.open=force==null?!n.open:force;
+  if(!n.open)n.c.forEach(c=>{c.open=false;});
+  jLayout();
+  if(n.open)requestAnimationFrame(()=>jMostrar(n));
+}
+/* rola a vista para mostrar o ramo que acabou de abrir */
+function jMostrar(n){
+  let y1=n.y,y2=n.y+n.h,x2=n.x+n.ww;
+  n.c.forEach(c=>{if(c.shown){y1=Math.min(y1,c.y);y2=Math.max(y2,c.y+c.h);x2=Math.max(x2,c.x+c.ww);}});
+  const m=16,sh=jscroll.clientHeight,sw=jscroll.clientWidth;
+  let t=jscroll.scrollTop,l=jscroll.scrollLeft;
+  if(y2*jk-t>sh-m)t=y2*jk-sh+m;
+  if(y1*jk-t<m)t=y1*jk-m;
+  if(x2*jk-l>sw-m)l=x2*jk-sw+m;
+  jscroll.scrollTo({top:t,left:l,behavior:RM?'auto':'smooth'});
+}
+function jTodos(v){jAll(n=>{if(n.c.length&&n!==jroot)n.open=v;});jroot.open=true;jLayout();}
+$('#panel').addEventListener('click',e=>{
+  if(modo!=='jornada')return;
+  const s=e.target.closest('[data-jsel]');if(s){jSelect(s.dataset.jsel,false);return;}
+  const g=e.target.closest('[data-jgo]');if(g)irParaMapa(g.dataset.jgo);
+});
+$('#jExp').innerHTML=ico('expand');$('#jCol').innerHTML=ico('collapse');$('#jExp').onclick=()=>jTodos(true);$('#jCol').onclick=()=>{jTodos(false);jscroll.scrollTo({top:0,left:0});};
+$('#jIn').innerHTML=ico('plus');$('#jOut').innerHTML=ico('minus');$('#jFit').innerHTML=ico('fit');
+$('#jIn').onclick=()=>jZoom(jk*1.2);$('#jOut').onclick=()=>jZoom(jk/1.2);$('#jFit').onclick=jFit;
+jscroll.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();const r=jscroll.getBoundingClientRect();jZoom(jk*(e.deltaY<0?1.1:1/1.1),e.clientX-r.left,e.clientY-r.top);},{passive:false});
+// arrastar com o mouse para mover (no toque, a rolagem é a do próprio navegador)
+let jdrag=null,jdragged=false;
+jscroll.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;jdrag={x:e.clientX,y:e.clientY,l:jscroll.scrollLeft,t:jscroll.scrollTop};jdragged=false;});
+window.addEventListener('pointermove',e=>{if(!jdrag)return;const dx=e.clientX-jdrag.x,dy=e.clientY-jdrag.y;if(!jdragged&&Math.hypot(dx,dy)<5)return;jdragged=true;jscroll.classList.add('grabbing');jscroll.scrollLeft=jdrag.l-dx;jscroll.scrollTop=jdrag.t-dy;});
+window.addEventListener('pointerup',()=>{if(!jdrag)return;jdrag=null;jscroll.classList.remove('grabbing');setTimeout(()=>{jdragged=false;},0);});
+if(window.ResizeObserver)new ResizeObserver(()=>{if(modo==='jornada'&&jroot&&!jstage.hidden&&jscroll.clientWidth&&!jfitted)jFit();}).observe(jscroll);
+
 /* ---- rotas ---- */
 function openProduct(p){
   cur=p;doneProd=doneByProd[p.id]=doneByProd[p.id]||{};
@@ -2170,9 +2482,12 @@ function openProduct(p){
 function route(){
   if(W)fecharDoc();
   closeMenu();if(!ov.hidden)ov.hidden=true;
-  const m=location.hash.match(/^#\/p\/([^/?#]+)/);
+  const m=location.hash.match(/^#\/p\/([^/?#]+)(\/jornada)?/);
   const p=m&&produtos.find(x=>x.id===decodeURIComponent(m[1]));
-  if(p){openProduct(p);return;}
+  if(p){
+    if(cur!==p||$('#app').hidden)openProduct(p);
+    setModo(m[2]?'jornada':'mapa');return;
+  }
   if(m)history.replaceState(null,'','#/');
   cur=null;
   $('#app').hidden=true;$('#home').hidden=false;document.title='SGS Turismo';
