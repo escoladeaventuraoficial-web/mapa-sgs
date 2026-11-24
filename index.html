@@ -1605,8 +1605,8 @@ async function carregarEtapas(){
   etapas.pronto=false;etapas.ok={};syncDone();
   try{
     if(REMOTO){
-      const ds=chk(await sb.from('documentos').select('id,requisito,item,produto_id,assunto'));
-      const vs=chk(await sb.from('versoes').select('documento_id').eq('estado','vigente'));
+      const ds=chk(await sb.from('documentos').select('id,requisito,item,produto_id,assunto').eq('empresa_id',empresa.id));
+      const vs=chk(await sb.from('versoes').select('documento_id').eq('empresa_id',empresa.id).eq('estado','vigente'));
       const vig=new Set(vs.map(v=>v.documento_id));
       ds.forEach(d=>{
         if(d.assunto||(d.produto_id&&d.produto_id!==pid)||!vig.has(d.id))return;
@@ -1709,7 +1709,7 @@ async function carregarDocKpi(){
   if(docKpiCarregando)return;docKpiCarregando=true;
   try{
     let vs=[];
-    if(REMOTO)vs=chk(await sb.from('versoes').select('documento_id,estado'));
+    if(REMOTO)vs=chk(await sb.from('versoes').select('documento_id,estado').eq('empresa_id',empresa.id));
     else Object.values(docSum).forEach((d,i)=>{if(d&&d.estado)vs.push({documento_id:i,estado:d.estado});});
     const por={};vs.forEach(v=>(por[v.documento_id]=por[v.documento_id]||[]).push(v.estado));
     const docs=Object.values(por);
