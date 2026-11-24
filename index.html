@@ -28,7 +28,7 @@
   --ex-bg:#e4d4fa; --ex-ink:#2e1a52; --ex-solid:#6a3fb5;
   --tag-ink:#ffffff;
   --ok:#1d8a57; --ok-soft:#d6f1e2;
-  --risk-low:#cdeed9; --risk-mid:#ffe7a6; --risk-high:#ffb9ab;
+  --risk-low:#cdeed9; --risk-mid:#ffe7a6; --risk-high:#ffb9ab; --pend-bg:#e5484d; --pend-ink:#ffffff;
   --shadow:0 6px 24px rgba(27,33,53,.10);
 }
 @media (prefers-color-scheme: dark){
@@ -44,7 +44,7 @@
     --ex-bg:#483376; --ex-ink:#eddfff; --ex-solid:#c4a4ff;
     --tag-ink:#17120a;
     --ok:#52d391; --ok-soft:#1c3b2c;
-    --risk-low:#1f4a34; --risk-mid:#5a4a12; --risk-high:#6e2b25;
+    --risk-low:#1f4a34; --risk-mid:#5a4a12; --risk-high:#6e2b25; --pend-bg:#c8343a; --pend-ink:#ffffff;
     --shadow:0 6px 24px rgba(0,0,0,.45);
     color-scheme:dark;
   }
@@ -61,7 +61,7 @@
   --ex-bg:#483376; --ex-ink:#eddfff; --ex-solid:#c4a4ff;
   --tag-ink:#17120a;
   --ok:#52d391; --ok-soft:#1c3b2c;
-  --risk-low:#1f4a34; --risk-mid:#5a4a12; --risk-high:#6e2b25;
+  --risk-low:#1f4a34; --risk-mid:#5a4a12; --risk-high:#6e2b25; --pend-bg:#c8343a; --pend-ink:#ffffff;
   --shadow:0 6px 24px rgba(0,0,0,.45);
   color-scheme:dark;
 }
@@ -125,6 +125,10 @@ h1,h2,h3,p,ul,ol{margin:0}
 .nw.k-doc{--nbg:var(--doc-bg);--nink:var(--doc-ink);--solid:var(--doc-solid)}
 .nw.k-reg{--nbg:var(--reg-bg);--nink:var(--reg-ink);--solid:var(--reg-solid)}
 .nw.k-ex{--nbg:var(--ex-bg);--nink:var(--ex-ink);--solid:var(--ex-solid)}
+/* etapa pendente: sem versão vigente (vermelho). Concluída: cor normal, a definir por Vagner */
+.nw.falta{--nbg:var(--pend-bg);--nink:var(--pend-ink)}
+.nw.falta .tag{background:var(--pend-ink);color:var(--pend-bg)}
+.nw.falta .tag.rec{background:transparent;color:var(--pend-ink);box-shadow:inset 0 0 0 1.5px var(--pend-ink)}
 .node{display:flex;align-items:center;gap:8px;max-width:272px;text-align:left;border:0;border-radius:10px;padding:9px 14px;background:var(--nbg);color:var(--nink);font-weight:500;font-size:14px;line-height:1.3;cursor:pointer;box-shadow:0 1px 0 rgba(20,30,70,.06)}
 .nw.d0 .node{font-weight:600;font-size:15px;padding:12px 16px}
 .nw.d1 .node{font-size:15px;padding:10px 15px}
@@ -204,6 +208,8 @@ h1,h2,h3,p,ul,ol{margin:0}
 .row .nm{flex:1;min-width:0;border:0;background:none;text-align:left;padding:0;cursor:pointer;font-weight:600;line-height:1.35}
 .row .nm:hover{text-decoration:underline}
 .row .nm small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:1px}
+.row .est{flex:none;font-size:12px;font-weight:600;color:var(--ok);margin-top:2px}
+.row .est.falta{color:var(--pend-bg)}
 .cb{flex:none;width:20px;height:20px;margin-top:1px;accent-color:var(--ok);cursor:pointer}
 .links{display:flex;flex-direction:column;gap:6px}
 .lk{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--hair);background:var(--surface);border-radius:12px;padding:8px 10px;text-align:left;cursor:pointer}
@@ -1492,7 +1498,7 @@ function boxes(d){
 function refRow(ref){
   const d=DOCS[ref];
   return `<div class="row">
-  <button class="nm" type="button" data-go="i_${ref}">${esc(d.t)}<small>${d.type==='doc'?'Documento':'Registro'} · ${d.norma?'exigido pela norma':'recomendado'} · ${scopeTxt(ref)}</small></button></div>`;
+  <button class="nm" type="button" data-go="i_${ref}">${esc(d.t)}<small>${d.type==='doc'?'Documento':'Registro'} · ${d.norma?'exigido pela norma':'recomendado'} · ${scopeTxt(ref)}</small></button>${etapas.pronto?(etapas.ok[ref]?'<span class="est">Concluído</span>':'<span class="est falta">Pendente</span>'):''}</div>`;
 }
 function linksHTML(n){
   const ls=(n.def&&n.def.links)||[];
@@ -1582,11 +1588,39 @@ function setDone(ref,v){
   store.setItem(ref,pid,v).catch(e=>{if(v)delete t[ref];else t[ref]=1;syncDone();falha(e,'salvar o item');});
 }
 function syncDone(){
-  let n=0;
-  REFS.forEach(r=>{
-    const on=isDone(r);if(on)n++;
-    const l=leafOf[r];if(l)l.el.classList.toggle('done',on);
+  // Etapa concluída = documento com versão vigente. Requisitos e capítulos ficam
+  // vermelhos enquanto algum documento ou registro deles estiver pendente.
+  // Itens só explicativos (sem documento ou registro) não mudam de cor.
+  nodes.forEach(n=>{
+    if(!n.el)return;
+    const p=etapas.pronto&&n!==root&&!!n.refs&&n.refs.length>0&&n.refs.some(r=>!etapas.ok[r]);
+    n.el.classList.toggle('falta',p);
+    if(n.ref)n.el.classList.toggle('done',etapas.pronto&&!!etapas.ok[n.ref]);
   });
+}
+/* ---- etapas concluídas: lidas dos documentos reais (versão vigente) ---- */
+const etapas={ok:{},pronto:false,vez:0};
+async function carregarEtapas(){
+  const vez=++etapas.vez,pid=cur&&cur.id,ok={};
+  etapas.pronto=false;etapas.ok={};syncDone();
+  try{
+    if(REMOTO){
+      const ds=chk(await sb.from('documentos').select('id,requisito,item,produto_id,assunto'));
+      const vs=chk(await sb.from('versoes').select('documento_id').eq('estado','vigente'));
+      const vig=new Set(vs.map(v=>v.documento_id));
+      ds.forEach(d=>{
+        if(d.assunto||(d.produto_id&&d.produto_id!==pid)||!vig.has(d.id))return;
+        const ref=d.item&&DOCS[d.item]?d.item:Object.keys(TPL).find(r=>TPL[r].req===d.requisito);
+        if(ref&&!!d.produto_id===isProd(ref))ok[ref]=true;
+      });
+    }else REFS.forEach(r=>{
+      const d=lsGet('sgs-doc-v1:'+r+(isProd(r)&&pid?':'+pid:''),null);
+      if(d&&(d.versoes||[]).some(v=>v.estado==='vigente'))ok[r]=true;
+    });
+  }catch(e){console.error(e);return;}   // sem dados: não pinta nada, para não indicar pendência falsa
+  if(vez!==etapas.vez)return;
+  etapas.ok=ok;etapas.pronto=true;syncDone();
+  if(state.sel&&!state.sel.ref)renderPanel(state.sel);
 }
 /* ---- busca ---- */
 const idx=[];
@@ -1620,6 +1654,7 @@ $('#bCol').onclick=()=>{state.hl=null;applyHL();collapseAll();};
 function init(){
   root=build(TREE,null,0,0);
   REFS.length=0;nodes.forEach(n=>{if(n.ref&&!REFS.includes(n.ref))REFS.push(n.ref);});
+  (function refsDe(n){n.refs=n.ref?[n.ref]:[];n.c.forEach(c=>n.refs.push(...refsDe(c)));return n.refs;})(root);
   linkG=document.createElementNS('http://www.w3.org/2000/svg','g');
   edges.appendChild(linkG);
   nodes.forEach(nodeEl);
@@ -2063,6 +2098,7 @@ function resumo(ref,r){
   const atual=ver||vig;
   const dc=(r.versoes.find(v=>v.data_criacao)||{}).data_criacao||null;
   docSum[ref]={estado:atual?atual.estado:null,versao:atual?atual.versao:null,vigente:vig?vig.versao:null,dataCriacao:dc,c:atual?atual.conteudo:null};
+  if(etapas.pronto&&!!etapas.ok[ref]!==!!vig){if(vig)etapas.ok[ref]=true;else delete etapas.ok[ref];syncDone();}
   return{ver,vig,atual};
 }
 async function docResumo(ref){
@@ -2547,11 +2583,11 @@ function openProduct(p){
   Object.keys(docSum).forEach(r=>{if(isProd(r))delete docSum[r];});
   $('#home').hidden=true;$('#app').hidden=false;
   $('#pname').textContent=p.nome;document.title=p.nome+' · SGS Turismo';
-  if(!root){init();return;}
+  if(!root){init();carregarEtapas();return;}
   // reinicia a vista do mapa para o novo produto
   state.hl=null;applyHL();
   nodes.forEach(n=>n.open=false);state.initial.forEach(n=>n.open=true);
-  relayout();moved=false;fit(0);select(root);syncDone();
+  relayout();moved=false;fit(0);select(root);carregarEtapas();
   $('#panel').classList.remove('open');
 }
 function route(){
