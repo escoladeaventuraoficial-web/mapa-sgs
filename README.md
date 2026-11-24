@@ -45,5 +45,11 @@ com o mapa interativo da ABNT NBR ISO 21101 (turismo de aventura).
 - No Supabase (Authentication › URL Configuration), o Site URL e as Redirect URLs precisam incluir o
   endereço da plataforma (ex.: `https://www.sgsturismo.com.br/`), senão o link de acesso por e-mail não volta para o site.
 - Sem `SGS_CONFIG`, a plataforma funciona em modo local (só no navegador), útil para testes.
-- O primeiro usuário que entrar vira **Responsável pelo SGS**. Depois disso, desative novos cadastros
-  abertos no Supabase (Authentication › Sign In / Providers) ou libere os usuários um a um.
+- O primeiro usuário que entrar vira **Responsável pelo SGS**. Quem entrar depois ganha papel **Leitura** e fica
+  **aguardando liberação** (sem ver nenhum dado, pela RLS).
+- **Liberar outra pessoa** (24/11/2026): a pessoa abre o site, digita o e-mail e toca no link. O Responsável abre o botão
+  **Usuários** no topo da tela inicial (só aparece para ele, com um número quando há gente aguardando), escolhe o papel e
+  toca em **Liberar acesso**. Também pode bloquear ou trocar o papel depois. Toda mudança fica na auditoria.
+  O banco não deixa o SGS ficar sem um Responsável ativo (`20261124000001_responsavel_nao_some.sql`).
+- Se o cadastro aberto estiver desligado no Supabase (Authentication › Sign In / Providers › Allow new users to sign up),
+  o Responsável convida a pessoa em Authentication › Users › Invite user e depois libera o acesso na tela **Usuários**.

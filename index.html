@@ -320,6 +320,22 @@ h1,h2,h3,p,ul,ol{margin:0}
 .sugs button{font-size:12px;border:1px solid var(--hair);background:var(--surface);border-radius:12px;padding:3px 9px;cursor:pointer}
 .sugs button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
 .err{color:#b4232f;font-size:12.5px}
+.dlgw{width:min(680px,100%)}
+.ubadge{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--doc-bg);color:var(--doc-ink);font-size:12px;display:inline-grid;place-items:center}
+.ulist{display:grid;gap:10px;margin-top:16px}
+.urow{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;border:1px solid var(--hair);border-radius:14px;padding:10px 12px;background:var(--canvas)}
+.urow.uwait{border-color:var(--doc-solid)}
+.urow .uq{min-width:0;display:grid;line-height:1.3}
+.urow .uq b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.urow .uq small{color:var(--muted);font-size:12px}
+.urow .uq .ust{font-weight:600}
+.urow .uq .ust.w{color:var(--doc-solid)} .urow .uq .ust.on{color:var(--ok)}
+.urow select{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:7px 8px;max-width:190px}
+.urow .btn{height:36px;padding:0 12px;font-size:13px}
+.upap{margin-top:14px;font-size:13px;color:var(--muted)}
+.upap summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.upap ul{margin:8px 0 0 18px;display:grid;gap:4px}
+@media (max-width:560px){.urow{grid-template-columns:1fr 1fr}.urow .uq{grid-column:1/-1}.urow select{max-width:none;width:100%}}
 .dact{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;flex-wrap:wrap}
 /* login, conta e avisos */
 #login{height:100%;overflow:auto;display:grid;place-items:center;padding:16px 0}
@@ -520,6 +536,7 @@ h1,h2,h3,p,ul,ol{margin:0}
     <div><h1>SGS Turismo</h1><p>Trilhas do Sul · Sistemas de Gestão da Segurança por produto · ABNT NBR ISO 21101</p></div>
    </div>
    <div class="hright"><div id="conta" class="conta"></div>
+   <button class="btn" id="hUsr" type="button" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.7.8 2.8 2.5 3 5.2"/></svg>Usuários<span class="ubadge" id="hUsrN" hidden></span></button>
    <button class="btn pri" id="hNew" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Novo produto</button></div>
   </header>
   <div class="hsum" id="hsum"></div>
@@ -561,6 +578,13 @@ h1,h2,h3,p,ul,ol{margin:0}
    <button class="btn pri" type="submit" id="fSave">Salvar e abrir o SGS</button>
   </div>
  </form>
+ <div class="dlg dlgw" id="pusr" hidden role="dialog" aria-modal="true" aria-labelledby="utitle">
+  <h2 id="utitle">Usuários</h2>
+  <p>Para entrar, a pessoa abre o site, digita o e-mail e toca no link que chega. Depois disso ela aparece aqui como <b>aguardando liberação</b>. Escolha o papel e libere o acesso. Tudo fica registrado na auditoria.</p>
+  <div id="ulist" class="ulist"></div>
+  <details class="upap"><summary>O que cada papel pode fazer</summary><ul id="upap"></ul></details>
+  <div class="dact"><button class="btn" type="button" id="uRel">Atualizar lista</button><button class="btn pri" type="button" id="uClose">Fechar</button></div>
+ </div>
  <div class="dlg" id="pdel" hidden role="dialog" aria-modal="true" aria-labelledby="dtitle">
   <h2 id="dtitle">Excluir produto?</h2>
   <p id="dtext" style="margin-top:8px"></p>
@@ -1705,7 +1729,7 @@ $('#sugs').addEventListener('click',e=>{
   form.atividades.value=at.join(', ');renderSugs();
 });
 form.atividades.addEventListener('input',renderSugs);
-function showOv(which){lastFocus=document.activeElement;ov.hidden=false;form.hidden=which!=='form';$('#pdel').hidden=which!=='del';}
+function showOv(which){lastFocus=document.activeElement;ov.hidden=false;form.hidden=which!=='form';$('#pdel').hidden=which!=='del';$('#pusr').hidden=which!=='usr';}
 function hideOv(){ov.hidden=true;if(lastFocus&&lastFocus.focus)lastFocus.focus();}
 function openForm(p){
   editing=p||null;form.reset();$('#ferr').hidden=true;
@@ -2561,6 +2585,65 @@ async function entrar(){
   papel=pf.papel;canEdit=['admin_sgs','aprovador','revisor','autor'].includes(papel);
   return true;
 }
+/* ---- usuários (só o responsável pelo SGS) ---- */
+const PAPEL_DESC={admin_sgs:'Faz tudo, inclusive liberar usuários e definir papéis.',aprovador:'Edita, revisa, aprova e torna documentos vigentes.',
+  revisor:'Edita e revisa documentos; não aprova.',autor:'Preenche e edita documentos e manda para revisão.',
+  equipe_campo:'Só consulta as versões vigentes (uso na operação).',leitura:'Só consulta, sem editar nada. Bom para começar os testes.',
+  agente_ia:'Conta técnica do agente de IA: só cria rascunhos.'};
+let usuarios=[];
+async function carregarUsuarios(){
+  usuarios=chk(await sb.from('perfis').select('id,nome,email,papel,ativo,criado_em').order('criado_em'))||[];
+  return usuarios;
+}
+function pendente(u){return !u.ativo;}
+function renderUsuarios(){
+  const ord=usuarios.slice().sort((a,b)=>(a.ativo-b.ativo)||String(a.criado_em).localeCompare(String(b.criado_em)));
+  const dt=d=>d?new Date(d).toLocaleDateString('pt-BR'):'';
+  $('#ulist').innerHTML=ord.length?ord.map(u=>{
+    const eu=usuario&&u.id===usuario.id;
+    const st=u.ativo?'<span class="ust on">Acesso liberado</span>':'<span class="ust w">Aguardando liberação</span>';
+    const ops=Object.keys(PAPEIS).map(k=>`<option value="${k}"${k===u.papel?' selected':''}>${esc(PAPEIS[k])}</option>`).join('');
+    return `<div class="urow${u.ativo?'':' uwait'}" data-uid="${esc(u.id)}">
+      <div class="uq"><b>${esc(u.nome||u.email||'(sem e-mail)')}${eu?' (você)':''}</b><small>${u.nome?esc(u.email||'')+' · ':''}entrou em ${dt(u.criado_em)} · ${st}</small></div>
+      <label class="sr-only" for="up-${esc(u.id)}">Papel</label><select id="up-${esc(u.id)}" data-papel>${ops}</select>
+      <button type="button" class="btn${u.ativo?'':' pri'}" data-ativo="${u.ativo?0:1}">${u.ativo?'Bloquear':'Liberar acesso'}</button>
+    </div>`;}).join(''):'<p class="mut">Ninguém além de você entrou ainda.</p>';
+  const n=usuarios.filter(pendente).length;
+  $('#hUsrN').hidden=!n;$('#hUsrN').textContent=n;
+}
+async function salvarUsuario(uid,mud,btn){
+  const u=usuarios.find(x=>x.id===uid);if(!u)return;
+  if(uid===usuario.id&&(mud.ativo===false||(mud.papel&&mud.papel!=='admin_sgs'))&&
+     !usuarios.some(x=>x.id!==uid&&x.ativo&&x.papel==='admin_sgs')){
+    toast('Você é o único responsável pelo SGS. Defina outro responsável antes de mudar o seu acesso.');renderUsuarios();return;}
+  if(btn)btn.disabled=true;
+  try{
+    const r=chk(await sb.from('perfis').update(mud).eq('id',uid).select('id,papel,ativo'));
+    if(!r||!r.length)throw new Error('Sem permissão para alterar este usuário.');
+    Object.assign(u,r[0]);
+    toast(mud.ativo===true?`Acesso liberado para ${u.email||u.nome} como ${PAPEIS[u.papel]}.`:mud.ativo===false?`Acesso de ${u.email||u.nome} bloqueado.`:`Papel de ${u.email||u.nome}: ${PAPEIS[u.papel]}.`);
+  }catch(e){falha(e,'alterar o usuário');}
+  renderUsuarios();
+}
+async function abrirUsuarios(){
+  $('#upap').innerHTML=Object.keys(PAPEIS).map(k=>`<li><b>${esc(PAPEIS[k])}:</b> ${esc(PAPEL_DESC[k]||'')}</li>`).join('');
+  $('#ulist').innerHTML='<p class="mut">Carregando…</p>';showOv('usr');$('#uClose').focus();
+  try{await carregarUsuarios();renderUsuarios();}catch(e){$('#ulist').innerHTML='';falha(e,'carregar os usuários');}
+}
+$('#hUsr').onclick=abrirUsuarios;
+$('#uClose').onclick=()=>hideOv();
+$('#uRel').onclick=async()=>{try{await carregarUsuarios();renderUsuarios();}catch(e){falha(e,'carregar os usuários');}};
+$('#ulist').addEventListener('change',e=>{
+  const sel=e.target.closest('[data-papel]');if(!sel)return;
+  salvarUsuario(sel.closest('[data-uid]').dataset.uid,{papel:sel.value});
+});
+$('#ulist').addEventListener('click',e=>{
+  const b=e.target.closest('[data-ativo]');if(!b)return;
+  const row=b.closest('[data-uid]');
+  const mud={ativo:b.dataset.ativo==='1'};
+  if(mud.ativo)mud.papel=row.querySelector('[data-papel]').value;
+  salvarUsuario(row.dataset.uid,mud,b);
+});
 const PAPEIS={admin_sgs:'Responsável pelo SGS',aprovador:'Aprovador',revisor:'Revisor',autor:'Autor',equipe_campo:'Equipe de campo',leitura:'Leitura',agente_ia:'Agente de IA'};
 function renderConta(){
   const el=$('#conta');
@@ -2590,6 +2673,7 @@ async function iniciar(){
     return;
   }
   $('#hNew').hidden=!canEdit;
+  if(REMOTO&&papel==='admin_sgs'){$('#hUsr').hidden=false;carregarUsuarios().then(renderUsuarios).catch(()=>{});}
   if(!canEdit)document.body.classList.add('ro');
   renderConta();
   if(!REMOTO)$('#hnote').textContent='Modo local: os produtos e o progresso ficam guardados só neste navegador. '+$('#hnote').textContent;
