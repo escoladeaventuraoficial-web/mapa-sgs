@@ -48,6 +48,9 @@ SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000001';
 UPDATE perfis SET papel = 'autor', ativo = true WHERE email = 'autor@exemplo.invalid';
 UPDATE perfis SET papel = 'equipe_campo', ativo = true WHERE email = 'campo@exemplo.invalid';
 UPDATE perfis SET papel = 'agente_ia', ativo = true WHERE email = 'ia@exemplo.invalid';
+-- O SGS nunca fica sem responsável ativo.
+SELECT pg_temp.espera_erro($$UPDATE perfis SET ativo = false WHERE id = auth.uid()$$, 'pelo menos um responsável');
+SELECT pg_temp.espera_erro($$UPDATE perfis SET papel = 'leitura' WHERE id = auth.uid()$$, 'pelo menos um responsável');
 
 -- Produtos e progresso.
 INSERT INTO produtos (id, nome, atividades) VALUES ('tirolesa-teste', 'Tirolesa Teste', ARRAY['Tirolesa']);
