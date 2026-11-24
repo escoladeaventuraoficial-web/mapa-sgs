@@ -17,15 +17,16 @@ BEGIN
 END $$;
 GRANT EXECUTE ON FUNCTION pg_temp.espera_erro(text, text) TO authenticated;
 
--- Usuários: o primeiro vira responsável ativo; os demais nascem inativos.
+-- Usuários: o primeiro vira administrador da plataforma e Responsável da empresa fundadora.
+-- Os demais entram sem empresa até receberem convite.
 INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
  ('00000000-0000-0000-0000-000000000001', 'vagner@exemplo.invalid', '{"name":"Responsável Teste"}'),
- ('00000000-0000-0000-0000-000000000002', 'autor@exemplo.invalid', '{}'),
- ('00000000-0000-0000-0000-000000000003', 'campo@exemplo.invalid', '{}'),
- ('00000000-0000-0000-0000-000000000004', 'ia@exemplo.invalid', '{}');
+ ('00000000-0000-0000-0000-000000000002', 'autor@exemplo.invalid', '{}');
 DO $$ BEGIN
-  ASSERT (SELECT papel::text || ativo FROM perfis WHERE email = 'vagner@exemplo.invalid') = 'admin_sgstrue', 'primeiro usuário';
-  ASSERT (SELECT papel::text || ativo FROM perfis WHERE email = 'autor@exemplo.invalid') = 'leiturafalse', 'demais inativos';
+  ASSERT (SELECT admin_plataforma FROM perfis WHERE email = 'vagner@exemplo.invalid'), 'primeiro é admin da plataforma';
+  ASSERT (SELECT papel::text || ativo FROM membros m JOIN empresas e ON e.id = m.empresa_id
+           WHERE e.nome = 'Trilhas do Sul' AND m.perfil_id = '00000000-0000-0000-0000-000000000001') = 'admin_sgstrue', 'primeiro é Responsável';
+  ASSERT NOT EXISTS (SELECT 1 FROM membros WHERE perfil_id = '00000000-0000-0000-0000-000000000002'), 'sem convite, sem empresa';
 END $$;
 
 -- Itens e produtos de referência.
@@ -33,24 +34,50 @@ DO $$ BEGIN
   ASSERT (SELECT count(*) FROM itens_mapa) = 34, 'itens do mapa';
   ASSERT (SELECT count(*) FROM itens_mapa WHERE escopo = 'produto') = 11, 'itens de produto';
   ASSERT (SELECT nome FROM produtos WHERE piloto) = 'Poço de Ferro', 'piloto';
+  ASSERT (SELECT e.nome FROM produtos p JOIN empresas e ON e.id = p.empresa_id WHERE p.piloto) = 'Trilhas do Sul', 'piloto é da Trilhas do Sul';
 END $$;
 
 SET ROLE authenticated;
 
--- Usuário inativo não vê nada e não escreve.
+-- Usuário sem empresa não vê nada e não escreve.
 SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000002';
-DO $$ BEGIN ASSERT (SELECT count(*) FROM produtos) = 0, 'inativo não lê'; END $$;
-SELECT pg_temp.espera_erro($$INSERT INTO produtos (id, nome) VALUES ('x', 'X')$$, 'row-level security');
-SELECT pg_temp.espera_erro($$UPDATE perfis SET papel = 'admin_sgs', ativo = true WHERE id = auth.uid()$$, 'Só o responsável');
+DO $$ BEGIN
+  ASSERT (SELECT count(*) FROM produtos) = 0, 'sem empresa não lê';
+  ASSERT (SELECT count(*) FROM itens_mapa) = 0, 'sem empresa não lê o mapa';
+  ASSERT (SELECT count(*) FROM empresas) = 0, 'sem empresa não vê empresas';
+END $$;
+SELECT pg_temp.espera_erro($$INSERT INTO produtos (id, nome) VALUES ('x', 'X')$$, 'Informe a empresa');
+SELECT pg_temp.espera_erro($$UPDATE perfis SET papel = 'admin_sgs', ativo = true WHERE id = auth.uid()$$, 'definido por empresa');
+SELECT pg_temp.espera_erro($$UPDATE perfis SET admin_plataforma = true WHERE id = auth.uid()$$, 'definido por empresa');
+SELECT pg_temp.espera_erro($$SELECT * FROM sgs_admin_empresas()$$, 'administrador da plataforma');
+SELECT pg_temp.espera_erro($$SELECT sgs_convidar('00000000-0000-4000-8000-000000000001', 'x@exemplo.invalid', 'admin_sgs')$$, 'Só o responsável');
 
--- Responsável ativa os demais.
+-- Responsável convida a equipe: quem já tem login entra na hora; quem não tem, entra no cadastro.
 SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000001';
-UPDATE perfis SET papel = 'autor', ativo = true WHERE email = 'autor@exemplo.invalid';
-UPDATE perfis SET papel = 'equipe_campo', ativo = true WHERE email = 'campo@exemplo.invalid';
-UPDATE perfis SET papel = 'agente_ia', ativo = true WHERE email = 'ia@exemplo.invalid';
+SELECT sgs_convidar('00000000-0000-4000-8000-000000000001', ' Autor@Exemplo.invalid ', 'autor');
+SELECT sgs_convidar('00000000-0000-4000-8000-000000000001', 'campo@exemplo.invalid', 'equipe_campo');
+SELECT sgs_convidar('00000000-0000-4000-8000-000000000001', 'ia@exemplo.invalid', 'leitura');
+SELECT pg_temp.espera_erro($$SELECT sgs_convidar('00000000-0000-4000-8000-000000000001', 'ia2@exemplo.invalid', 'agente_ia')$$, 'Agente de IA');
+SELECT pg_temp.espera_erro($$SELECT sgs_convidar('00000000-0000-4000-8000-000000000001', 'autor@exemplo.invalid', 'revisor')$$, 'já faz parte');
+RESET ROLE;
+INSERT INTO auth.users (id, email) VALUES
+ ('00000000-0000-0000-0000-000000000003', 'campo@exemplo.invalid'),
+ ('00000000-0000-0000-0000-000000000004', 'IA@exemplo.invalid');
+SET ROLE authenticated;
+UPDATE membros SET papel = 'agente_ia' WHERE perfil_id = '00000000-0000-0000-0000-000000000004';
+DO $$ BEGIN
+  ASSERT (SELECT string_agg(papel::text, ',' ORDER BY perfil_id) FROM membros) = 'admin_sgs,autor,equipe_campo,agente_ia', 'convites aceitos';
+  ASSERT (SELECT count(*) FROM convites WHERE aceito_em IS NULL) = 0, 'nenhum convite pendente';
+  ASSERT (SELECT count(*) FROM perfis) = 4, 'Responsável vê as pessoas da empresa';
+END $$;
 -- O SGS nunca fica sem responsável ativo.
-SELECT pg_temp.espera_erro($$UPDATE perfis SET ativo = false WHERE id = auth.uid()$$, 'pelo menos um responsável');
-SELECT pg_temp.espera_erro($$UPDATE perfis SET papel = 'leitura' WHERE id = auth.uid()$$, 'pelo menos um responsável');
+SELECT pg_temp.espera_erro($$UPDATE membros SET ativo = false WHERE perfil_id = auth.uid()$$, 'pelo menos um responsável');
+SELECT pg_temp.espera_erro($$UPDATE membros SET papel = 'leitura' WHERE perfil_id = auth.uid()$$, 'pelo menos um responsável');
+SELECT pg_temp.espera_erro($$UPDATE empresas SET situacao = 'suspensa'$$, 'permission denied');
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000002';
+UPDATE membros SET papel = 'admin_sgs' WHERE perfil_id = auth.uid();   -- a política ignora
+DO $$ BEGIN ASSERT (SELECT papel::text FROM membros) = 'autor', 'autor não se promove'; END $$;
+SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000001';
 
 -- Produtos e progresso.
 INSERT INTO produtos (id, nome, atividades) VALUES ('tirolesa-teste', 'Tirolesa Teste', ARRAY['Tirolesa']);
@@ -143,6 +170,8 @@ DO $$ BEGIN
   ASSERT (SELECT imagem FROM assinaturas) = 'data:image/png;base64,AA', 'não altera assinatura alheia';
 END $$;
 SET request.jwt.claim.sub = '00000000-0000-0000-0000-000000000003';
+
+\ir isolamento.sql
 
 RESET ROLE;
 DO $$ BEGIN

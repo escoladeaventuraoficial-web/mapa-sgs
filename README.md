@@ -53,3 +53,19 @@ com o mapa interativo da ABNT NBR ISO 21101 (turismo de aventura).
   O banco não deixa o SGS ficar sem um Responsável ativo (`20261124000001_responsavel_nao_some.sql`).
 - Se o cadastro aberto estiver desligado no Supabase (Authentication › Sign In / Providers › Allow new users to sign up),
   o Responsável convida a pessoa em Authentication › Users › Invite user e depois libera o acesso na tela **Usuários**.
+
+## Várias empresas (migração `20261124000002_multi_empresa.sql`, ainda não aplicada na produção)
+
+- Cada empresa tem o seu SGS. Produtos, documentos, versões, histórico, progresso, decisões, auditoria e arquivos
+  ganham `empresa_id`, e a RLS só deixa ler e escrever dentro das empresas em que a pessoa é membro ativo.
+- `membros` guarda o papel **por empresa** (`perfis.papel` e `perfis.ativo` ficam só como histórico).
+- **Criar empresa**: `sgs_criar_empresa()`. Quem cria vira Responsável dela. A empresa nasce **aguardando** e só
+  funciona depois que o administrador da plataforma libera com `sgs_definir_situacao_empresa()` (decisão de Vagner,
+  24/11/2026). Ele vê a lista com `sgs_admin_empresas()`, sem acesso aos documentos das empresas.
+- **Convidar a equipe**: `sgs_convidar(empresa, email, papel)`. Se a pessoa já tem login entra na hora; senão, entra
+  ao fazer o primeiro login com aquele e-mail. O site chama `sgs_aceitar_convites()` a cada login.
+- Arquivos no Storage ficam em `documentos/<empresa_id>/...`.
+- Tudo o que já existe vira da empresa **Trilhas do Sul**; os 2 produtos fictícios de exemplo são arquivados.
+- O site atual continua funcionando para quem está numa só empresa (o `empresa_id` vem da empresa padrão).
+- `supabase/tests/run.sh` roda dois cenários: banco novo com empresas fictícias (`regras.sql` + `isolamento.sql`)
+  e a migração de um banco igual ao da produção (`legado_antes.sql` → `legado_depois.sql`).
