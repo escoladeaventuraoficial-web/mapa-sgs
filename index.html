@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="SGS Turismo: plataforma de SGS por produto da Trilhas do Sul, com o mapa da ABNT NBR ISO 21101.">
+<meta name="description" content="SGS Turismo: plataforma para empresas de turismo de aventura implantarem o SGS por produto, com o mapa da ABNT NBR ISO 21101.">
 <style>:root{color-scheme:light}html,body{height:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>SGS Turismo</title>
 </head>
@@ -337,6 +337,17 @@ h1,h2,h3,p,ul,ol{margin:0}
 .upap ul{margin:8px 0 0 18px;display:grid;gap:4px}
 @media (max-width:560px){.urow{grid-template-columns:1fr 1fr}.urow .uq{grid-column:1/-1}.urow select{max-width:none;width:100%}}
 .dact{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;flex-wrap:wrap}
+.uinv{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end;margin-top:14px}
+.uinv select{height:40px}
+.uh{font-size:15px;font-weight:700;margin-top:18px}
+.urow.uconvite{border-style:dashed}
+#eform{display:grid;gap:12px;border-top:1px solid var(--hair);padding-top:14px}
+#eform h2{font-size:17px;font-weight:700}
+#eform .mut{font-size:12.5px;color:var(--muted)}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:13px}
+.chk input{margin-top:3px}
+.esel{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:7px 8px;max-width:200px}
+@media (max-width:560px){.uinv{grid-template-columns:1fr 1fr}.uinv .fl:first-child{grid-column:1/-1}}
 /* login, conta e avisos */
 #login{height:100%;overflow:auto;display:grid;place-items:center;padding:16px 0}
 .lbox{width:min(400px,100%);background:var(--surface);border:1px solid var(--hair);border-radius:20px;padding:28px 24px;display:grid;gap:14px;box-shadow:var(--shadow)}
@@ -523,7 +534,7 @@ h1,h2,h3,p,ul,ol{margin:0}
  <div class="lbox">
   <div class="logo" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
   <h1>SGS Turismo</h1>
-  <p class="lsub">Trilhas do Sul · acesso restrito à equipe</p>
+  <p class="lsub">Sistema de Gestão da Segurança para turismo de aventura · ISO 21101</p>
   <form id="lform" novalidate data-modo="entrar">
    <div class="seg lseg" role="tablist" aria-label="Acesso">
     <button type="button" role="tab" data-lmodo="entrar" aria-selected="true">Entrar</button>
@@ -545,6 +556,20 @@ h1,h2,h3,p,ul,ol{margin:0}
    <p class="err" id="pwerr" hidden></p>
    <div class="dact" style="margin-top:4px"><button class="btn" type="button" id="pwcancel">Cancelar</button><button class="btn pri" id="pwbtn" type="submit">Salvar senha</button></div>
   </form>
+  <form id="eform" novalidate hidden>
+   <h2>Criar minha empresa</h2>
+   <label class="fl"><span>Nome da empresa</span><input name="nome" required maxlength="120" autocomplete="organization" placeholder="Ex.: Aventura Serra Azul"></label>
+   <label class="fl"><span>CNPJ <em>(opcional)</em></span><input name="cnpj" maxlength="18" inputmode="numeric" placeholder="00.000.000/0000-00"></label>
+   <div class="fr">
+    <label class="fl"><span>Município</span><input name="municipio" maxlength="80"></label>
+    <label class="fl"><span>UF</span><input name="uf" maxlength="2" autocapitalize="characters" placeholder="SC"></label>
+   </div>
+   <label class="fl"><span>Seu nome</span><input name="pessoa" maxlength="80" autocomplete="name"></label>
+   <label class="chk"><input type="checkbox" name="aceite"> <span>Concordo que os dados da empresa e da equipe fiquem guardados na plataforma SGS Turismo, só para o uso do SGS.</span></label>
+   <p class="err" id="eerr" hidden></p>
+   <button class="btn pri" id="ebtn" type="submit">Criar empresa</button>
+   <p class="mut">Você vira o Responsável pelo SGS da empresa. O acesso começa depois que o administrador da plataforma liberar o cadastro.</p>
+  </form>
   <button class="btn" id="lout" type="button" hidden>Sair e entrar com outro e-mail</button>
  </div>
 </div>
@@ -554,9 +579,10 @@ h1,h2,h3,p,ul,ol{margin:0}
   <header class="htop">
    <div class="brand">
     <div class="logo" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
-    <div><h1>SGS Turismo</h1><p>Trilhas do Sul · Sistemas de Gestão da Segurança por produto · ABNT NBR ISO 21101</p></div>
+    <div><h1>SGS Turismo</h1><p><span id="hemp">Trilhas do Sul</span> · Sistemas de Gestão da Segurança por produto · ABNT NBR ISO 21101</p></div>
    </div>
    <div class="hright"><div id="conta" class="conta"></div>
+   <button class="btn" id="hEmp" type="button" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M10 21v-4h4v4"/></svg>Empresas<span class="ubadge" id="hEmpN" hidden></span></button>
    <button class="btn" id="hUsr" type="button" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.7.8 2.8 2.5 3 5.2"/></svg>Usuários<span class="ubadge" id="hUsrN" hidden></span></button>
    <button class="btn pri" id="hNew" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Novo produto</button></div>
   </header>
@@ -601,10 +627,23 @@ h1,h2,h3,p,ul,ol{margin:0}
  </form>
  <div class="dlg dlgw" id="pusr" hidden role="dialog" aria-modal="true" aria-labelledby="utitle">
   <h2 id="utitle">Usuários</h2>
-  <p>Para entrar, a pessoa abre o site, digita o e-mail e toca no link que chega. Depois disso ela aparece aqui como <b>aguardando liberação</b>. Escolha o papel e libere o acesso. Tudo fica registrado na auditoria.</p>
+  <p>Convide a pessoa pelo e-mail e escolha o papel. Depois avise para ela abrir o site e entrar com <b>esse mesmo e-mail</b>: ela já cai na sua empresa. Tudo fica registrado na auditoria.</p>
+  <form id="uinv" class="uinv" novalidate>
+   <label class="fl"><span>E-mail</span><input id="uiEmail" type="email" autocomplete="off" required placeholder="nome@empresa.com.br"></label>
+   <label class="fl"><span>Papel</span><select id="uiPapel"></select></label>
+   <button class="btn pri" type="submit" id="uiBtn">Convidar</button>
+  </form>
+  <div id="uconv" class="ulist"></div>
+  <h3 class="uh">Equipe</h3>
   <div id="ulist" class="ulist"></div>
   <details class="upap"><summary>O que cada papel pode fazer</summary><ul id="upap"></ul></details>
   <div class="dact"><button class="btn" type="button" id="uRel">Atualizar lista</button><button class="btn pri" type="button" id="uClose">Fechar</button></div>
+ </div>
+ <div class="dlg dlgw" id="pemp" hidden role="dialog" aria-modal="true" aria-labelledby="etitle">
+  <h2 id="etitle">Empresas cadastradas</h2>
+  <p>Libere as empresas que pediram cadastro. Você vê só os dados de cadastro: os documentos de cada empresa são só dela.</p>
+  <div id="elist" class="ulist"></div>
+  <div class="dact"><button class="btn" type="button" id="eRel">Atualizar lista</button><button class="btn pri" type="button" id="eClose">Fechar</button></div>
  </div>
  <div class="dlg" id="pdel" hidden role="dialog" aria-modal="true" aria-labelledby="dtitle">
   <h2 id="dtitle">Excluir produto?</h2>
@@ -1113,6 +1152,9 @@ let doneEmp={},doneByProd={};        // progresso: empresa e por produto
 let cur=null;                        // produto aberto
 let doneProd={};
 let sb=null,usuario=null,papel=null;
+const FUNDADORA='00000000-0000-4000-8000-000000000001';   // Trilhas do Sul
+let empresa=null,minhas=[],adminPlat=false;              // empresa aberta, empresas da pessoa, administrador da plataforma
+const K_EMPRESA='sgs-empresa-atual';
 let canEdit=true;
 function prodDone(id){return doneByProd[id]||{};}
 function isDone(ref){return !!(isProd(ref)?doneProd:doneEmp)[ref];}
@@ -1144,19 +1186,19 @@ const COLS='id,nome,municipio,base,atividades,responsavel,situacao,descricao,pil
 function chk(r){if(r.error)throw r.error;return r.data;}
 const remoto={
   async load(){
-    const ps=chk(await sb.from('produtos').select(COLS).eq('arquivado',false).order('ordem').order('criado_em'));
-    const pr=chk(await sb.from('progresso_itens').select('item,produto_id,pronto'));
+    const ps=chk(await sb.from('produtos').select(COLS).eq('empresa_id',empresa.id).eq('arquivado',false).order('ordem').order('criado_em'));
+    const pr=chk(await sb.from('progresso_itens').select('item,produto_id,pronto').eq('empresa_id',empresa.id));
     produtos=ps;doneEmp={};doneByProd={};
     ps.forEach(p=>{doneByProd[p.id]={};});
     pr.forEach(r=>{if(!r.pronto)return;if(r.produto_id){(doneByProd[r.produto_id]=doneByProd[r.produto_id]||{})[r.item]=1;}else doneEmp[r.item]=1;});
   },
-  async setItem(ref,pid,v){chk(await sb.rpc('sgs_marcar_item',{p_item:ref,p_produto:pid||null,p_pronto:!!v}));},
+  async setItem(ref,pid,v){chk(await sb.rpc('sgs_marcar_item',{p_empresa:empresa.id,p_item:ref,p_produto:pid||null,p_pronto:!!v}));},
   async saveProduto(p,nova){
     const row={nome:p.nome,municipio:p.municipio,base:p.base,atividades:p.atividades,responsavel:p.responsavel,situacao:p.situacao,descricao:p.descricao};
     if(!nova){chk(await sb.from('produtos').update(row).eq('id',p.id));return p;}
     for(let i=0;i<6;i++){
       const id=i?p.id+'-'+(i+1):p.id;
-      const r=await sb.from('produtos').insert(Object.assign({id},row)).select(COLS).single();
+      const r=await sb.from('produtos').insert(Object.assign({id,empresa_id:empresa.id},row)).select(COLS).single();
       if(!r.error){Object.assign(p,r.data);return p;}
       if(r.error.code!=='23505'||/nome/.test(r.error.message||''))throw r.error;
     }
@@ -1584,8 +1626,8 @@ async function carregarEtapas(){
   etapas.pronto=false;etapas.ok={};syncDone();
   try{
     if(REMOTO){
-      const ds=chk(await sb.from('documentos').select('id,requisito,item,produto_id,assunto'));
-      const vs=chk(await sb.from('versoes').select('documento_id').eq('estado','vigente'));
+      const ds=chk(await sb.from('documentos').select('id,requisito,item,produto_id,assunto').eq('empresa_id',empresa.id));
+      const vs=chk(await sb.from('versoes').select('documento_id').eq('empresa_id',empresa.id).eq('estado','vigente'));
       const vig=new Set(vs.map(v=>v.documento_id));
       ds.forEach(d=>{
         if(d.assunto||(d.produto_id&&d.produto_id!==pid)||!vig.has(d.id))return;
@@ -1688,7 +1730,7 @@ async function carregarDocKpi(){
   if(docKpiCarregando)return;docKpiCarregando=true;
   try{
     let vs=[];
-    if(REMOTO)vs=chk(await sb.from('versoes').select('documento_id,estado'));
+    if(REMOTO)vs=chk(await sb.from('versoes').select('documento_id,estado').eq('empresa_id',empresa.id));
     else Object.values(docSum).forEach((d,i)=>{if(d&&d.estado)vs.push({documento_id:i,estado:d.estado});});
     const por={};vs.forEach(v=>(por[v.documento_id]=por[v.documento_id]||[]).push(v.estado));
     const docs=Object.values(por);
@@ -1750,7 +1792,7 @@ $('#sugs').addEventListener('click',e=>{
   form.atividades.value=at.join(', ');renderSugs();
 });
 form.atividades.addEventListener('input',renderSugs);
-function showOv(which){lastFocus=document.activeElement;ov.hidden=false;form.hidden=which!=='form';$('#pdel').hidden=which!=='del';$('#pusr').hidden=which!=='usr';}
+function showOv(which){lastFocus=document.activeElement;ov.hidden=false;form.hidden=which!=='form';$('#pdel').hidden=which!=='del';$('#pusr').hidden=which!=='usr';$('#pemp').hidden=which!=='emp';}
 function hideOv(){ov.hidden=true;if(lastFocus&&lastFocus.focus)lastFocus.focus();}
 function openForm(p){
   editing=p||null;form.reset();$('#ferr').hidden=true;
@@ -1808,7 +1850,9 @@ $('#dOk').onclick=()=>{
    tela cheia (#ws). Cada versão nasce 1.0 Rascunho, vai para
    revisão, é aprovada (data de criação) e entra em vigor.
    ============================================================ */
-const EMPRESA='Trilhas do Sul';
+let EMPRESA='Trilhas do Sul';                 // nome da empresa aberta (modo local: Trilhas do Sul)
+let LOGO='img/logo-trilhas-do-sul.png';       // logo no cabeçalho dos documentos (só arquivos do próprio site)
+const ehFundadora=()=>!REMOTO||(empresa&&empresa.id===FUNDADORA);
 const ESTADOS={rascunho:'Rascunho',em_revisao:'Em revisão',aprovado:'Aprovado',vigente:'Vigente',substituido:'Substituída',arquivado:'Arquivada'};
 const FLUXO=['rascunho','em_revisao','aprovado','vigente'];
 const fmtD=d=>d?String(d).slice(0,10).split('-').reverse().join('/'):'';
@@ -1845,7 +1889,7 @@ function climaPreview(c,pergunta){
 const TPL={};
 TPL.d_contexto={
   req:'4.1',titulo:'Contexto da Organização',
-  pergunta:`O que, dentro e fora da ${EMPRESA}, ajuda ou atrapalha a operação segura?`,
+  get pergunta(){return `O que, dentro e fora da ${EMPRESA}, ajuda ou atrapalha a operação segura?`;},
   novo:()=>({itens:[],clima:{}}),
   stats(c){const v=c.itens,ac=v.filter(i=>(i.acao||'').trim());return{tot:v.length,imp:v.filter(i=>i.impacto).length,acoes:ac.length,clima:!!(c.clima&&c.clima.relevante)};},
   progresso(c){const s=this.stats(c);return bar('Itens com grau de impacto',s.imp,s.tot)+bar('Decisão sobre mudanças climáticas',s.clima?1:0,1)+bar('Itens com ação sugerida',s.acoes,s.tot);},
@@ -1905,7 +1949,7 @@ const negP=p=>p.afetadaNeg??p.afetada??'';
 const ORDP={'Muito alto':0,'Alto':1,'Médio/alto':2,'Médio':3,'Baixo':4,'':5};
 TPL.d_partes={
   req:'4.2',titulo:'Partes Interessadas',
-  novo:()=>({partes:PARTES_PROPOSTAS.map(([parte,influencia,afetadaPos,afetadaNeg,requisitos,impacto,clima])=>({id:novoId(),parte,influencia,afetadaPos,afetadaNeg,requisitos,impacto,clima})),clima:{relevante:'',quais:'',justificativa:'',decididoPor:'',data:''},origem:'Lista inicial proposta pelo agente de IA a partir da tabela de referência de outra empresa, adaptada ao Poço de Ferro. Revise e ajuste.'}),
+  novo:()=>!ehFundadora()?{partes:[],clima:{relevante:'',quais:'',justificativa:'',decididoPor:'',data:''},origem:''}:({partes:PARTES_PROPOSTAS.map(([parte,influencia,afetadaPos,afetadaNeg,requisitos,impacto,clima])=>({id:novoId(),parte,influencia,afetadaPos,afetadaNeg,requisitos,impacto,clima})),clima:{relevante:'',quais:'',justificativa:'',decididoPor:'',data:''},origem:'Lista inicial proposta pelo agente de IA a partir da tabela de referência de outra empresa, adaptada ao Poço de Ferro. Revise e ajuste.'}),
   stats(c){const v=c.partes,tem=x=>!!(x||'').trim();return{tot:v.length,req:v.filter(p=>tem(p.requisitos)).length,rel:v.filter(p=>tem(p.influencia)||tem(p.afetadaPos)||tem(negP(p))).length,imp:v.filter(p=>p.impacto).length,clima:!!(c.clima&&c.clima.relevante)};},
   progresso(c){const s=this.stats(c);return bar('Partes com o que esperam ou exigem',s.req,s.tot)+bar('Partes com grau de impacto',s.imp,s.tot)+bar('Decisão sobre mudanças climáticas',s.clima?1:0,1);},
   pendencias(c){const s=this.stats(c);return [!s.tot?'Nenhuma parte interessada':'',s.req<s.tot?pl(s.tot-s.req,'parte sem o que espera ou exige','partes sem o que esperam ou exigem'):'',s.rel<s.tot?pl(s.tot-s.rel,'parte sem como influencia ou é afetada','partes sem como influenciam ou são afetadas'):'',s.imp<s.tot?pl(s.tot-s.imp,'parte sem grau de impacto','partes sem grau de impacto'):'',!s.clima?'Decisão sobre mudanças climáticas':''].filter(Boolean);},
@@ -2020,7 +2064,7 @@ const dLocal={
 const dRemoto={
   async load(ref){
     const t=TPL[ref],pid=docPid(ref);
-    let q=sb.from('documentos').select('id,requisito,titulo,assunto').eq('requisito',t.req);
+    let q=sb.from('documentos').select('id,requisito,titulo,assunto').eq('empresa_id',empresa.id).eq('requisito',t.req);
     q=pid?q.eq('produto_id',pid):q.is('produto_id',null);
     const ds=chk(await q).filter(d=>!d.assunto);
     const doc=ds[0]||null;if(!doc)return{doc:null,versoes:[],hist:[]};
@@ -2031,7 +2075,7 @@ const dRemoto={
   },
   async criar(ref,conteudo){
     const t=TPL[ref],pid=docPid(ref);
-    let r=await sb.from('documentos').insert({requisito:t.req,titulo:t.titulo,item:ref,produto_id:pid}).select('id').single();
+    let r=await sb.from('documentos').insert({empresa_id:empresa.id,requisito:t.req,titulo:t.titulo,item:ref,produto_id:pid}).select('id').single();
     if(r.error){if(r.error.code==='23505')return null;throw r.error;}  // outra pessoa criou ao mesmo tempo: recarrega
     const v=chk(await sb.from('versoes').insert({documento_id:r.data.id,conteudo}).select('id').single());
     return v.id;
@@ -2193,7 +2237,7 @@ function docPreview(){
   const revisada=['aprovado','vigente','substituido'].includes(a.estado);
   return `<div class="dp">
    ${rasc?'<div class="dpr">RASCUNHO – EM REVISÃO – NÃO USAR EM CAMPO</div>':''}
-   <table class="dph"><tr><td rowspan="2" class="dlogo"><img src="img/logo-trilhas-do-sul.png" alt="${esc(EMPRESA)}" width="78" height="80"></td><td>Sistema de Gestão da Segurança (SGS)<br>${esc(EMPRESA)}</td><td class="w">Versão ${esc(a.versao)}${rasc?'<br><small>(rascunho)</small>':''}</td></tr>
+   <table class="dph"><tr><td rowspan="2" class="dlogo">${LOGO?`<img src="${esc(LOGO)}" alt="${esc(EMPRESA)}" width="78" height="80">`:''}</td><td>Sistema de Gestão da Segurança (SGS)<br>${esc(EMPRESA)}</td><td class="w">Versão ${esc(a.versao)}${rasc?'<br><small>(rascunho)</small>':''}</td></tr>
    <tr><td><b>${esc(docNome(W.ref))}</b></td><td class="w">Data de criação<br><small>${dc?fmtD(dc):'após aprovação'}</small></td></tr></table>
    ${t.preview(c)}
    <table class="dpctl"><tr><th>Criado por</th><th>Revisado por</th><th>Aprovado por</th><th>Atualização</th></tr><tr><td>${nome(a.autor_id)}</td><td>${ass(a.revisor_id,revisada)}${nome(a.revisor_id)}</td><td>${ass(a.aprovador_id,!!a.aprovado_em)}${nome(a.aprovador_id)}${a.aprovado_em?'<br>'+fmtD(a.aprovado_em):''}</td><td>${a.atualizado_em?fmtD(a.atualizado_em):''}</td></tr></table>
@@ -2601,41 +2645,84 @@ async function entrar(){
   if(!session){show('login');document.title='Entrar · SGS Turismo';return false;}
   usuario=session.user;
   if(recuperando){abrirNovaSenha();return false;}
-  const r=await sb.from('perfis').select('nome,papel,ativo').eq('id',usuario.id).maybeSingle();
-  const pf=r.data;
-  if(!pf||!pf.ativo){
-    show('login');$('#lform').hidden=true;
-    loginMsg(`Você entrou como <b>${esc(usuario.email||'')}</b>, mas o seu acesso ainda não foi liberado. Peça ao responsável pelo SGS para ativar o seu usuário.`,'warn');
-    $('#lout').hidden=false;return false;
-  }
-  papel=pf.papel;canEdit=['admin_sgs','aprovador','revisor','autor'].includes(papel);
+  // Convites feitos depois do cadastro desta pessoa entram agora.
+  try{await sb.rpc('sgs_aceitar_convites');}catch(e){console.warn(e);}
+  const pf=chk(await sb.from('perfis').select('nome,admin_plataforma').eq('id',usuario.id).maybeSingle())||{};
+  adminPlat=!!pf.admin_plataforma;
+  const ms=chk(await sb.from('membros').select('papel,ativo,empresas(id,nome,situacao,municipio,uf,logo_path)').eq('perfil_id',usuario.id))||[];
+  minhas=ms.filter(m=>m.ativo&&m.empresas).map(m=>Object.assign({papel:m.papel},m.empresas))
+           .sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  const ativas=minhas.filter(e=>e.situacao==='ativa');
+  if(!ativas.length){semEmpresa(pf);return false;}
+  empresa=ativas.find(e=>e.id===lsGet(K_EMPRESA,null))||ativas[0];
+  papel=empresa.papel;canEdit=['admin_sgs','aprovador','revisor','autor'].includes(papel);
+  EMPRESA=empresa.nome;
+  LOGO=/^img\/[\w.-]+\.(png|jpe?g|svg|webp)$/.test(empresa.logo_path||'')?empresa.logo_path:'';
   return true;
 }
+/* ---- pessoa sem empresa liberada: aguardando, suspensa ou criar a empresa ---- */
+function semEmpresa(pf){
+  show('login');document.title='SGS Turismo';
+  $('#lform').hidden=true;$('#lout').hidden=false;
+  const esp=minhas.find(e=>e.situacao==='aguardando'),sus=minhas.find(e=>e.situacao==='suspensa');
+  if(esp)loginMsg(`A empresa <b>${esc(esp.nome)}</b> foi cadastrada e está <b>aguardando liberação</b> pelo administrador da plataforma. O acesso começa assim que ela for liberada. Recarregue esta página mais tarde.`,'warn');
+  else if(sus)loginMsg(`O acesso da empresa <b>${esc(sus.nome)}</b> está suspenso. Fale com o administrador da plataforma.`,'err');
+  else{
+    loginMsg(`Você entrou como <b>${esc(usuario.email||'')}</b>. Se a sua empresa já usa o SGS Turismo, peça ao responsável pelo SGS para convidar este e-mail e recarregue a página. Para começar o SGS da sua empresa, preencha abaixo.`);
+    const f=$('#eform');f.hidden=false;if(pf&&pf.nome)f.pessoa.value=pf.nome;
+  }
+}
+$('#eform').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const f=e.target,err=$('#eerr'),v=n=>f[n].value.trim();
+  const erro=m=>{err.textContent=m;err.hidden=!m;};
+  const cnpj=v('cnpj').replace(/\D/g,'');
+  if(v('nome').length<2)return erro('Informe o nome da empresa.');
+  if(cnpj&&cnpj.length!==14)return erro('O CNPJ tem 14 números. Deixe em branco se preferir.');
+  if(v('uf')&&!/^[a-zA-Z]{2}$/.test(v('uf')))return erro('UF com duas letras, por exemplo SC.');
+  if(!v('pessoa'))return erro('Informe o seu nome.');
+  if(!f.aceite.checked)return erro('Marque a concordância para continuar.');
+  erro('');$('#ebtn').disabled=true;
+  try{
+    chk(await sb.rpc('sgs_criar_empresa',{p_nome:v('nome'),p_cnpj:cnpj||null,p_municipio:v('municipio'),p_uf:v('uf').toUpperCase(),p_nome_pessoa:v('pessoa')}));
+    location.reload();
+  }catch(x){erro('Não foi possível criar a empresa. '+((x&&x.message)||''));$('#ebtn').disabled=false;}
+});
 /* ---- usuários (só o responsável pelo SGS) ---- */
 const PAPEL_DESC={admin_sgs:'Faz tudo, inclusive liberar usuários e definir papéis.',aprovador:'Edita, revisa, aprova e torna documentos vigentes.',
   revisor:'Edita e revisa documentos; não aprova.',autor:'Preenche e edita documentos e manda para revisão.',
   equipe_campo:'Só consulta as versões vigentes (uso na operação).',leitura:'Só consulta, sem editar nada. Bom para começar os testes.',
   agente_ia:'Conta técnica do agente de IA: só cria rascunhos.'};
-let usuarios=[];
+let usuarios=[],convites=[];
 async function carregarUsuarios(){
-  usuarios=chk(await sb.from('perfis').select('id,nome,email,papel,ativo,criado_em').order('criado_em'))||[];
+  const ms=chk(await sb.from('membros').select('perfil_id,papel,ativo,criado_em,perfis(nome,email)').eq('empresa_id',empresa.id).order('criado_em'))||[];
+  usuarios=ms.map(m=>({id:m.perfil_id,papel:m.papel,ativo:m.ativo,criado_em:m.criado_em,nome:(m.perfis&&m.perfis.nome)||'',email:(m.perfis&&m.perfis.email)||''}));
+  convites=chk(await sb.from('convites').select('id,email,papel,criado_em,expira_em').eq('empresa_id',empresa.id).is('aceito_em',null).order('criado_em'))||[];
   return usuarios;
 }
-function pendente(u){return !u.ativo;}
+function renderConvites(){
+  const dt=d=>d?new Date(d).toLocaleDateString('pt-BR'):'';
+  $('#uconv').innerHTML=convites.map(c=>{
+    const venc=new Date(c.expira_em)<new Date();
+    return `<div class="urow uconvite" data-cid="${esc(String(c.id))}">
+      <div class="uq"><b>${esc(c.email)}</b><small>${esc(PAPEIS[c.papel]||c.papel)} · convidado em ${dt(c.criado_em)} · ${venc?'<span class="ust w">convite vencido, convide de novo</span>':'<span class="ust w">ainda não entrou</span>'}</small></div>
+      <span></span><button type="button" class="btn" data-cancela>Cancelar convite</button></div>`;}).join('');
+}
 function renderUsuarios(){
   const ord=usuarios.slice().sort((a,b)=>(a.ativo-b.ativo)||String(a.criado_em).localeCompare(String(b.criado_em)));
   const dt=d=>d?new Date(d).toLocaleDateString('pt-BR'):'';
   $('#ulist').innerHTML=ord.length?ord.map(u=>{
     const eu=usuario&&u.id===usuario.id;
-    const st=u.ativo?'<span class="ust on">Acesso liberado</span>':'<span class="ust w">Aguardando liberação</span>';
-    const ops=Object.keys(PAPEIS).map(k=>`<option value="${k}"${k===u.papel?' selected':''}>${esc(PAPEIS[k])}</option>`).join('');
+    const st=u.ativo?'<span class="ust on">Acesso liberado</span>':'<span class="ust w">Bloqueado</span>';
+    const ops=Object.keys(PAPEIS).filter(k=>k!=='agente_ia'||u.papel==='agente_ia').map(k=>`<option value="${k}"${k===u.papel?' selected':''}>${esc(PAPEIS[k])}</option>`).join('');
     return `<div class="urow${u.ativo?'':' uwait'}" data-uid="${esc(u.id)}">
       <div class="uq"><b>${esc(u.nome||u.email||'(sem e-mail)')}${eu?' (você)':''}</b><small>${u.nome?esc(u.email||'')+' · ':''}entrou em ${dt(u.criado_em)} · ${st}</small></div>
       <label class="sr-only" for="up-${esc(u.id)}">Papel</label><select id="up-${esc(u.id)}" data-papel>${ops}</select>
       <button type="button" class="btn${u.ativo?'':' pri'}" data-ativo="${u.ativo?0:1}">${u.ativo?'Bloquear':'Liberar acesso'}</button>
     </div>`;}).join(''):'<p class="mut">Ninguém além de você entrou ainda.</p>';
-  const n=usuarios.filter(pendente).length;
-  $('#hUsrN').hidden=!n;$('#hUsrN').textContent=n;
+  renderConvites();
+  const n=convites.length;
+  $('#hUsrN').hidden=!n;$('#hUsrN').textContent=n;$('#hUsrN').title=n?pl(n,'convite aguardando','convites aguardando'):'';
 }
 async function salvarUsuario(uid,mud,btn){
   const u=usuarios.find(x=>x.id===uid);if(!u)return;
@@ -2644,7 +2731,7 @@ async function salvarUsuario(uid,mud,btn){
     toast('Você é o único responsável pelo SGS. Defina outro responsável antes de mudar o seu acesso.');renderUsuarios();return;}
   if(btn)btn.disabled=true;
   try{
-    const r=chk(await sb.from('perfis').update(mud).eq('id',uid).select('id,papel,ativo'));
+    const r=chk(await sb.from('membros').update(mud).eq('empresa_id',empresa.id).eq('perfil_id',uid).select('papel,ativo'));
     if(!r||!r.length)throw new Error('Sem permissão para alterar este usuário.');
     Object.assign(u,r[0]);
     toast(mud.ativo===true?`Acesso liberado para ${u.email||u.nome} como ${PAPEIS[u.papel]}.`:mud.ativo===false?`Acesso de ${u.email||u.nome} bloqueado.`:`Papel de ${u.email||u.nome}: ${PAPEIS[u.papel]}.`);
@@ -2652,11 +2739,70 @@ async function salvarUsuario(uid,mud,btn){
   renderUsuarios();
 }
 async function abrirUsuarios(){
+  $('#uiPapel').innerHTML=Object.keys(PAPEIS).filter(k=>k!=='agente_ia').map(k=>`<option value="${k}"${k==='autor'?' selected':''}>${esc(PAPEIS[k])}</option>`).join('');
+  $('#utitle').textContent='Usuários · '+EMPRESA;
   $('#upap').innerHTML=Object.keys(PAPEIS).map(k=>`<li><b>${esc(PAPEIS[k])}:</b> ${esc(PAPEL_DESC[k]||'')}</li>`).join('');
   $('#ulist').innerHTML='<p class="mut">Carregando…</p>';showOv('usr');$('#uClose').focus();
   try{await carregarUsuarios();renderUsuarios();}catch(e){$('#ulist').innerHTML='';falha(e,'carregar os usuários');}
 }
 $('#hUsr').onclick=abrirUsuarios;
+$('#uinv').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const email=$('#uiEmail').value.trim().toLowerCase(),pap=$('#uiPapel').value;
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast('Informe um e-mail válido.');return;}
+  $('#uiBtn').disabled=true;
+  try{
+    chk(await sb.rpc('sgs_convidar',{p_empresa:empresa.id,p_email:email,p_papel:pap}));
+    $('#uiEmail').value='';
+    await carregarUsuarios();renderUsuarios();
+    const entrou=usuarios.some(u=>u.email===email);
+    toast(entrou?`${email} já tinha login e entrou na equipe como ${PAPEIS[pap]}.`:`Convite registrado. Avise ${email} para entrar no site com esse e-mail.`);
+  }catch(x){falha(x,'convidar');}
+  $('#uiBtn').disabled=false;
+});
+$('#uconv').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-cancela]');if(!b)return;
+  const id=b.closest('[data-cid]').dataset.cid;b.disabled=true;
+  try{chk(await sb.from('convites').delete().eq('id',id));await carregarUsuarios();renderUsuarios();toast('Convite cancelado.');}
+  catch(x){falha(x,'cancelar o convite');b.disabled=false;}
+});
+/* ---- empresas (só o administrador da plataforma) ---- */
+const SITUACAO={aguardando:'Aguardando liberação',ativa:'Liberada',suspensa:'Suspensa'};
+let empresasAdm=[];
+async function carregarEmpresas(){
+  empresasAdm=chk(await sb.rpc('sgs_admin_empresas'))||[];
+  const n=empresasAdm.filter(e=>e.situacao==='aguardando').length;
+  $('#hEmpN').hidden=!n;$('#hEmpN').textContent=n;$('#hEmpN').title=n?pl(n,'empresa aguardando','empresas aguardando'):'';
+}
+function renderEmpresas(){
+  const dt=d=>d?new Date(d).toLocaleDateString('pt-BR'):'';
+  const cn=c=>c?c.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,'$1.$2.$3/$4-$5'):'';
+  $('#elist').innerHTML=empresasAdm.length?empresasAdm.map(e=>{
+    const st=`<span class="ust ${e.situacao==='ativa'?'on':'w'}">${SITUACAO[e.situacao]}</span>`;
+    const bt=e.id===FUNDADORA?'':e.situacao==='ativa'?'<button type="button" class="btn" data-sit="suspensa">Suspender</button>'
+            :`<button type="button" class="btn pri" data-sit="ativa">${e.situacao==='suspensa'?'Reativar':'Liberar'}</button>`;
+    const local=[e.municipio,e.uf].filter(Boolean).join(' – ');
+    return `<div class="urow${e.situacao==='aguardando'?' uwait':''}" data-eid="${esc(e.id)}">
+      <div class="uq"><b>${esc(e.nome)}</b><small>${[cn(e.cnpj),local,'cadastro em '+dt(e.criada_em),e.responsavel_email?'por '+e.responsavel_email:'',pl(Number(e.usuarios)||0,'usuário','usuários')].filter(Boolean).map(esc).join(' · ')} · ${st}</small></div>
+      <span></span>${bt||'<span></span>'}</div>`;}).join(''):'<p class="mut">Nenhuma empresa cadastrada.</p>';
+}
+async function abrirEmpresas(){
+  $('#elist').innerHTML='<p class="mut">Carregando…</p>';showOv('emp');$('#eClose').focus();
+  try{await carregarEmpresas();renderEmpresas();}catch(e){$('#elist').innerHTML='';falha(e,'carregar as empresas');}
+}
+$('#hEmp').onclick=abrirEmpresas;
+$('#eClose').onclick=()=>hideOv();
+$('#eRel').onclick=async()=>{try{await carregarEmpresas();renderEmpresas();}catch(e){falha(e,'carregar as empresas');}};
+$('#elist').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-sit]');if(!b)return;
+  const id=b.closest('[data-eid]').dataset.eid,emp=empresasAdm.find(x=>x.id===id),sit=b.dataset.sit;
+  b.disabled=true;
+  try{
+    chk(await sb.rpc('sgs_definir_situacao_empresa',{p_empresa:id,p_situacao:sit}));
+    await carregarEmpresas();renderEmpresas();
+    toast(sit==='ativa'?`${emp.nome} liberada. Avise o responsável (${emp.responsavel_email||'sem e-mail'}) para entrar.`:`${emp.nome} suspensa: ninguém da empresa acessa até você reativar.`);
+  }catch(x){falha(x,'mudar a situação da empresa');b.disabled=false;}
+});
 $('#uClose').onclick=()=>hideOv();
 $('#uRel').onclick=async()=>{try{await carregarUsuarios();renderUsuarios();}catch(e){falha(e,'carregar os usuários');}};
 $('#ulist').addEventListener('change',e=>{
@@ -2674,9 +2820,12 @@ const PAPEIS={admin_sgs:'Responsável pelo SGS',aprovador:'Aprovador',revisor:'R
 function renderConta(){
   const el=$('#conta');
   if(!REMOTO){el.innerHTML='<span class="modo" title="Sem servidor: os dados ficam só neste navegador">Modo local</span>';return;}
-  el.innerHTML=`<span class="quem"><b>${esc(usuario.email||'')}</b><small>${esc(PAPEIS[papel]||papel)}</small></span><button class="btn" type="button" id="senha" title="Criar ou trocar a sua senha">Senha</button><button class="btn" type="button" id="sair">Sair</button>`;
+  const ativas=minhas.filter(e=>e.situacao==='ativa');
+  const sel=ativas.length>1?`<label class="sr-only" for="hEsc">Empresa</label><select class="esel" id="hEsc">${ativas.map(e=>`<option value="${esc(e.id)}"${e.id===empresa.id?' selected':''}>${esc(e.nome)}</option>`).join('')}</select>`:'';
+  el.innerHTML=`${sel}<span class="quem"><b>${esc(usuario.email||'')}</b><small>${esc(PAPEIS[papel]||papel)}</small></span><button class="btn" type="button" id="senha" title="Criar ou trocar a sua senha">Senha</button><button class="btn" type="button" id="sair">Sair</button>`;
   $('#sair').onclick=()=>sb.auth.signOut();
   $('#senha').onclick=abrirNovaSenha;
+  if(sel)$('#hEsc').onchange=e=>{lsSet(K_EMPRESA,e.target.value);location.hash='#/';location.reload();};
 }
 /* Entrar com e-mail e senha, criar conta, recuperar senha ou entrar por link (24/11/2026). */
 const lf=$('#lform');
@@ -2741,7 +2890,7 @@ $('#llink').onclick=async()=>{
 /* Nova senha: depois do link "Esqueci minha senha" ou pelo botão Senha, já logado. */
 function abrirNovaSenha(){
   show('login');document.title='Nova senha · SGS Turismo';
-  lf.hidden=true;$('#lout').hidden=true;loginMsg('');
+  lf.hidden=true;$('#eform').hidden=true;$('#lout').hidden=true;loginMsg('');
   $('#pwform').hidden=false;$('#pwerr').hidden=true;$('#pw1').value=$('#pw2').value='';$('#pw1').focus();
 }
 $('#pwform').addEventListener('submit',async e=>{
@@ -2772,6 +2921,8 @@ async function iniciar(){
   }
   $('#hNew').hidden=!canEdit;
   if(REMOTO&&papel==='admin_sgs'){$('#hUsr').hidden=false;carregarUsuarios().then(renderUsuarios).catch(()=>{});}
+  if(REMOTO&&adminPlat){$('#hEmp').hidden=false;carregarEmpresas().catch(()=>{});}
+  $('#hemp').textContent=EMPRESA;
   if(!canEdit)document.body.classList.add('ro');
   renderConta();
   if(!REMOTO)$('#hnote').textContent='Modo local: os produtos e o progresso ficam guardados só neste navegador. '+$('#hnote').textContent;

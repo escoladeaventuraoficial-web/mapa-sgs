@@ -51,11 +51,27 @@ com o mapa interativo da ABNT NBR ISO 21101 (turismo de aventura).
 - No Supabase (Authentication › URL Configuration), o Site URL e as Redirect URLs precisam incluir o
   endereço da plataforma (ex.: `https://www.sgsturismo.com.br/`), senão o link de acesso por e-mail não volta para o site.
 - Sem `SGS_CONFIG`, a plataforma funciona em modo local (só no navegador), útil para testes.
-- O primeiro usuário que entrar vira **Responsável pelo SGS**. Quem entrar depois ganha papel **Leitura** e fica
-  **aguardando liberação** (sem ver nenhum dado, pela RLS).
-- **Liberar outra pessoa** (24/11/2026): a pessoa abre o site, digita o e-mail e toca no link. O Responsável abre o botão
-  **Usuários** no topo da tela inicial (só aparece para ele, com um número quando há gente aguardando), escolhe o papel e
-  toca em **Liberar acesso**. Também pode bloquear ou trocar o papel depois. Toda mudança fica na auditoria.
-  O banco não deixa o SGS ficar sem um Responsável ativo (`20261124000001_responsavel_nao_some.sql`).
+- Cada empresa tem o seu SGS (ver "Várias empresas" abaixo). Quem entra sem convite vê a tela **Criar minha empresa**;
+  a empresa fica **aguardando liberação** até o administrador da plataforma liberar no botão **Empresas**.
+- **Trazer a equipe**: o Responsável abre **Usuários**, digita o e-mail, escolhe o papel e toca em **Convidar**. A pessoa
+  entra no site com esse mesmo e-mail e já cai na empresa. O Responsável também troca o papel, bloqueia e cancela convites.
+  O banco não deixa a empresa ficar sem um Responsável ativo.
+- Quem está em mais de uma empresa troca de empresa no seletor do topo.
 - Se o cadastro aberto estiver desligado no Supabase (Authentication › Sign In / Providers › Allow new users to sign up),
-  o Responsável convida a pessoa em Authentication › Users › Invite user e depois libera o acesso na tela **Usuários**.
+  só entra quem for convidado pelo painel do Supabase (Authentication › Users › Invite user).
+
+## Várias empresas (migração `20261124000002_multi_empresa.sql`, ainda não aplicada na produção)
+
+- Cada empresa tem o seu SGS. Produtos, documentos, versões, histórico, progresso, decisões, auditoria e arquivos
+  ganham `empresa_id`, e a RLS só deixa ler e escrever dentro das empresas em que a pessoa é membro ativo.
+- `membros` guarda o papel **por empresa** (`perfis.papel` e `perfis.ativo` ficam só como histórico).
+- **Criar empresa**: `sgs_criar_empresa()`. Quem cria vira Responsável dela. A empresa nasce **aguardando** e só
+  funciona depois que o administrador da plataforma libera com `sgs_definir_situacao_empresa()` (decisão de Vagner,
+  24/11/2026). Ele vê a lista com `sgs_admin_empresas()`, sem acesso aos documentos das empresas.
+- **Convidar a equipe**: `sgs_convidar(empresa, email, papel)`. Se a pessoa já tem login entra na hora; senão, entra
+  ao fazer o primeiro login com aquele e-mail. O site chama `sgs_aceitar_convites()` a cada login.
+- Arquivos no Storage ficam em `documentos/<empresa_id>/...`.
+- Tudo o que já existe vira da empresa **Trilhas do Sul**; os 2 produtos fictícios de exemplo são arquivados.
+- O site envia o `empresa_id` da empresa aberta em todas as leituras e gravações.
+- `supabase/tests/run.sh` roda dois cenários: banco novo com empresas fictícias (`regras.sql` + `isolamento.sql`)
+  e a migração de um banco igual ao da produção (`legado_antes.sql` → `legado_depois.sql`).
