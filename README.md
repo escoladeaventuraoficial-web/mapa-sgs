@@ -34,6 +34,12 @@ com o mapa interativo da ABNT NBR ISO 21101 (turismo de aventura).
 
 ## Servidor (Supabase)
 
+- **Entrar** (24/11/2026): e-mail e senha. Na tela de entrada há **Entrar**, **Criar conta**, **Esqueci minha senha**
+  (e-mail com link para criar nova senha) e **Entrar com link no e-mail** (o jeito antigo, sem senha). Quem já entra
+  pelo link cria uma senha pelo botão **Senha** no topo. A senha tem pelo menos 8 caracteres. A sessão fica guardada no
+  navegador até tocar em **Sair**. No Supabase, Authentication › Sign In / Providers › Email precisa estar ligado (padrão);
+  com "Confirm email" ligado, a conta nova confirma o e-mail antes do primeiro acesso.
+
 - `supabase/migrations/`: banco da plataforma (produtos, itens do mapa, progresso, documentos sem código,
   versões 1.0 → aprovação → vigência, transições, decisões, auditoria, segurança por linha e bucket privado
   de arquivos). `supabase/seed.sql` tem só **dados fictícios** para o ambiente de testes.

@@ -353,7 +353,12 @@ h1,h2,h3,p,ul,ol{margin:0}
 .lbox{width:min(400px,100%);background:var(--surface);border:1px solid var(--hair);border-radius:20px;padding:28px 24px;display:grid;gap:14px;box-shadow:var(--shadow)}
 .lbox h1{font-size:22px;font-weight:700}
 .lsub{color:var(--muted);font-size:13px;margin-top:-10px}
-#lform{display:grid;gap:12px}
+#lform,#pwform{display:grid;gap:12px}
+#pwform h2{font-size:18px}
+.lseg{display:grid;grid-template-columns:1fr 1fr;justify-self:stretch}
+.lalt{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.lnk{background:none;border:0;padding:4px 0;color:var(--accent);font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.lhint{font-size:12.5px}
 .lmsg{font-size:13.5px;border-radius:12px;padding:10px 12px;background:var(--accent-soft)}
 .lmsg.ok{background:var(--ok-soft)} .lmsg.err{background:var(--reg-bg);color:var(--reg-ink)} .lmsg.warn{background:var(--doc-bg);color:var(--doc-ink)}
 .hright{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
@@ -530,11 +535,27 @@ h1,h2,h3,p,ul,ol{margin:0}
   <div class="logo" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
   <h1>SGS Turismo</h1>
   <p class="lsub">Sistema de Gestão da Segurança para turismo de aventura · ISO 21101</p>
-  <form id="lform" novalidate>
-   <label class="fl"><span>Seu e-mail</span><input id="lemail" type="email" autocomplete="email" required placeholder="nome@empresa.com.br"></label>
-   <button class="btn pri" id="lbtn" type="submit">Enviar link de acesso</button>
+  <form id="lform" novalidate data-modo="entrar">
+   <div class="seg lseg" role="tablist" aria-label="Acesso">
+    <button type="button" role="tab" data-lmodo="entrar" aria-selected="true">Entrar</button>
+    <button type="button" role="tab" data-lmodo="criar" aria-selected="false">Criar conta</button>
+   </div>
+   <label class="fl"><span>E-mail</span><input id="lemail" type="email" autocomplete="email" required placeholder="nome@empresa.com.br"></label>
+   <label class="fl" id="lsenhaw"><span>Senha</span><input id="lsenha" type="password" autocomplete="current-password" minlength="8"></label>
+   <label class="fl" id="lsenha2w" hidden><span>Repita a senha</span><input id="lsenha2" type="password" autocomplete="new-password" minlength="8"></label>
+   <p class="mut lhint" id="lhint" hidden>A senha precisa ter pelo menos 8 caracteres.</p>
+   <button class="btn pri" id="lbtn" type="submit">Entrar</button>
+   <div class="lalt"><button type="button" class="lnk" id="lesq">Esqueci minha senha</button><button type="button" class="lnk" id="llink">Entrar com link no e-mail</button></div>
   </form>
   <p id="lmsg" class="lmsg" hidden></p>
+  <form id="pwform" novalidate hidden>
+   <h2>Definir nova senha</h2>
+   <label class="fl"><span>Nova senha</span><input id="pw1" type="password" autocomplete="new-password" minlength="8"></label>
+   <label class="fl"><span>Repita a nova senha</span><input id="pw2" type="password" autocomplete="new-password" minlength="8"></label>
+   <p class="mut">Pelo menos 8 caracteres.</p>
+   <p class="err" id="pwerr" hidden></p>
+   <div class="dact" style="margin-top:4px"><button class="btn" type="button" id="pwcancel">Cancelar</button><button class="btn pri" id="pwbtn" type="submit">Salvar senha</button></div>
+  </form>
   <form id="eform" novalidate hidden>
    <h2>Criar minha empresa</h2>
    <label class="fl"><span>Nome da empresa</span><input name="nome" required maxlength="120" autocomplete="organization" placeholder="Ex.: Aventura Serra Azul"></label>
@@ -2615,10 +2636,15 @@ function loginMsg(h,tipo){const m=$('#lmsg');m.hidden=!h;m.className='lmsg '+(ti
 async function entrar(){
   await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js');
   sb=window.supabase.createClient(SGS_CONFIG.supabaseUrl,SGS_CONFIG.supabaseKey);
-  sb.auth.onAuthStateChange((ev)=>{if(ev==='SIGNED_OUT'){location.hash='#/';location.reload();}});
+  let recuperando=/type=recovery/.test(location.hash);
+  sb.auth.onAuthStateChange((ev)=>{
+    if(ev==='SIGNED_OUT'){location.hash='#/';location.reload();}
+    if(ev==='PASSWORD_RECOVERY'){recuperando=true;abrirNovaSenha();}
+  });
   const {data:{session}}=await sb.auth.getSession();
   if(!session){show('login');document.title='Entrar · SGS Turismo';return false;}
   usuario=session.user;
+  if(recuperando){abrirNovaSenha();return false;}
   // Convites feitos depois do cadastro desta pessoa entram agora.
   try{await sb.rpc('sgs_aceitar_convites');}catch(e){console.warn(e);}
   const pf=chk(await sb.from('perfis').select('nome,admin_plataforma').eq('id',usuario.id).maybeSingle())||{};
@@ -2796,20 +2822,92 @@ function renderConta(){
   if(!REMOTO){el.innerHTML='<span class="modo" title="Sem servidor: os dados ficam só neste navegador">Modo local</span>';return;}
   const ativas=minhas.filter(e=>e.situacao==='ativa');
   const sel=ativas.length>1?`<label class="sr-only" for="hEsc">Empresa</label><select class="esel" id="hEsc">${ativas.map(e=>`<option value="${esc(e.id)}"${e.id===empresa.id?' selected':''}>${esc(e.nome)}</option>`).join('')}</select>`:'';
-  el.innerHTML=`${sel}<span class="quem"><b>${esc(usuario.email||'')}</b><small>${esc(PAPEIS[papel]||papel)}</small></span><button class="btn" type="button" id="sair">Sair</button>`;
+  el.innerHTML=`${sel}<span class="quem"><b>${esc(usuario.email||'')}</b><small>${esc(PAPEIS[papel]||papel)}</small></span><button class="btn" type="button" id="senha" title="Criar ou trocar a sua senha">Senha</button><button class="btn" type="button" id="sair">Sair</button>`;
   $('#sair').onclick=()=>sb.auth.signOut();
+  $('#senha').onclick=abrirNovaSenha;
   if(sel)$('#hEsc').onchange=e=>{lsSet(K_EMPRESA,e.target.value);location.hash='#/';location.reload();};
 }
-$('#lform').addEventListener('submit',async e=>{
-  e.preventDefault();
+/* Entrar com e-mail e senha, criar conta, recuperar senha ou entrar por link (24/11/2026). */
+const lf=$('#lform');
+function setLModo(m){
+  lf.dataset.modo=m;
+  lf.querySelectorAll('[data-lmodo]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.lmodo===m)));
+  $('#lsenha2w').hidden=$('#lhint').hidden=m!=='criar';
+  $('#lsenha').autocomplete=m==='criar'?'new-password':'current-password';
+  $('#lbtn').textContent=m==='criar'?'Criar conta':'Entrar';
+  loginMsg('');
+}
+lf.querySelectorAll('[data-lmodo]').forEach(b=>b.onclick=()=>setLModo(b.dataset.lmodo));
+function emailOk(){
   const email=$('#lemail').value.trim();
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){loginMsg('Informe um e-mail válido.','err');return;}
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){loginMsg('Informe um e-mail válido.','err');$('#lemail').focus();return null;}
+  return email;
+}
+const voltaUrl=()=>location.origin+location.pathname;
+function msgErroAuth(e){
+  const m=(e&&e.message)||'';
+  if(/invalid login credentials/i.test(m))return 'E-mail ou senha incorretos. Se você sempre entrou pelo link no e-mail, use "Esqueci minha senha" para criar uma senha.';
+  if(/email not confirmed/i.test(m))return 'Confirme o seu e-mail primeiro: abra a mensagem que enviamos e toque no link.';
+  if(/already registered|already exists/i.test(m))return 'Este e-mail já tem conta. Use Entrar, ou "Esqueci minha senha".';
+  if(/rate limit|too many/i.test(m))return 'Muitas tentativas em pouco tempo. Espere alguns minutos e tente de novo.';
+  if(/signups? not allowed|signup is disabled/i.test(m))return 'O cadastro de novas contas está fechado. Peça um convite ao responsável pelo SGS.';
+  if(/password/i.test(m))return 'Senha não aceita: '+esc(m);
+  return esc(m||'Verifique a conexão e tente de novo.');
+}
+lf.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const email=emailOk();if(!email)return;
+  const senha=$('#lsenha').value,criar=lf.dataset.modo==='criar';
+  if(senha.length<8){loginMsg('A senha precisa ter pelo menos 8 caracteres.','err');$('#lsenha').focus();return;}
+  if(criar&&senha!==$('#lsenha2').value){loginMsg('As duas senhas não são iguais.','err');$('#lsenha2').focus();return;}
   const b=$('#lbtn');b.disabled=true;
-  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
+  try{
+    if(criar){
+      const {data,error}=await sb.auth.signUp({email,password:senha,options:{emailRedirectTo:voltaUrl()}});
+      if(error)throw error;
+      if(data.session){location.reload();return;}
+      setLModo('entrar');$('#lemail').value=email;loginMsg(`Conta criada. Enviamos um e-mail para <b>${esc(email)}</b>: toque no link para confirmar e depois entre com a sua senha.`,'ok');
+    }else{
+      const {error}=await sb.auth.signInWithPassword({email,password:senha});
+      if(error)throw error;
+      location.reload();return;
+    }
+  }catch(er){loginMsg(msgErroAuth(er),'err');}
   b.disabled=false;
-  if(error)loginMsg('Não foi possível enviar o link: '+esc(error.message),'err');
-  else loginMsg(`Enviamos um link de acesso para <b>${esc(email)}</b>. Abra o e-mail neste aparelho e toque no link.`,'ok');
 });
+$('#lesq').onclick=async()=>{
+  const email=emailOk();if(!email)return;
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:voltaUrl()});
+  if(error)loginMsg(msgErroAuth(error),'err');
+  else loginMsg(`Se <b>${esc(email)}</b> tiver conta, chega um e-mail com o link para criar uma nova senha.`,'ok');
+};
+$('#llink').onclick=async()=>{
+  const email=emailOk();if(!email)return;
+  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:voltaUrl()}});
+  if(error)loginMsg(msgErroAuth(error),'err');
+  else loginMsg(`Enviamos um link de acesso para <b>${esc(email)}</b>. Abra o e-mail neste aparelho e toque no link.`,'ok');
+};
+/* Nova senha: depois do link "Esqueci minha senha" ou pelo botão Senha, já logado. */
+function abrirNovaSenha(){
+  show('login');document.title='Nova senha · SGS Turismo';
+  lf.hidden=true;$('#eform').hidden=true;$('#lout').hidden=true;loginMsg('');
+  $('#pwform').hidden=false;$('#pwerr').hidden=true;$('#pw1').value=$('#pw2').value='';$('#pw1').focus();
+}
+$('#pwform').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const a=$('#pw1').value,b=$('#pw2').value,err=$('#pwerr');
+  const erro=m=>{err.innerHTML=m;err.hidden=!m;};
+  if(a.length<8)return erro('A senha precisa ter pelo menos 8 caracteres.');
+  if(a!==b)return erro('As duas senhas não são iguais.');
+  $('#pwbtn').disabled=true;
+  const {error}=await sb.auth.updateUser({password:a});
+  $('#pwbtn').disabled=false;
+  if(error)return erro(msgErroAuth(error));
+  history.replaceState(null,'',location.pathname+'#/');
+  toast('Senha salva. Da próxima vez, entre com o e-mail e a senha.');
+  setTimeout(()=>location.reload(),900);
+});
+$('#pwcancel').onclick=()=>{history.replaceState(null,'',location.pathname+'#/');location.reload();};
 $('#lout').onclick=()=>sb.auth.signOut();
 
 async function iniciar(){
